@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Set the background color to green -->
+    <solid android:color="#4CAF50"/> <!-- This is a green shade -->
+
+    <!-- Set the rounded corners -->
+    <corners android:radius="16dp"/>
+
+    <!-- Optionally, add a border (stroke) -->
+    <stroke android:width="2dp" android:color="#FFFFFF"/> <!-- White border (optional) -->
+</shape>
