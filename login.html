@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+     <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the Firebase SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBPeVngqblNwdwrV9M5xBn4KsseyZEzbMU",
+          authDomain: "rfid-web-2db15.firebaseapp.com",
+          databaseURL: "https://rfid-web-2db15-default-rtdb.asia-southeast1.firebasedatabase.app/",
+          projectId: "rfid-web-2db15",
+          storageBucket: "rfid-web-2db15.appspot.com",
+          messagingSenderId: "131924740941",
+          appId: "1:131924740941:web:98da292c68989fd0c50504"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Login function
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Reference to the 'adduser' database path
+            const dbRef = ref(db);
+
+            try {
+                // Fetch all users from the 'adduser' path
+                const snapshot = await get(child(dbRef, 'adduser'));
+
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    let userFound = false;
+
+                    // Loop through users to check if credentials match
+                    for (const key in users) {
+                        if (users[key].username === username && users[key].password === password) {
+                            userFound = true;
+                            break;
+                        }
+                    }
+
+                    if (userFound) {
+                        alert("Login successful!");
+                        window.location.href = 'dashboard.html'; // Redirect to dashboard
+                    } else {
+                        alert("Invalid credentials. Please try again.");
+                    }
+                } else {
+                    alert("No users found in the database.");
+                }
+            } catch (error) {
+                console.error("Error retrieving data from database:", error);
+                alert("Error connecting to the database.");
+            }
+        }
+    </script>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            height: 100vh;
+        }
+        .sidebar {
+            background-color: #4CAF50;
+            width: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+        }
+        .content {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-form {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .login-form h2 {
+            margin-bottom: 20px;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Sidebar</h1>
+    </div>
+    <div class="content">
+        <div class="login-form">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+</body>
+</html>
+    
