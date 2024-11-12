@@ -13,42 +13,30 @@
     }
     body {
       display: flex;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
+      background-image: url('images/twices.jpg'); /* Replace with your image URL or file path */
+      background-size: cover;  /* Make sure the background covers the whole page */
+      background-position: center; /* Center the background image */
+      background-repeat: no-repeat; /* Prevent the background image from repeating */
+      position: relative; /* Allow absolute positioning of the logo */
     }
-    .sidebar {
-      width: 250px;
-      background-color: #4CAF50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 24px;
-    }
-    .main-content {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f5f5f5;
+    .logo {
+      position: absolute;
+      top: 50px; /* Adjust the top position for the logo */
+      left: 50%;
+      transform: translateX(-50%); /* Center the logo horizontally */
+      width: 130px; /* Set the width of the logo */
+      height: auto;
     }
     .login-container {
       width: 300px;
-      position: relative;
+      background-color: rgba(255, 255, 255, 0.8); /* White with slight transparency for better readability */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .notification {
-      position: absolute;
-      top: -50px;
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      color: white;
-      font-size: 16px;
-      text-align: center;
-      opacity: 1;
-      transition: opacity 0.5s ease; /* Smooth fade-out transition */
-    }
-    .notification.success { background-color: #4CAF50; }
-    .notification.error { background-color: #f44336; }
     .login-container h2 {
       text-align: center;
       margin-bottom: 20px;
@@ -84,27 +72,24 @@
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h1>Sidebar</h1>
-  </div>
-  <div class="main-content">
-    <div class="login-container">
-      <div id="notification" class="notification"></div>
-      <h2>TERMINAL OPERATOR</h2>
-      <form id="loginForm" action="#">
-        <div class="input-box">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Enter your username" required>
-        </div>
-        <div class="input-box">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Enter your password" required>
-        </div>
-        <div class="button">
-          <input type="submit" value="Login">
-        </div>
-      </form>
-    </div>
+  <!-- Logo in the upper middle -->
+  <img src="images/lgo.png" alt="Logo" class="logo"> <!-- Replace with your logo path -->
+
+  <div class="login-container">
+    <h2>TERMINAL OPERATOR</h2>
+    <form id="loginForm" action="#">
+      <div class="input-box">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" required>
+      </div>
+      <div class="input-box">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+      <div class="button">
+        <input type="submit" value="Login">
+      </div>
+    </form>
   </div>
 
   <!-- Firebase and Login Script -->
@@ -124,24 +109,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
-    function showNotification(message, type) {
-      const notification = document.getElementById("notification");
-      notification.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.style.display = "block";
-      notification.style.opacity = "1";
-
-      // Hide the notification after a delay (for unsuccessful login)
-      if (type === "error") {
-        setTimeout(() => {
-          notification.style.opacity = "0"; // Starts fading out
-          setTimeout(() => {
-            notification.style.display = "none";
-          }, 500); // Ensures display: none is set after fade-out
-        }, 3000); // Display error message for 3 seconds before fade-out
-      }
-    }
 
     window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -166,19 +133,16 @@
             });
 
             if (loginSuccess) {
-              showNotification("Login successful!", "success");
-              setTimeout(() => {
-                window.location.href = "html.html";
-              }, 1500); // Reduced delay for redirect
+              window.location.href = "main.html"; // Instant redirect on successful login
             } else {
-              showNotification("Invalid username or password.", "error");
+              alert("Invalid username or password."); // Display an alert for unsuccessful login
             }
           } else {
-            showNotification("No users found in the database.", "error");
+            alert("No users found in the database.");
           }
         } catch (error) {
           console.error("Error during login", error);
-          showNotification("An error occurred while logging in: " + error.message, "error");
+          alert("An error occurred while logging in: " + error.message);
         }
       });
     });
