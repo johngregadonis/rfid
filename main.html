@@ -156,13 +156,16 @@
                 Option
             </div>
             <li class="item">
-                <a href="#" id="sh-btn">Show Load Balance</a>
+                <a href="#" id="shbal-btn">Show Load Balance</a>
                 <a href="login2.html" id="sh-btn">Log out</a>
             </li>
             </ul>
         </li>
           <li class="item">
             <a href="#" id="add-user-btn">Add User</a>
+          </li>
+          <li class="item">
+            <a href="#" id="add-vehicle-btn">Add Vehicle</a>
           </li>
         </ul>
       </div>
@@ -177,8 +180,9 @@
       <div class="content-section" id="rex-content">Rex Information Displayed Here.</div>
       <div class="content-section" id="north-content">North Bound Information Displayed Here.</div>
       <div class="content-section" id="south-content">South Bound Information Displayed Here.</div>
-      <div class="content-section" id="sh-content">Show Load Balance Information Displayed Here.</div>
+      <div class="content-section" id="shbal-content">Show Load Balance Information Displayed Here.</div>
       <div class="content-section" id="add-user-content">Add User Information Displayed Here.</div>
+      <div class="content-section" id="add-vehicle-content">Add User Information Displayed Here.</div>
     </main>
 
     <script>
@@ -189,10 +193,12 @@
         const northContent = document.querySelector("#north-content");
         const southContent = document.querySelector("#south-content");
         const shContent = document.querySelector("#sh-content");
+        const shbalContent = document.querySelector("#shbal-content");
         const addUserContent = document.querySelector("#add-user-content");
         const menu = document.querySelector(".menu-content");
         const menuItems = document.querySelectorAll(".submenu-item");
         const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
+        const addVehicleContent = document.querySelector("#add-vehicle-content");
         
         menuItems.forEach((item, index) => {
             item.addEventListener("click", () => {
@@ -288,9 +294,16 @@
                 .catch(error => console.error("Error loading South Bound content:", error));
         });
     
-        document.querySelector("#sh-btn").addEventListener("click", (e) => {
+        document.querySelector("#shbal-btn").addEventListener("click", (e) => {
             e.preventDefault();
-            showContent(shContent);
+            showContent(shbalContent);
+
+            fetch("sh-bal.html")
+                .then(response => response.text())
+                .then(data => {
+                  shbalContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading Show Balance content:", error));
         });
     
         document.querySelector("#add-user-btn").addEventListener("click", (e) => {
@@ -304,6 +317,19 @@
                 })
                 .catch(error => console.error("Error loading South Bound content:", error));
         });
+
+        document.querySelector("#add-vehicle-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(addVehicleContent);
+
+            fetch("addvehicle.html")
+                .then(response => response.text())
+                .then(data => {
+                  addVehicleContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading South Bound content:", error));
+        });
+    
     
         sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
     </script>
