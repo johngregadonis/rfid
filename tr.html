@@ -1,58 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table with Horizontal Line Above Last Row</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar Menu for Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Fontawesome CDN Link -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
     <style>
-        /* General Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 
-        table {
-            width: 50%; /* Adjust the table width */
-            border-collapse: collapse;
-            margin: 20px;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            font-size: 14px;
-        }
+      .sidebar {
+        position: fixed;
+        height: 100%;
+        width: 260px;
+        background: #4cd080;
+        padding: 40px;
+        z-index: 99;
+      }
 
-        /* Horizontal line above the last row */
-        tr:last-child {
-            border-top: 2px solid black;
-        }
+      .sidebar img {
+        width: 100%;
+        max-width: 130px;
+        margin-left: 12%;
+        margin-top: 20%;
+      }
 
-        tr:last-child td {
-            border-bottom: none; /* Remove the bottom border from the last row */
-        }
+      .sidebar a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .menu-content {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        margin-top: 40px;
+        overflow-y: scroll;
+      }
+
+      .menu-items {
+        height: 100%;
+        width: 100%;
+        list-style: none;
+        transition: all 0.4s ease;
+      }
+
+      .menu-title {
+        color: #fff;
+        font-size: 14px;
+        padding: 15px 20px;
+      }
+
+      .item a,
+      .submenu-item {
+        padding: 16px;
+        display: inline-block;
+        width: 100%;
+        border-radius: 12px;
+      }
+
+      .item a:hover,
+      .submenu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .navbar,
+      .main {
+        left: 260px;
+        width: calc(100% - 260px);
+        transition: all 0.5s ease;
+        z-index: 1000;
+      }
+
+      .navbar {
+        position: fixed;
+        color: #11101d;
+        padding: 15px 20px;
+        font-size: 25px;
+        background: white;
+      }
+
+      .main {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: white;
+        text-align: center;
+      }
+
+      .content-section {
+        display: none;
+        color: #11101d;
+        font-size: 20px;
+      }
+
+      #welcome-message {
+        color: #11101d;
+        font-size: 40px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <img src="images/logo.png" alt="Logo" />
+      <div class="menu-content">
+        <ul class="menu-items">
+          <li class="item">
+            <a href="#" id="keone-btn">North Bound</a>
+          </li>
+          <li class="item">
+            <a href="#" id="rex-btn">South Bound</a>
+          </li>
+          <li class="item">
+            <div class="submenu-item">
+              <span>Offenders</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <ul class="menu-items submenu">
+              <div class="menu-title">
+                <i class="fa-solid fa-chevron-left"></i>
+                Offenders
+              </div>
+              <li class="item">
+                <a href="#" id="north-btn">North Bound</a>
+              </li>
+              <li class="item">
+                <a href="#" id="south-btn">South Bound</a>
+              </li>
+            </ul>
+          </li>
+          <li class="item">
+            <div class="submenu-item">
+              <span>Option</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <ul class="menu-items submenu">
+              <div class="menu-title">
+                <i class="fa-solid fa-chevron-left"></i>
+                Option
+              </div>
+              <li class="item">
+                <a href="#" id="shbal-btn">Show Load Balance</a>
+                <a href="login2.html" id="sh-btn">Log out</a>
+              </li>
+            </ul>
+          </li>
+          <li class="item">
+            <a href="#" id="add-user-btn">Add User</a>
+          </li>
+          <li class="item">
+            <a href="#" id="add-vehicle-btn">Add Vehicle</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-    <table>
-        <tbody>
-            <tr>
-                <td>Data 1</td>
-                <td>Data 2</td>
-            </tr>
-            <tr>
-                <td>Data 3</td>
-                <td>Data 4</td>
-            </tr>
-            <tr>
-                <td>Data 5</td>
-                <td>Data 6</td>
-            </tr>
-        </tbody>
-    </table>
+    <main class="main">
+      <div class="content-section" id="keone-content">
+        Keone Information Displayed Here.
+      </div>
+      <div class="content-section" id="rex-content">
+        Rex Information Displayed Here.
+      </div>
+      <div class="content-section" id="north-content">
+        North Bound Information Displayed Here.
+      </div>
+      <div class="content-section" id="south-content">
+        South Bound Information Displayed Here.
+      </div>
+      <div class="content-section" id="shbal-content">
+        Show Load Balance Information Displayed Here.
+      </div>
+      <div class="content-section" id="add-user-content">
+        Add User Information Displayed Here.
+      </div>
+      <div class="content-section" id="add-vehicle-content">
+        Add Vehicle Information Displayed Here.
+      </div>
+    </main>
 
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sidebar = document.querySelector(".sidebar");
+        const keoneContent = document.querySelector("#keone-content");
+        const rexContent = document.querySelector("#rex-content");
+        const northContent = document.querySelector("#north-content");
+        const southContent = document.querySelector("#south-content");
+        const shbalContent = document.querySelector("#shbal-content");
+        const addUserContent = document.querySelector("#add-user-content");
+        const addVehicleContent = document.querySelector("#add-vehicle-content");
+
+        const menuItems = document.querySelectorAll(".submenu-item");
+        const subMenuTitles = document.querySelectorAll(".menu-title");
+
+        menuItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            item.classList.toggle("show-submenu");
+          });
+        });
+
+        subMenuTitles.forEach((title) => {
+          title.addEventListener("click", () => {
+            const submenu = title.nextElementSibling;
+            if (submenu) submenu.classList.remove("show-submenu");
+          });
+        });
+
+        function showContent(content) {
+          document
+            .querySelectorAll(".content-section")
+            .forEach((section) => (section.style.display = "none"));
+          if (content) content.style.display = "block";
+        }
+
+        showContent(keoneContent);
+
+        document.querySelector("#keone-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          showContent(keoneContent);
+        });
+
+        document.querySelector("#rex-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          showContent(rexContent);
+        });
+
+        document.querySelector("#north-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          showContent(northContent);
+        });
+
+        document.querySelector("#south-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          showContent(southContent);
+        });
+
+        document.querySelector("#shbal-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          showContent(shbalContent);
+        });
+
+        document.querySelector("#add-user-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          showContent(addUserContent);
+        });
+
+        document
+          .querySelector("#add-vehicle-btn")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(addVehicleContent);
+          });
+      });
+    </script>
+  </body>
 </html>

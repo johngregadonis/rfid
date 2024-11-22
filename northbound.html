@@ -5,34 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keone Information</title>
     <link rel="stylesheet" href="styles.css">
-<style>
-    * {
+    <style>
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
 
-    /* Main content area styles */
-    .main-content {
+        /* Main content area styles */
+        .main-content {
             padding: 20px;
             font-size: 16px;
         }
 
         /* Table Styles */
         table {
-            width: 100%;
+            width: 90%;
             border-collapse: collapse;
             margin-bottom: 400px;
-            margin-right: 900px;
+            margin-right: 800px;
+         
+
         }
+
 
         th, td {
             padding: 8px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
-</style>
+
+        /* Balance color coding */
+        .balance-green {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .balance-yellow {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .balance-red {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
 </head>
 <body>
     <div class="main-content">
@@ -42,6 +61,7 @@
                     <th>Body No.</th>
                     <th>Operator</th>
                     <th>UID</th>
+                    <th>Balance</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,26 +69,31 @@
                     <td>123</td>
                     <td>Joemark Velasco</td>
                     <td>0x1F2B3C4D5E6A</td>
+                    <td class="balance-green"></td>
                 </tr>
                 <tr>
                     <td>321</td>
                     <td>Mark Santos</td>
                     <td>0x1F2B3C4D5E6B</td>
+                    <td class="balance-yellow"></td>
                 </tr>
                 <tr>
                     <td>132</td>
                     <td>Jose Reyes</td>
                     <td>0x1F2B3C4D5E6C</td>
+                    <td class="balance-yellow"></td>
                 </tr>
                 <tr>
                     <td>213</td>
-                    <td>Carlos Menodza</td>
+                    <td>Carlos Mendoza</td>
                     <td>0x1F2B3C4D5E6D</td>
+                    <td class="balance-red"></td>
                 </tr>
                 <tr>
                     <td>312</td>
                     <td>Miguel Bautista</td>
                     <td>0x1F2B3C4D5E6E</td>
+                    <td class="balance-green"></td>
                 </tr>
             </tbody>
         </table>

@@ -61,6 +61,17 @@
         padding: 15px 20px;
       }
 
+      .submenu {
+        display: none; /* Hidden by default */
+        list-style: none;
+        padding-left: 20px; /* Indent submenu items */
+      }
+
+      .submenu-active {
+        display: block; /* Show the submenu when active */
+      }
+
+
       .item a,
       .submenu-item {
         padding: 16px;
@@ -182,7 +193,7 @@
       <div class="content-section" id="south-content">South Bound Information Displayed Here.</div>
       <div class="content-section" id="shbal-content">Show Load Balance Information Displayed Here.</div>
       <div class="content-section" id="add-user-content">Add User Information Displayed Here.</div>
-      <div class="content-section" id="add-vehicle-content">Add User Information Displayed Here.</div>
+      <div class="content-section" id="add-vehicle-content">Add Vehicle Information Displayed Here.</div>
     </main>
 
     <script>
@@ -195,36 +206,33 @@
         const shContent = document.querySelector("#sh-content");
         const shbalContent = document.querySelector("#shbal-content");
         const addUserContent = document.querySelector("#add-user-content");
-        const menu = document.querySelector(".menu-content");
+        const menu = document.querySelector("#menu-content");
         const menuItems = document.querySelectorAll(".submenu-item");
         const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
         const addVehicleContent = document.querySelector("#add-vehicle-content");
         
-        menuItems.forEach((item, index) => {
-            item.addEventListener("click", () => {
-                menu.classList.add("submenu-active");
-                item.classList.add("show-submenu");
-                menuItems.forEach((item2, index2) => {
-                if (index !== index2) {
-                    item2.classList.remove("show-submenu");
-                }
-                });
-            });
-            });
-        
-            subMenuTitles.forEach((title) => {
-            title.addEventListener("click", () => {
-                menu.classList.remove("submenu-active");
-            });
-            });
+        document.querySelectorAll(".submenu-item").forEach(item => {
+          item.addEventListener("click", () => {
+            const submenu = item.nextElementSibling; // Get the corresponding submenu
+            const isActive = submenu.classList.contains("submenu-active");
+            
+            // Close any open submenus
+            document.querySelectorAll(".submenu").forEach(sub => sub.classList.remove("submenu-active"));
+
+            // Toggle the clicked submenu
+            if (!isActive) submenu.classList.add("submenu-active");
+          });
+        });
+
 
         // Function to show specific content section
-        function showContent(content) {
-            // Hide all content sections
-            document.querySelectorAll(".content-section").forEach(section => section.style.display = "none");
-            // Show the selected content
-            content.style.display = "block";
-        }
+      function showContent(content) {
+          // Hide all content sections
+          document.querySelectorAll(".content-section").forEach(section => section.style.display = "none");
+          // Show the selected content
+          content.style.display = "block";
+}
+
 
         // Automatically display the first option content on load
       window.addEventListener("DOMContentLoaded", () => {
