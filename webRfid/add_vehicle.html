@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Registration Form | CodingLab</title>
+  <link rel="stylesheet" href="add_vehicle.css">
+
+  
+</head>
+<body>
+  <div class="container">
+
+    <!-- Close button -->
+    <div class="close-btn">&times;</div>
+
+    <!-- Title section -->
+    <div class="title">Vehicle Operator</div>
+    <div class="content">
+      <!-- Registration form -->
+      <form action="http://localhost:3000/register" method="POST">
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Full Name</span>
+            <input type="text" name="name" placeholder="Enter your name" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Contact Number</span>
+            <input type="text" name="contact" placeholder="Enter your contact number" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Address</span>
+            <input type="text" name="address" placeholder="Enter your full address">
+          </div>
+          <div class="input-box">
+            <span class="details">Body Number</span>
+            <input type="text" name="bodyNumber" placeholder="Enter your body number" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" name="password" placeholder="Enter your password" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
+          </div>
+        </div>
+        <div class="button">
+          <input type="submit" value="Register">
+        </div>
+      </form>
+      
+    </div>
+  </div>
+</body>
+</html>
