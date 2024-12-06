@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "777320506697",
-    "project_id": "rfid-87e82",
-    "storage_bucket": "rfid-87e82.appspot.com"
+    "project_number": "131924740941",
+    "firebase_url": "https://rfid-web-2db15-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "rfid-web-2db15",
+    "storage_bucket": "rfid-web-2db15.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:777320506697:android:d98be05b5a1f544dd66698",
+        "mobilesdk_app_id": "1:131924740941:android:00c6bf2ea5107d58c50504",
         "android_client_info": {
           "package_name": "com.example.rfid"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCaMLMNvWKMd0GpwAwPnOnTcmfOSqihDRg"
+          "current_key": "AIzaSyAkHuZSuUnZ01jrqSWWIbsJJryycF6lwwI"
         }
       ],
       "services": {
