@@ -51,18 +51,18 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/login_email"
+            android:id="@+id/bodyNumber"
             android:background="@drawable/edittext_background"
             android:layout_marginTop="20dp"
             android:padding="8dp"
-            android:hint="Email"
-            android:drawableLeft="@drawable/baseline_email_24"
+            android:hint="Body Number"
+            android:drawableLeft="@drawable/baseline_confirmation_number_24"
             android:textColor="@color/black"
             android:drawablePadding="8dp"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/login_password"
+            android:id="@+id/password"
             android:background="@drawable/edittext_background"
             android:layout_marginTop="20dp"
             android:inputType="textPassword"
