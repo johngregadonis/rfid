@@ -18,7 +18,7 @@
     <div class="title">Vehicle Operator</div>
     <div class="content">
       <!-- Registration form -->
-      <form action="http://localhost:3000/register" method="POST">
+      <form action="http://192.168.1.7:5000/register" method="POST">
         <div class="user-details">
           <div class="input-box">
             <span class="details">Full Name</span>
@@ -44,7 +44,17 @@
             <span class="details">Confirm Password</span>
             <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
           </div>
-        </div>
+          <div class="input-box">
+            <span class="details">UID (Unique Identifier)</span>
+            <input type="text" name="uid" placeholder="Enter UID" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Load Balance Amount</span>
+            <input type="text" name="balance" placeholder="Enter Load Balance Amount" required>
+          </div>
+        
+        
+      </div>
         <div class="button">
           <input type="submit" value="Register">
         </div>
