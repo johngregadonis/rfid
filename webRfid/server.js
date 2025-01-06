@@ -117,7 +117,7 @@ app.get('/get-rfid-logs', async (req, res) => {
 // Endpoint to fetch body number, uid, and balance from vehicle_operators
 app.get('/get-vehicle-operators', async (req, res) => {
   try {
-    const result = await pool.query('SELECT body_number, uid, balance FROM vehicle_operators ORDER BY id DESC');
+    const result = await pool.query('SELECT name, body_number, uid, balance FROM vehicle_operators ORDER BY id DESC');
     res.status(200).json(result.rows);
   } catch (err) {
     console.error('Database error:', err);
@@ -161,5 +161,5 @@ app.post('/update-balance', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running on http://192.168.1.7:${port}`);
+  console.log(`Server running on http://192.168.1.5:${port}`);
 });

@@ -1,25 +1,39 @@
-const sidebar = document.querySelector(".sidebar");
-const sidebarClose = document.querySelector("#sidebar-close");
-const menu = document.querySelector(".menu-content");
-const menuItems = document.querySelectorAll(".submenu-item");
-const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
+document.querySelectorAll('.menu-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
 
-sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
+async function fetchVehicleOperators() {
+  try {
+    const response = await fetch('http://192.168.1.5:5000/get-vehicle-operators'); // Ensure the URL is correct
+    if (!response.ok) {
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+      return;
+    }
 
-menuItems.forEach((item, index) => {
-  item.addEventListener("click", () => {
-    menu.classList.add("submenu-active");
-    item.classList.add("show-submenu");
-    menuItems.forEach((item2, index2) => {
-      if (index !== index2) {
-        item2.classList.remove("show-submenu");
-      }
+    const data = await response.json();
+    console.log('Fetched Data:', data); // Log the data to verify it’s fetched correctly
+
+    const tableContent = document.querySelector('.table-content');
+    tableContent.innerHTML = ''; // Clear existing content
+
+    data.forEach((operator) => {
+      const row = document.createElement('div');
+      row.classList.add('table-row');
+      row.innerHTML = `
+        <div>${operator.body_number}</div>
+        <div>${operator.name || 'N/A'}</div>
+        <div>${operator.uid}</div>
+        <div id="balance-${operator.body_number}">₱${operator.balance || 0}</div>
+      `;
+      tableContent.appendChild(row);
     });
-  });
-});
+  } catch (error) {
+    console.error('Fetch Error:', error);
+  }
+}
 
-subMenuTitles.forEach((title) => {
-  title.addEventListener("click", () => {
-    menu.classList.remove("submenu-active");
-  });
-});
+// Fetch the data when the page loads
+document.addEventListener('DOMContentLoaded', fetchVehicleOperators);
