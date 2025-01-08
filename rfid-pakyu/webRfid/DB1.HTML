@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Data Example</title>
+</head>
+<body>
+    <h1>Data from Database</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Body No.</th>
+                <th>Operator</th>
+                <th>UID</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Fetch data from the backend
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/data'); // Backend endpoint
+                const data = await response.json();
+
+                // Populate the table
+                const tableBody = document.getElementById('data-table');
+                tableBody.innerHTML = ''; // Clear existing data
+
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.body_no}</td>
+                        <td>${row.operator}</td>
+                        <td>${row.uid}</td>
+                        <td>${row.balance}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Call fetchData when the page loads
+        fetchData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sidebar Menu for Admin Dashboard | CodingNepal</title>
+        <link rel="stylesheet" href="style.css" />
+        <!-- Fontawesome CDN Link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+        <style>
+        /* Import Google font - Poppins */
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            height: 100%;
+            width: 260px;
+            background: #4CD080;
+            padding: 40px;
+            z-index: 99;
+        }
+
+        .sidebar img {
+            width: 100%;
+            max-width: 130px;
+            margin-left: 12%;
+            margin-top: 20%;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .menu-content {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            margin-top: 40px;
+            overflow-y: scroll;
+        }
+
+        .menu-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-items {
+            height: 100%;
+            width: 100%;
+            list-style: none;
+            transition: all 0.4s ease;
+        }
+
+        .submenu-active .menu-items {
+            transform: translateX(-56%);
+        }
+
+        .menu-title {
+            color: #fff;
+            font-size: 14px;
+            padding: 15px 20px;
+        }
+
+        .item a,
+        .submenu-item {
+            padding: 16px;
+            display: inline-block;
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        .item i {
+            font-size: 12px;
+        }
+
+        .item a:hover,
+        .submenu-item:hover,
+        .submenu .menu-title:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .submenu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .submenu {
+            position: absolute;
+            font-size: 14px;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            right: calc(-100% - 10px);
+            background: #4CD080;
+            display: none;
+        }
+
+        .show-submenu ~ .submenu {
+            display: block;
+        }
+
+        .submenu .menu-title {
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .submenu .menu-title i {
+            margin-right: 10px;
+        }
+
+        .navbar,
+        .main {
+            left: 260px;
+            width: calc(100% - 260px);
+            transition: all 0.5s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.close ~ .navbar,
+        .sidebar.close ~ .main {
+            left: 0;
+            width: 100%;
+        }
+
+        .navbar {
+            position: fixed;
+            color: #11101d;
+            padding: 15px 20px;
+            font-size: 25px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .navbar #sidebar-close {
+            cursor: pointer;
+        }
+
+        .main {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: white;
+        }
+
+        .main h1 {
+            color: #11101d;
+            font-size: 40px;
+            text-align: center;
+        }
+        .keone-content {
+            display: none;
+            color: #11101d;
+            font-size: 20px;
+        }
+        </style>
+    </head>
+    <body>
+        <nav class="sidebar">
+        <img src="images/lgo.png" alt="Logo" />
+
+        <div class="menu-content">
+            <ul class="menu-items">
+            <li class="item">
+                <a href="#" id="keone-btn">Keone</a>
+            </li>
+
+            <li class="item">
+                <a href="#">rex</a>
+            </li>
+
+            <li class="item">
+                <div class="submenu-item">
+                <span>Offenders</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                </div>
+
+                <ul class="menu-items submenu">
+                <div class="menu-title">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Offenders
+                </div>
+                <li class="item">
+                    <a href="#">North Bound</a>
+                </li>
+                <li class="item">
+                    <a href="#">South Bound</a>
+                </li>
+                </ul>
+            </li>
+
+            <li class="item">
+                <div class="submenu-item">
+                <span>Option</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                </div>
+
+                <ul class="menu-items submenu">
+                <div class="menu-title">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Option
+                </div>
+                <li class="item">
+                    <a href="#">Show Load Balance</a>
+                </li>
+                </ul>
+            </li>
+
+            <li class="item">
+                <a href="#">Add User</a>
+            </li>
+            </ul>
+        </div>
+        </nav>
+
+        <nav class="navbar">
+        <i class="fa-solid fa-bars" id="sidebar-close"></i>
+        </nav>
+
+        <main class="main">
+            <h1 id="welcome-message">Welcome Bossing!</h1>
+            <div class="keone-content" id="keone-content"></div>
+        </main>
+        
+        <script>
+            const sidebar = document.querySelector(".sidebar");
+            const sidebarClose = document.querySelector("#sidebar-close");
+            const menu = document.querySelector(".menu-content");
+            const menuItems = document.querySelectorAll(".submenu-item");
+            const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
+        
+            sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
+        
+            menuItems.forEach((item, index) => {
+            item.addEventListener("click", () => {
+                menu.classList.add("submenu-active");
+                item.classList.add("show-submenu");
+                menuItems.forEach((item2, index2) => {
+                if (index !== index2) {
+                    item2.classList.remove("show-submenu");
+                }
+                });
+            });
+            });
+        
+            subMenuTitles.forEach((title) => {
+            title.addEventListener("click", () => {
+                menu.classList.remove("submenu-active");
+            });
+            });
+        
+            const welcomeMessage = document.querySelector("#welcome-message");
+            const keoneBtn = document.querySelector("#keone-btn");
+            const keoneContent = document.querySelector("#keone-content");
+        
+            keoneBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            // Toggle visibility and fetch external content
+            keoneContent.style.display = "block";
+            welcomeMessage.style.display = "none";
+        
+            // Fetch content from the external HTML file
+            fetch("keone-info.html")
+                .then(response => response.text())
+                .then(data => {
+                keoneContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading Keone content:", error));
+            });
+        </script>
+    </body>
+    </html>
