@@ -1,11 +1,13 @@
 /* General styling for the body and table */
 body {
-  background: linear-gradient(to right, green, #F761CA);
+  /* background: linear-gradient(to right, green, #F761CA); */
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  
+  background: rgb(57,255,20);
+  background: linear-gradient(126deg, rgba(57,255,20,1) 9%, rgba(255,0,255,1) 95%);
 }
+
 
 h1 {
   text-align: center;
