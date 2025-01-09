@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Homepage</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
 </head>
@@ -19,23 +19,26 @@
         <li class="menu-item">South Bound</li>
         <li class="menu-item">Offenders</li>
         <li class="menu-item">Register Vehicle</li>
+        <li class="menu-item">Reload Balance</li>
         
       </ul>
     </div>
-    <div class="main-content">
-      <div class="table-header">
-        <span>Body No.</span>
-        <span>Name</span>
-        <span>UID</span>
-        <span>Balance</span>
-       
-      </div>
-      <div class="table-content">
-        <!-- Rows will be dynamically populated here -->
-      </div>
-      
-    </div>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Body Number</th>
+          <th>Name</th>
+          <th>UID</th>
+          <th>Balance</th>
+          
+
+        </tr>
+      </thead>
+      <tbody id="vehicle-operators-list">
+        <!-- Vehicle operator data will be inserted here -->
+      </tbody>
+    </table>
   </div>
-  <script src="script.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>

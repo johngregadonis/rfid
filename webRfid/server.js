@@ -48,7 +48,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// --- RFID Routes ---
+// --- RFID Routes to reduce balance ---
 app.post('/rfid', async (req, res) => {
   const { uid } = req.body;
 
@@ -66,11 +66,8 @@ app.post('/rfid', async (req, res) => {
     }
 
     const currentBalance = parseFloat(findResult.rows[0].balance);
-    if (currentBalance < 5) {
-      return res.status(400).json({ error: 'Insufficient balance.' });
-    }
 
-    // Deduct 5 pesos
+    // Deduct 5 pesos regardless of balance
     const updateQuery = `
       UPDATE vehicle_operators
       SET balance = balance - 5
@@ -95,6 +92,7 @@ app.post('/rfid', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
 
 
 // Endpoint to fetch recent RFID logs
@@ -125,6 +123,37 @@ app.get('/get-vehicle-operators', async (req, res) => {
   }
 });
 
+// Endpoint to fetch from balance_change_log
+app.get('/get-balance-change', async (req, res) => {
+  try {
+    const { bodyNumber } = req.query; // Retrieve bodyNumber from query params
+    if (!bodyNumber) {
+      return res.status(400).json({ error: 'bodyNumber is required' });
+    }
+
+    const result = await pool.query(
+      `SELECT 
+         (bcl.date_arrival + INTERVAL '1 day') AS date_arrival,
+         bcl.time_arrival,
+         bcl.balance 
+       FROM balance_change_log bcl 
+       INNER JOIN vehicle_operators vo 
+       ON bcl.vehicle_operator_id = vo.id 
+       WHERE vo.body_number = $1
+       ORDER BY bcl.id DESC`,
+      [bodyNumber]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Failed to fetch balance change logs' });
+  }
+});
+
+
+
+//add balance
 app.post('/update-balance', async (req, res) => {
   const { bodyNumber, amount } = req.body;
 
