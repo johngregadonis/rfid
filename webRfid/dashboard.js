@@ -1,10 +1,26 @@
 document.querySelectorAll('.menu-item').forEach(item => {
   item.addEventListener('click', () => {
+    // Remove 'active' class from all items
     document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+    // Add 'active' class to the clicked item
     item.classList.add('active');
+
+    // Redirect to 'balance.html' if 'Reload Balance' is clicked
+    if (item.textContent === 'Reload Balance') {
+      window.location.href = 'balance.html'; // Redirect to balance.html
+    }
+    if (item.textContent === 'South Bound') {
+      window.location.href = 'southb.html'; // Redirect to balance.html
+    }
+    if (item.textContent === 'Offenders') {
+      window.location.href = 'offenders.html'; // Redirect to balance.html
+    }
+    if (item.textContent === 'Register Vehicle') {
+      window.location.href = 'add_vehicle.html'; // Redirect to balance.html
+    }
   });
 });
-
 
 /// Fetch the data when the page loads
 document.addEventListener('DOMContentLoaded', fetchVehicleOperators);

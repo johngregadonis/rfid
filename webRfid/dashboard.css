@@ -88,7 +88,7 @@ body {
 }
 
 .red {
-  background-color: rgb(236, 109, 109) !important;
+  background-color: rgb(247, 121, 121) !important;
   color: white !important;
 }
 
@@ -98,6 +98,6 @@ body {
 }
 
 .green {
-  background-color: rgb(108, 226, 108) !important;
+  background-color: #4CD080 !important;
   color: white !important;
 }
