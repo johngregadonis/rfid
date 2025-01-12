@@ -31,7 +31,7 @@
                 android:clipToOutline="true"
                 android:contentDescription="Profile Image"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ronald"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Ronald"
+                android:text=" "
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"

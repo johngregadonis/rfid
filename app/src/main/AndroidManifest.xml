@@ -22,6 +22,11 @@
     <!-- For devices below Android 10 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
 
 
     <application
@@ -56,5 +61,19 @@
             android:exported="true" />
 
 
+        <!-- Declare the WebSocketService -->
+
+
+        <service android:name=".WebSocketService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.vechicle.WebSocketService" />
+            </intent-filter>
+        </service>
+
+
+
     </application>
 </manifest>
+    <!-- OLD -->

@@ -2,9 +2,11 @@ package com.example.vechicle;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +14,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static final String PREFS_NAME = "UserPrefs";  // SharedPreferences key
-    private TextView balanceTextView;  // TextView to display the balance
-    private SwipeRefreshLayout swipeRefreshLayout;  // Layout for swipe-to-refresh
+    private static final String PREFS_NAME = "UserPrefs"; // SharedPreferences key
+    private TextView nameTextView, balanceTextView; // TextViews for name and balance
+    private ImageView photoImageView; // ImageView for profile photo
+    private SwipeRefreshLayout swipeRefreshLayout; // Layout for swipe-to-refresh
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,53 +25,70 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        // Initialize the balance TextView
+        // Initialize views
+        nameTextView = findViewById(R.id.user_name);
         balanceTextView = findViewById(R.id.balanceTextView);
-
-        // Initialize SwipeRefreshLayout
+        photoImageView = findViewById(R.id.profile_image);
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
 
-        // Set up the swipe-to-refresh listener
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Refresh the balance
-            refreshBalance();
+        // Load user details
+        loadUserDetails();
 
-            // Stop the refresh indicator
-            swipeRefreshLayout.setRefreshing(false);
+        // Set up swipe-to-refresh listener
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            loadUserDetails();
+            swipeRefreshLayout.setRefreshing(false); // Stop the refresh indicator
         });
 
-        // Retrieve the balance and display it
-        refreshBalance();
+        // Set up click listeners for icons
+        setupIconListeners();
+    }
 
-        // Find the profile icon and notification icon
+    /**
+     * Load user details (name, balance, and photo) from SharedPreferences.
+     */
+    private void loadUserDetails() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        // Fetch user details from SharedPreferences
+        String name = sharedPreferences.getString("name", "Guest"); // Default to "Guest" if not found
+        String balance = sharedPreferences.getString("balance", "0.00"); // Default to "0.00" if not found
+        String photoUri = sharedPreferences.getString("imageUri", null); // Default to null if not found
+
+        // Update name
+        nameTextView.setText(name);
+
+        // Update balance
+        balanceTextView.setText("Balance: " + balance);
+
+        // Update photo
+        if (photoUri != null) {
+            try {
+                Uri uri = Uri.parse(photoUri);
+                photoImageView.setImageURI(uri);
+            } catch (Exception e) {
+                Toast.makeText(this, "Error loading photo", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Set up click listeners for the profile and notification icons.
+     */
+    private void setupIconListeners() {
         ImageView profileIcon = findViewById(R.id.profile_icon);
         ImageView notificationIcon = findViewById(R.id.notifications_icon);
 
-        // Set OnClickListener for the profile icon
+        // Navigate to MainActivity when profile icon is clicked
         profileIcon.setOnClickListener(v -> {
-            // Navigate to MainActivity
             Intent intent = new Intent(HomeActivity.this, MainActivity.class);
             startActivity(intent);
         });
 
-        // Set OnClickListener for the notification icon
+        // Navigate to NotificationActivity when notification icon is clicked
         notificationIcon.setOnClickListener(v -> {
-            // Navigate to NotificationActivity
             Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
             startActivity(intent);
         });
     }
-
-    /**
-     * Refresh the balance displayed in the TextView.
-     */
-    private void refreshBalance() {
-        // Retrieve the balance from SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String balance = sharedPreferences.getString("balance", "0.00");  // Default to "0.00" if not found
-
-        // Update the balance TextView
-        balanceTextView.setText(" " + balance);
-    }
 }
-//old code
