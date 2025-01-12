@@ -5,6 +5,10 @@ if (operator) {
   document.getElementById('name').textContent = operator.name;
   document.getElementById('uid').textContent = operator.uid;
 
+  // Constants for penalty and initial load
+  const penalty = 50.00;
+  const initialLoad = 50.00;
+
   // Fetch and display balance change logs for the selected operator
   async function fetchBalanceChangeLogs() {
     try {
@@ -17,29 +21,39 @@ if (operator) {
       const tbody = document.getElementById('vehicle-operators-list');
       tbody.innerHTML = ''; // Clear any existing rows
 
-      if (data && data.length > 0) {
-        data.forEach(log => {
-          // Format date and time using UTC methods without local time zone conversion
-          const date = new Date(log.date_arrival);
+      let firstNegativeBalance = null; // Variable to track the first negative balance
 
-          // Get the year, month, and day in UTC without shifting to local time zone
+      if (data && data.length > 0) {
+        data.forEach((log) => {
+          // Format date and time
+          const date = new Date(log.date_arrival);
           const formattedDate = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
-          
-          // Use only the time part from the time_arrival field
-          const formattedTime = log.time_arrival.split('.')[0]; // Remove fractional seconds
+          const formattedTime = log.time_arrival.split('.')[0];
 
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${formattedDate}</td>
             <td>${formattedTime}</td>
-            
             <td style="color: ${log.balance <= 0 ? 'red' : 'black'};">${log.balance}</td>
           `;
           tbody.appendChild(row);
+
+          // Capture the first negative balance and stop further processing
+          if (firstNegativeBalance === null && log.balance < 0) {
+            firstNegativeBalance = Math.abs(log.balance);
+          }
         });
       } else {
         tbody.innerHTML = '<tr><td colspan="4">No balance change logs available.</td></tr>';
       }
+
+      // Display penalty, first unpaid ticket, and total amount
+      document.getElementById('penalty').textContent = penalty.toFixed(2);
+      document.getElementById('unpaid-ticket').textContent = (firstNegativeBalance !== null ? firstNegativeBalance : 0).toFixed(2);
+      document.getElementById('initial-load').textContent = initialLoad.toFixed(2);
+
+      const totalAmount = penalty + (firstNegativeBalance || 0) + initialLoad;
+      document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
     } catch (error) {
       console.error('Error fetching balance change logs:', error);
     }

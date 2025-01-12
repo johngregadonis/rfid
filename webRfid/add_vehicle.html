@@ -3,19 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Responsive Registration Form | CodingLab</title>
+  <title>Register</title>
   <link rel="stylesheet" href="add_vehicle.css">
 
   
 </head>
 <body>
+  
+  
+  <div class="containers">
+    <div class="sidebar">
+      <div class="logo">
+        <img src="images/lgo.png" alt="Logo">
+      </div>
+      <ul class="menu">
+        <li class="menu-item ">North Bound</li>
+        <li class="menu-item">South Bound</li>
+        <li class="menu-item ">Offenders</li>
+        <li class="menu-item active">Register Vehicle</li>
+        <li class="menu-item">Reload Balance</li>
+        
+      </ul>
+    </div>
   <div class="container">
 
-    <!-- Close button -->
-    <div class="close-btn">&times;</div>
+    
 
     <!-- Title section -->
-    <div class="title">Vehicle Operator</div>
+    <div class="title">Vehicle Operator Registration</div>
     <div class="content">
       <!-- Registration form -->
       <form action="http://192.168.1.5:5000/register" method="POST">
@@ -62,5 +77,15 @@
       
     </div>
   </div>
+</div>
+<div id="notification-box" class="notification-overlay" style="display: none;">
+  <div class="notification-content">
+    <span id="notification-message"></span>
+    <button id="close-notification">Close</button>
+  </div>
+</div>
+
+
+<script src="add_vehicle.js"></script>
 </body>
 </html>

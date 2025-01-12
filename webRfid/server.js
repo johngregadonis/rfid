@@ -24,27 +24,24 @@ const pool = new Pool({
 app.post('/register', async (req, res) => {
   const { name, contact, address, bodyNumber, password, confirmPassword, uid, balance } = req.body;
 
-  // Check if passwords match
+  
+
   if (password !== confirmPassword) {
-    return res.status(400).json({ message: 'Passwords do not match.' });
+    return res.status(400).json({ success: false, message: 'Passwords do not match.' });
   }
 
   try {
-    // Insert the data into the database without hashing the password
-    const query = 
-      `INSERT INTO vehicle_operators (name, contact, address, body_number, password, uid, balance)
+    const query = `
+      INSERT INTO vehicle_operators (name, contact, address, body_number, password, uid, balance)
       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
     const values = [name, contact, address, bodyNumber, password, uid, balance];
 
-    const result = await pool.query(query, values);
+    await pool.query(query, values);
 
-    res.status(201).json({
-      message: 'Registration successful!',
-      userId: result.rows[0].id,
-    });
+    res.status(200).json({ success: true, message: 'Registration successful!' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error registering user.' });
+    console.error('Error registering user:', err);
+    res.status(500).json({ success: false, message: 'Registration failed. Please try again.' });
   }
 });
 

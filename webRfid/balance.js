@@ -1,31 +1,33 @@
 // Fetch the vehicle operator data from the server
 async function fetchVehicleOperators() {
-    try {
+  try {
       const response = await fetch('http://192.168.1.5:5000/get-vehicle-operators');
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
-        let vehicleList = '';
-        data.forEach(operator => {
-          vehicleList += 
-            `<tr>
-              <td>${operator.body_number}</td>
-              <td>${operator.uid}</td>
-              <td id="balance-${operator.body_number}">₱${operator.balance || 0}</td> <!-- Displaying balance -->
-              <td>
-                <button onclick="showAddBalanceDialog(${operator.body_number})">Add Balance</button>
-              </td>
-            </tr>`;
-        });
-        document.getElementById('vehicle-operators-list').innerHTML = vehicleList;
+          let vehicleList = '';
+          data.forEach(operator => {
+              const balanceColor = operator.balance <= 0 ? 'red' : 'black'; // Set color based on balance
+              vehicleList += `
+                  <tr>
+                      <td>${operator.body_number}</td>
+                      <td>${operator.uid}</td>
+                      <td id="balance-${operator.body_number}" style="color: ${balanceColor};">₱${operator.balance || 0}</td>
+                      <td>
+                          <button onclick="showAddBalanceDialog(${operator.body_number})">Add Balance</button>
+                      </td>
+                  </tr>`;
+          });
+          document.getElementById('vehicle-operators-list').innerHTML = vehicleList;
       } else {
-        document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">No operators found.</td></tr>';
+          document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">No operators found.</td></tr>';
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error fetching data:', error);
       document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">Failed to load vehicle operators.</td></tr>';
-    }
   }
+}
+
 
   // Show the modal dialog to add balance
   function showAddBalanceDialog(bodyNumber) {
@@ -38,46 +40,50 @@ async function fetchVehicleOperators() {
     document.getElementById('add-balance-modal').style.display = 'none';
   }
 //add balance
-  async function addBalanceToDB() {
-    const bodyNumber = document.getElementById('bodyNumberInput').value;
-    const amount = parseFloat(document.getElementById('balanceInput').value);
+async function addBalanceToDB() {
+  const bodyNumber = document.getElementById('bodyNumberInput').value;
+  const amount = parseFloat(document.getElementById('balanceInput').value);
 
-    if (isNaN(amount) || amount <= 0) {
+  if (isNaN(amount) || amount <= 0) {
       alert('Please enter a valid amount.');
       return;
-    }
+  }
 
-    try {
+  try {
       const response = await fetch('http://192.168.1.5:5000/update-balance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ bodyNumber, amount }),
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ bodyNumber, amount }),
       });
 
       const data = await response.json();
       console.log('Response from server:', data); // Log the response
 
       if (response.ok && data.success && typeof data.newBalance === 'number') {
-        const balanceElement = document.getElementById(`balance-${bodyNumber}`);
-        balanceElement.innerText = `₱${data.newBalance.toFixed(2)}`;
+          const balanceElement = document.getElementById(`balance-${bodyNumber}`);
+          balanceElement.innerText = `₱${data.newBalance.toFixed(2)}`;
+          
+          // Update the balance color based on the new balance value
+          const balanceColor = data.newBalance > 0 ? 'black' : 'red';
+          balanceElement.style.color = balanceColor;
 
-        
-        closeAddBalanceDialog();
+          closeAddBalanceDialog();
       } else {
-        console.error('Failed condition:', {
-          ok: response.ok,
-          success: data.success,
-          newBalanceType: typeof data.newBalance,
-        });
-        alert(data.message || 'Failed to update balance.');
+          console.error('Failed condition:', {
+              ok: response.ok,
+              success: data.success,
+              newBalanceType: typeof data.newBalance,
+          });
+          alert(data.message || 'Failed to update balance.');
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error adding balance:', error);
       alert('An error occurred while adding the balance.');
-    }
   }
+}
+
 //diminish balance
   async function updateBalance(uid) {
 try {
