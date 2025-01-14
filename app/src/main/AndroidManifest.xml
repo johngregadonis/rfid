@@ -60,6 +60,9 @@
         <activity android:name=".NotificationActivity"
             android:exported="true" />
 
+        <activity android:name=".SettingsActivity">
+        </activity>
+
 
         <!-- Declare the WebSocketService -->
 

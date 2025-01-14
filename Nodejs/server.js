@@ -17,13 +17,13 @@ const pool = new Pool({
   user: 'postgres',       // Replace with your PostgreSQL username
   host: 'localhost',      // Database host
   database: 'rfid',       // Database name
-  password: '12345',      // Database password
+  password: 'adonis69',      // Database password
   port: 5432,             // Default PostgreSQL port
 });
 
 // PostgreSQL connection for listening to notifications
 const pgClient = new Client({
-  connectionString: 'postgres://postgres:12345@localhost:5432/rfid', // Replace with your details
+  connectionString: 'postgres://postgres:adonis69@localhost:5432/rfid', // Replace with your details
 });
 
 pgClient.connect();

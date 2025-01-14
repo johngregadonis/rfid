@@ -16,5 +16,6 @@ public interface ApiService {
     Call<LoginResponse> loginUser(@Body User user);
 
     Call<MessageResponse> getMessages(@Path("vehicleOperatorId") int vehicleOperatorId);
+
 }
 //old

@@ -12,6 +12,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class HomeActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "UserPrefs"; // SharedPreferences key
@@ -45,21 +51,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Load user details (name, balance, and photo) from SharedPreferences.
+     * Load user details (name, balance, and photo) from SharedPreferences and fetch balance from API.
      */
     private void loadUserDetails() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         // Fetch user details from SharedPreferences
         String name = sharedPreferences.getString("name", "Guest"); // Default to "Guest" if not found
-        String balance = sharedPreferences.getString("balance", "0.00"); // Default to "0.00" if not found
+        String bodyNumber = sharedPreferences.getString("bodyNumber", null); // Retrieve body number
         String photoUri = sharedPreferences.getString("imageUri", null); // Default to null if not found
 
         // Update name
         nameTextView.setText(name);
-
-        // Update balance
-        balanceTextView.setText("Balance: " + balance);
 
         // Update photo
         if (photoUri != null) {
@@ -70,6 +73,43 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error loading photo", Toast.LENGTH_SHORT).show();
             }
         }
+
+        // Fetch balance if body number is available
+        if (bodyNumber != null) {
+            fetchBalance(bodyNumber); // Fetch balance from the API
+        } else {
+            balanceTextView.setText("Error: Body number not found");
+        }
+    }
+
+    /**
+     * Fetch balance from the API using Retrofit.
+     */
+    private void fetchBalance(String bodyNumber) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.1.7:3001/") // Use your server's IP or localhost
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<Operator> call = apiService.getOperatorDetails(bodyNumber);
+
+        call.enqueue(new Callback<Operator>() {
+            @Override
+            public void onResponse(Call<Operator> call, Response<Operator> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String balance = response.body().getBalance(); // Get balance as String
+                    balanceTextView.setText("₱" + balance + " "); // Display balance as String
+                } else {
+                    balanceTextView.setText("Failed to fetch balance");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Operator> call, Throwable t) {
+                balanceTextView.setText("Error: " + t.getMessage());
+            }
+        });
     }
 
     /**
@@ -78,6 +118,7 @@ public class HomeActivity extends AppCompatActivity {
     private void setupIconListeners() {
         ImageView profileIcon = findViewById(R.id.profile_icon);
         ImageView notificationIcon = findViewById(R.id.notifications_icon);
+        ImageView settingsIcon = findViewById(R.id.settings_icon); // Settings icon
 
         // Navigate to MainActivity when profile icon is clicked
         profileIcon.setOnClickListener(v -> {
@@ -90,5 +131,12 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
             startActivity(intent);
         });
+        // Navigate to SettingsActivity when settings icon is clicked
+        settingsIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, SettingsActivity.class); // Replace with your Settings activity
+            startActivity(intent);
+        });
+
     }
 }
+//old

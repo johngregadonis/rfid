@@ -1,10 +1,16 @@
 <resources>
 
-
-
     <style name="CircleImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+        <!-- Main theme for the app, removed the drawerArrowStyle -->
+        <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+            <item name="android:windowActionBar">false</item> <!-- Disable the action bar -->
+            <item name="android:windowNoTitle">true</item> <!-- Hide the title bar -->
+        </style>
+
+
 
 </resources>

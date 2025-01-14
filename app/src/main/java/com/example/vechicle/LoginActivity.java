@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.1.6:3001/login"; // Update with your server URL
+        String url = "http://192.168.1.7:3001/login"; // Update with your server URL
 
         // Create JSON payload
         JSONObject loginData = new JSONObject();

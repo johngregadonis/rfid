@@ -32,7 +32,7 @@ public class NotificationActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotificationAdapter adapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
-    private static final String API_URL = "http://192.168.1.6:3001/messages";
+    private static final String API_URL = "http://192.168.1.7:3001/messages";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

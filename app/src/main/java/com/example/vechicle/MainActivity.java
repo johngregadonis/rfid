@@ -24,13 +24,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView nameText, contactText, addressText, bodyNumberText, balanceText;
+    private TextView nameText, contactText, addressText, bodyNumberText;
     private ImageView photoImageView;
     private Button changePhotoButton;
     private TextView addPhotoText;
     private Uri selectedImageUri;
 
-    private static final String BASE_URL = "http://192.168.1.6:3001/"; // Replace with your actual backend URL
+    private static final String BASE_URL = "http://192.168.1.7:3001/"; // Replace with your actual backend URL
     private static final String PREFS_NAME = "UserPrefs";
     private static final int REQUEST_GALLERY = 100;
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         contactText = findViewById(R.id.contactRectangle);
         addressText = findViewById(R.id.addressRectangle);
         bodyNumberText = findViewById(R.id.bodyNumberRectangle);
-        balanceText = findViewById(R.id.balanceNumberRectangle);
         photoImageView = findViewById(R.id.photoImageView);
         addPhotoText = findViewById(R.id.addPhotoText);
         changePhotoButton = findViewById(R.id.changePhotoButton);
@@ -84,17 +83,6 @@ public class MainActivity extends AppCompatActivity {
                     contactText.setText(operator.getContact());
                     addressText.setText(operator.getAddress());
                     bodyNumberText.setText(operator.getBodyNumber());
-
-                    // Set the balance text (now using String for balance)
-                    String balance = String.valueOf(operator.getBalance()); // Convert float to String
-                    balanceText.setText("Balance: " + balance);  // Display balance as a String
-
-                    // Save the balance in SharedPreferences as a String
-                    SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("balance", balance);  // Save balance as a String
-                    editor.apply();
-
                 } else {
                     Toast.makeText(MainActivity.this, "Error fetching details", Toast.LENGTH_SHORT).show();
                 }
@@ -174,3 +162,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+//old code

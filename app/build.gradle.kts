@@ -44,6 +44,8 @@ dependencies {
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation ("com.squareup.okhttp3:okhttp:4.11.0")
     implementation ("androidx.work:work-runtime:2.8.0")
+    implementation ("androidx.drawerlayout:drawerlayout:1.1.1")
+    implementation ("androidx.navigation:navigation-ui:2.3.5")
 
 
 

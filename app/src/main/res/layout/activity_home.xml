@@ -91,11 +91,12 @@
                 android:id="@+id/balanceTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Balance: 0.00"
-                android:textSize="18sp"
+                android:text="₱: 0.00"
+                android:textSize="35sp"
                 android:layout_marginTop="16dp"
                 android:layout_centerHorizontal="true"
-                android:textColor="#000" />
+                android:textFontWeight="900"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Bottom Navigation -->
@@ -146,3 +147,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!-- old -->
