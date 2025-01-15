@@ -54,17 +54,18 @@ app.post('/rfid', async (req, res) => {
   }
 
   try {
-    // Find the matching UID in the vehicle_operators table
-    const findQuery = 'SELECT balance FROM vehicle_operators WHERE uid = $1';
+    // Step 1: Find the matching UID in the vehicle_operators table
+    const findQuery = 'SELECT id, balance FROM vehicle_operators WHERE uid = $1';
     const findResult = await pool.query(findQuery, [uid]);
 
     if (findResult.rows.length === 0) {
       return res.status(404).json({ error: 'UID not found in the database.' });
     }
 
+    const vehicleOperatorId = findResult.rows[0].id;
     const currentBalance = parseFloat(findResult.rows[0].balance);
 
-    // Deduct 5 pesos regardless of balance
+    // Step 2: Deduct 5 pesos regardless of balance
     const updateQuery = `
       UPDATE vehicle_operators
       SET balance = balance - 5
@@ -75,8 +76,16 @@ app.post('/rfid', async (req, res) => {
 
     const newBalance = updateResult.rows[0].balance;
 
-    // Log the RFID detection
+    // Step 3: Log the RFID detection
     await pool.query('INSERT INTO rfid_logs (uid, timestamp) VALUES ($1, NOW())', [uid]);
+
+    // Step 4: Insert the deduction message into the vehicle_operator_messages table
+    const deductMessage = `₱5.00 was deducted from your balance.`;
+    const insertMessageQuery = `
+      INSERT INTO vehicle_operator_messages (vehicle_operator_id, message, deduct_message)
+      VALUES ($1, NULL, $2);
+    `;
+    await pool.query(insertMessageQuery, [vehicleOperatorId, deductMessage]);
 
     console.log(`Balance updated for UID ${uid}: ₱${newBalance}`);
     res.status(200).json({
@@ -160,11 +169,13 @@ app.post('/update-balance', async (req, res) => {
   }
 
   try {
-    const updateQuery = 
-      `UPDATE vehicle_operators 
-      SET balance = balance + $1 
+    // Step 1: Update the balance in the vehicle_operators table
+    const updateQuery = `
+      UPDATE vehicle_operators 
+      SET balance = balance + $1
       WHERE body_number = $2
-      RETURNING balance;`;
+      RETURNING id, balance; -- Return the id of the updated vehicle operator
+    `;
     const values = [amount, bodyNumber];
     const result = await pool.query(updateQuery, values);
 
@@ -173,10 +184,20 @@ app.post('/update-balance', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Body number not found.' });
     }
 
+    const vehicleOperatorId = result.rows[0].id; // Get the id of the vehicle operator
     const newBalance = parseFloat(result.rows[0].balance); // Convert to a number
     console.log('Updated balance:', newBalance);
 
-    const response = { success: true, newBalance };
+    // Step 2: Insert the message into the vehicle_operator_messages table
+    const successMessage = `you've successfully added ${amount} pesos to the balance.`;
+    const insertMessageQuery = `
+      INSERT INTO vehicle_operator_messages (vehicle_operator_id, message)
+      VALUES ($1, $2);
+    `;
+    await pool.query(insertMessageQuery, [vehicleOperatorId, successMessage]);
+
+    // Send the response back to the client
+    const response = { success: true, newBalance, message: successMessage };
     console.log('Response to frontend:', response);
     res.status(200).json(response);
   } catch (err) {
@@ -187,5 +208,5 @@ app.post('/update-balance', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running on http://192.168.1.5:${port}`);
+  console.log(`Server running on http://192.168.1.7:${port}`);
 });

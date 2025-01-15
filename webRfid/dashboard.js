@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', fetchVehicleOperators);
 // Fetch the vehicle operator data from the server
 async function fetchVehicleOperators() {
   try {
-    const response = await fetch('http://192.168.1.5:5000/get-vehicle-operators');
+    const response = await fetch('http://192.168.1.7:5000/get-vehicle-operators');
     const data = await response.json();
 
     if (Array.isArray(data) && data.length > 0) {
