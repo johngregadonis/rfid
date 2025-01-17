@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Registration Form | CodingLab</title>
+  <link rel="stylesheet" href="adduser.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background: 
+        linear-gradient(126deg, rgba(57, 255, 20, 0.7) 9%, rgba(255, 0, 255, 0.7) 95%), 
+        url('images/bor5.jpg'); /* Replace with your image path */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .logo {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .logo img {
+      width: 100px; /* Adjust logo size as needed */
+      height: auto;
+    }
+
+    .logo h1 {
+      margin-top: 10px;
+      font-size: 24px;
+      color: #fff; /* Logo text color */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional text shadow */
+    }
+
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.9); /* White with slight transparency */
+      padding: 25px 30px;
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .container .title {
+      font-size: 25px;
+      font-weight: 500;
+      position: relative;
+      text-align: center;
+    }
+
+    .container .title::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      height: 3px;
+      width: 30px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    }
+
+    .content form .user-details {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 20px 0 12px 0;
+    }
+
+    form .user-details .input-box {
+      margin-bottom: 15px;
+      width: calc(100% / 2 - 20px);
+    }
+
+    form .input-box span.details {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .user-details .input-box input {
+      height: 45px;
+      width: 100%;
+      outline: none;
+      font-size: 16px;
+      border-radius: 5px;
+      padding-left: 15px;
+      border: 1px solid #ccc;
+      border-bottom-width: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .user-details .input-box input:focus,
+    .user-details .input-box input:valid {
+      border-color: #4CD080;
+    }
+
+    form .gender-details .gender-title {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    form .category {
+      display: flex;
+      width: 80%;
+      margin: 14px 0;
+      justify-content: space-between;
+    }
+
+    form .category label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    form .category label .dot {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      margin-right: 10px;
+      background: #d9d9d9;
+      border: 5px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    #dot-1:checked~.category label .one,
+    #dot-2:checked~.category label .two,
+    #dot-3:checked~.category label .three {
+      border-color: #d9d9d9;
+    }
+
+    form input[type="radio"] {
+      display: none;
+    }
+
+    form .button {
+      height: 45px;
+      margin: 35px 0;
+    }
+
+    form .button input {
+      height: 100%;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #4CD080;
+    }
+
+    form .button input:hover {
+      background: #F761CA;
+    }
+
+    .container p {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    .container p a {
+      color: #4CD080;
+      text-decoration: none;
+    }
+
+    .container p a:hover {
+      color: #F761CA;
+    }
+
+    @media(max-width: 584px) {
+      .container {
+        max-width: 100%;
+      }
+
+      form .user-details .input-box {
+        width: 100%;
+      }
+
+      form .category {
+        width: 100%;
+      }
+    }
+
+    @media(max-width: 459px) {
+      .container .content .category {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+</head>
+<body>
+  <!-- Logo Section -->
+  <div class="logo">
+    <img src="images/lgo.png" alt="Logo"> <!-- Replace with your logo path -->
+    <!-- <h1>My Application</h1> -->
+  </div>
+
+  <!-- Registration Form -->
+  <div class="container">
+    <div class="title">Terminal Operator</div>
+    <div class="content">
+      <form action="http://192.168.1.5:5000/register" method="POST">
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Full Name</span>
+            <input type="text" name="fullname" placeholder="Enter your name" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" name="username" placeholder="Enter your username" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Phone Number</span>
+            <input type="text" name="number" placeholder="Enter your number" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" name="password" placeholder="Enter your password" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
+          </div>
+        </div>
+      
+        <div class="gender-details">
+          <input type="radio" name="gender" id="dot-1" value="Male" required>
+          <input type="radio" name="gender" id="dot-2" value="Female">
+          <input type="radio" name="gender" id="dot-3" value="Prefer not to say">
+          <span class="gender-title">Gender</span>
+          <div class="category">
+            <label for="dot-1">
+              <span class="dot one"></span>
+              <span class="gender">Male</span>
+            </label>
+            <label for="dot-2">
+              <span class="dot two"></span>
+              <span class="gender">Female</span>
+            </label>
+            <label for="dot-3">
+              <span class="dot three"></span>
+              <span class="gender">Prefer not to say</span>
+            </label>
+          </div>
+        </div>
+      
+        <div class="button">
+          <input type="submit" value="Register">
+        </div>
+      </form>
+    </div>
+
+    <p>Already have an account? <a href="LOGIN.html">Sign in</a>.</p>
+  </div>
+</body>
+</html>
