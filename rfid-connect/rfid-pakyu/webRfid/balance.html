@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Balance</title>
+  <link rel="stylesheet" href="balance.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  
+</head>
+<div class="container">
+  <div class="sidebar">
+    <div class="logo">
+      <img src="images/lgo.png" alt="Logo">
+    </div>
+    <ul class="menu">
+      <li class="menu-item">North Bound</li>
+      <li class="menu-item">South Bound</li>
+      <li class="menu-item">Offenders</li>
+      <li class="menu-item">Register Vehicle</li>
+      <li class="menu-item active">Reload Balance</li>
+      
+    </ul>
+  </div>
+  <div class="header-container">
+    <h1>Vehicle Operators Balance</h1>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search Body Number">
+      
+    </div>
+  </div>
+  
+  
+
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Body Number</th>
+        <th>UID</th>
+        <th>Balance</th>
+        <th>Add Balance</th>
+      </tr>
+    </thead>
+    <tbody id="vehicle-operators-list">
+      <!-- Vehicle operator data will be inserted here -->
+    </tbody>
+  </table>
+</div>
+  
+  <!-- Overlay for blur effect -->
+  <div id="modal-overlay" class="modal-overlay"></div>
+
+  <!-- Modal for adding balance -->
+  <div id="add-balance-modal" class="modal">
+    <div class="modal-content">
+      <h2>Add Balance</h2>
+      <label for="balanceInput">Amount (₱): </label>
+      <input type="number" class="amount" id="balanceInput" min="1" step="0.01" placeholder="Enter amount">
+      <input type="hidden" id="bodyNumberInput">
+      <br><br>
+      <div class="button-container">
+        <button onclick="addBalanceToDB()">Add</button>
+        <button onclick="closeAddBalanceDialog()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <script src="balance.js"></script>
+</body>
+
+</html>

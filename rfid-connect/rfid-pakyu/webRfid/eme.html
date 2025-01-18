@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Registration Form | CodingLab</title>
+  <link rel="stylesheet" href="adduser.css">
+  
+  <style>
+    /* Existing styles here... */
+    /* Just adding the alert-box styling */
+    .alert-box {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4CD080;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- Alert Box for Success Message -->
+  <div id="alert-box" class="alert-box"></div>
+
+  <!-- Logo Section -->
+  <div class="logo">
+    <img src="images/lgo.png" alt="Logo"> <!-- Replace with your logo path -->
+  </div>
+
+  <!-- Registration Form -->
+  <div class="container">
+    <div class="title">Terminal Operator</div>
+    <div class="content">
+      <form id="register-form">
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Full Name</span>
+            <input type="text" name="fullname" placeholder="Enter your name" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" name="username" placeholder="Enter your username" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Phone Number</span>
+            <input type="text" name="number" placeholder="Enter your number" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" name="password" placeholder="Enter your password" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
+          </div>
+        </div>
+
+        <div class="gender-details">
+          <input type="radio" name="gender" id="dot-1" value="Male" required>
+          <input type="radio" name="gender" id="dot-2" value="Female">
+          <input type="radio" name="gender" id="dot-3" value="Prefer not to say">
+          <span class="gender-title">Gender</span>
+          <div class="category">
+            <label for="dot-1">
+              <span class="dot one"></span>
+              <span class="gender">Male</span>
+            </label>
+            <label for="dot-2">
+              <span class="dot two"></span>
+              <span class="gender">Female</span>
+            </label>
+            <label for="dot-3">
+              <span class="dot three"></span>
+              <span class="gender">Prefer not to say</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="button">
+          <input type="submit" value="Register">
+        </div>
+      </form>
+    </div>
+
+    <p>Already have an account? <a href="LOGIN.html">Sign in</a>.</p>
+  </div>
+
+  <script>
+    // Get the form and alert box elements
+    const registerForm = document.getElementById("register-form");
+    const alertBox = document.getElementById("alert-box");
+
+    // Handle form submission
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault(); // Prevent default form submission
+
+      const formData = new FormData(registerForm);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch("http://192.168.1.10:1000/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        // Display success or error message
+        if (response.ok) {
+          alertBox.textContent = result.message; // Success message
+          alertBox.style.backgroundColor = "#4CD080"; // Green for success
+        } else {
+          alertBox.textContent = result.message; // Error message
+          alertBox.style.backgroundColor = "#F761CA"; // Red for error
+        }
+
+        // Show the alert box
+        alertBox.style.display = "block";
+
+        // Hide the alert after 5 seconds
+        setTimeout(() => {
+          alertBox.style.display = "none";
+        }, 5000);
+
+      } catch (error) {
+        console.error("Error registering:", error);
+        alertBox.textContent = "Internal server error"; // General error message
+        alertBox.style.backgroundColor = "#F761CA"; // Red for error
+        alertBox.style.display = "block";
+        setTimeout(() => {
+          alertBox.style.display = "none";
+        }, 5000);
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    height: 100%;
+    margin-left: 20%; 
+  }
+  
+  .sidebar {
+    
+    width: 20%;
+    background-color: #4CD080;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    position: fixed; /* Fix the sidebar's position */
+    top: 0;          /* Align it to the top of the viewport */
+    left: 0;         /* Align it to the left of the viewport */
+    height: 100vh;   /* Full height of the viewport */
+    overflow-y: auto; 
+  }
+  
+  .logo img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .menu {
+    list-style-type: none;
+    width: 100%;
+  }
+  
+  .menu-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  
+  .menu-item.active {
+    background-color: white;
+    color: #4CD080;
+    border-radius: 20px;
+  }
+  
+  .menu-item:hover {
+    background-color: #38ec80;
+    color: white;
+    border-radius: 20px;
+  }
+  
+  
+  .styled-table {
+    width: 100%;
+    margin: 0px auto;
+    border-collapse: collapse; /* Removes extra spacing between cells */
+    border-radius: 10px; /* Rounded corners */
+    background-color: white; /* White background for the table */
+  }
+  
+  .styled-table th, .styled-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #D9D9D9; /* Gray borders only between cells */
+  }
+  
+  .styled-table th {
+    background-color: #F761CA; /* Green header */
+    color: #fff; /* White text for the header */
+  }
+  
+  .styled-table td {
+    background-color: #fff; /* Light gray background for table cells */
+  }
+  .styled-table tbody {
+    color: #333333;
+  }
+  
+  .red {
+    background-color: rgb(247, 121, 121) !important;
+    color: white !important;
+  }
+  
+  .yellow {
+    background-color: rgb(240, 240, 81) !important;
+    color: black !important;
+  }
+  
+  .green {
+    background-color: #4CD080 !important;
+    color: white !important;
+  }
+  

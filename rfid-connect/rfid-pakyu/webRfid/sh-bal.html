@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding-bottom: 400px;
+      
+      
+    }
+
+    .dashboard {
+      flex: 3;
+      padding: 20px;
+      /* background-color: #fff; */
+      margin: 20px;
+      border-radius: 10px;
+      /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    }
+
+    .menu {
+      flex: 1;
+      background-color: #f1f1f1;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: right;
+    }
+
+    #searchBodyNumber {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #searchButton {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #searchButton:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+    }
+
+    ul li a {
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+    ul li a:hover {
+      /* Removed the underline on hover */
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- <header>
+    <h1>Vehicle Dashboard</h1>
+  </header> -->
+
+  <div class="container">
+    <div class="dashboard">
+      <h5>Search Vehicle</h5>
+      <input type="text" id="searchBodyNumber" placeholder="Enter Body Number">
+      <button id="searchButton">Search</button>
+      <div id="result" class="result">
+        <!-- Search results will appear here -->
+      </div>
+    </div>
+
+    <!-- <div class="menu">
+      <h2>Menu</h2>
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Vehicle List</a></li>
+        <li><a href="#">Add Vehicle</a></li>
+        <li><a href="#">Reports</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+    </div>
+  </div> -->
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey:  "AIzaSyBPeVngqblNwdwrV9M5xBn4KsseyZEzbMU",
+      authDomain: "rfid-web-2db15.firebaseapp.com",
+      databaseURL:  "https://rfid-web-2db15-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId:"rfid-web-2db15",
+      storageBucket: "rfid-web-2db15.appspot.com",
+      messagingSenderId: "131924740941",
+      appId: "1:131924740941:web:98da292c68989fd0c50504"
+    };
+
+    // // Initialize Firebase
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+    // import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Search Functionality
+    document.getElementById('searchButton').addEventListener('click', () => {
+      const bodyNumber = document.getElementById('searchBodyNumber').value.trim();
+      
+      if (!bodyNumber) {
+        alert("Please enter a body number!");
+        return;
+      }
+
+      // Reference to vehicles in Firebase
+      const dbRef = ref(db);
+      get(child(dbRef, `vehicles/${bodyNumber}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          displayResult(data);
+        } else {
+          displayResult(null);
+        }
+      }).catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    });
+
+    // Display Results
+    function displayResult(data) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = ""; // Clear previous results
+
+      if (data) {
+        resultDiv.innerHTML = `
+          <h2>Vehicle Details</h2>
+          <p><strong>Body Number:</strong> ${data.bodyNumber}</p>
+          <p><strong>Operator Name:</strong> ${data.operatorName}</p>
+          <p><strong>UID:</strong> ${data.UID}</p>
+          <p><strong>Load Balance:</strong> ${data.loadBalance.toFixed(2)}</p>
+        `;
+      } else {
+        resultDiv.innerHTML = "<p>No vehicle found with the provided body number.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
