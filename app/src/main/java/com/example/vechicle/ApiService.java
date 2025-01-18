@@ -6,6 +6,9 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.Path;
+import java.util.List;
+
+
 
 public interface ApiService {
     @GET("operatorDetails")
@@ -17,5 +20,8 @@ public interface ApiService {
 
     Call<MessageResponse> getMessages(@Path("vehicleOperatorId") int vehicleOperatorId);
 
+    Call<List<DeductMessage>> getDeductMessages(@Query("vehicleOperatorId") int vehicleOperatorId);
 }
+
+
 //old

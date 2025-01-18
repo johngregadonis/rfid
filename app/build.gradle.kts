@@ -48,7 +48,8 @@ dependencies {
     implementation ("androidx.navigation:navigation-ui:2.3.5")
 
 
-
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.squareup.okhttp3:okhttp-urlconnection:4.9.3")
 
 
 

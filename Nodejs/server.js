@@ -17,47 +17,15 @@ const pool = new Pool({
   user: 'postgres',       // Replace with your PostgreSQL username
   host: 'localhost',      // Database host
   database: 'rfid',       // Database name
-  password: 'adonis69',      // Database password
+  password: '12345',      // Database password
   port: 5432,             // Default PostgreSQL port
 });
 
 // PostgreSQL connection for listening to notifications
 const pgClient = new Client({
-  connectionString: 'postgres://postgres:adonis69@localhost:5432/rfid', // Replace with your details
+  connectionString: 'postgres://postgres:12345@localhost:5432/rfid', // Replace with your details
 });
 
-pgClient.connect();
-
-// Listen for PostgreSQL notifications (balance_update)
-pgClient.query('LISTEN balance_update');
-
-// WebSocket server setup
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-
-  // Listen for notifications from PostgreSQL
-  pgClient.on('notification', async (msg) => {
-    const [uid, amount] = msg.payload.split(',');
-    // Fetch the new total balance for the user
-    const result = await pool.query('SELECT balance FROM vehicle_operators WHERE body_number = $1', [uid]);
-    const totalBalance = result.rows[0]?.balance || 0;
-
-    const message = `You have successfully added ${amount} pesos to your balance. Your new total balance is ${totalBalance} pesos.`;
-
-    // Send message to the connected WebSocket client
-    ws.send(JSON.stringify({ uid, message }));
-  });
-
-  ws.on('close', () => console.log('Client disconnected'));
-});
-
-console.log('WebSocket server running on port 8080');
-
-// Middleware for body parsing
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Registration Endpoint
 app.post('/register', async (req, res) => {
@@ -225,10 +193,69 @@ app.get('/messages', async (req, res) => {
     res.status(500).json({ message: 'Error fetching messages', error: error.message });
   }
 });
+///old
+
+
+
+ app.get('/deduct-messages', async (req, res) => {
+   const bodyNumber = req.headers['body_number'];  // Extract the body_number from the header
+
+   if (!bodyNumber) {
+     return res.status(400).json({ message: 'Body number is required in the request header' });
+   }
+
+   try {
+     // Fetch the user's details from the vehicle_operators table
+     const userQuery = `
+       SELECT id, name, body_number
+       FROM vehicle_operators
+       WHERE body_number = $1
+     `;
+     const userResult = await pool.query(userQuery, [bodyNumber]);
+
+     if (userResult.rows.length === 0) {
+       return res.status(404).json({ message: 'User not found for the given body number' });
+     }
+
+     const userId = userResult.rows[0].id;
+
+     // Fetch the deduct messages for the user from the new deduct_messages table
+     const messagesQuery = `
+       SELECT deduct_message, created_at
+       FROM deduct_messages
+       WHERE vehicle_operator_id = $1
+       ORDER BY created_at DESC
+     `;
+     const messagesResult = await pool.query(messagesQuery, [userId]);
+
+     if (messagesResult.rows.length === 0) {
+       return res.status(200).json({
+         user: {
+           name: userResult.rows[0].name,
+           bodyNumber: userResult.rows[0].body_number,
+         },
+         messages: [],  // Return an empty array if no messages are found
+       });
+     }
+
+     // Return the user details along with the fetched messages
+     res.status(200).json({
+       user: {
+         name: userResult.rows[0].name,
+         bodyNumber: userResult.rows[0].body_number,
+       },
+       messages: messagesResult.rows,  // Send the messages
+     });
+   } catch (error) {
+     console.error('Error fetching messages:', error);
+     res.status(500).json({ message: 'Error fetching messages', error: error.message });
+   }
+ });
+//working code
 
 
 // Start Server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-//
+//old code
