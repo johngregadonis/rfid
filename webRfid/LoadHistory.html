@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .no-history {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 1.1em;
+            display: none; /* Initially hidden */
+        }
+        .total-load {
+            text-align: right;
+            padding: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .day-total {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Load History</h1>
+
+        <table id="loadHistoryTable">
+            <thead>
+                <tr>
+                    <th>Body Number</th>
+                    <th>Amount</th>
+                    <th>Transaction Date</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <div class="no-history">No load history available.</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.querySelector('#loadHistoryTable tbody');
+            const noHistoryDiv = document.querySelector('.no-history');
+            let loadHistory = [];
+
+            // Fetch load history from the server
+            fetch('http://192.168.1.7:5000/get-load-history')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Data from server:', data); // Debug log
+                    if (data && data.length > 0) {
+                        // Group data by date
+                        data.forEach(record => {
+                            const transactionDate = new Date(record.transaction_date);
+                            const localDate = transactionDate.toLocaleDateString('en-GB'); // Format to DD/MM/YYYY
+                            loadHistory.push({ ...record, localDate });
+                        });
+
+                        // Sort loadHistory by date
+                        loadHistory.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+
+                        // Create table rows and group totals by date
+                        let currentDay = '';
+                        let dailyTotal = 0;
+                        loadHistory.forEach(record => {
+                            if (record.localDate !== currentDay) {
+                                if (currentDay !== '') {
+                                    const dayTotalRow = document.createElement('tr');
+                                    dayTotalRow.innerHTML = `
+                                        <td colspan="3" class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</td>
+                                        <td></td>
+                                    `;
+                                    tableBody.appendChild(dayTotalRow);
+                                }
+
+                                currentDay = record.localDate;
+                                dailyTotal = 0;
+                            }
+
+                            const amount = parseFloat(record.amount).toFixed(2);
+                            dailyTotal += parseFloat(amount); // Add to daily total
+
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${record.body_number}</td>
+                                <td>₱${amount}</td>
+                                <td>${record.localDate}</td>
+                                <td>${record.remarks}</td>
+                            `;
+                            tableBody.appendChild(tr);
+                        });
+
+                        // Add the last day's total
+                        if (currentDay !== '') {
+                            const dayTotalRow = document.createElement('tr');
+                            dayTotalRow.innerHTML = `
+                                <td colspan="3" class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</td>
+                                <td></td>
+                            `;
+                            tableBody.appendChild(dayTotalRow);
+                        }
+                    } else {
+                        noHistoryDiv.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching load history:', error);
+                    noHistoryDiv.style.display = 'block';
+                });
+        });
+    </script>
+</body>
+</html>

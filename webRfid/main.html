@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar Menu for Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Fontawesome CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <style>
+      /* General Styles */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .sidebar {
+        position: fixed;
+        height: 100%;
+        width: 260px;
+        background: #4CD080;
+        padding: 40px;
+        z-index: 99;
+      }
+
+      .sidebar img {
+        width: 100%;
+        max-width: 130px;
+        margin-left: 12%;
+        margin-top: 20%;
+      }
+
+      .sidebar a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .menu-content {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        margin-top: 40px;
+        overflow-y: scroll;
+      }
+
+      .menu-items {
+        height: 100%;
+        width: 100%;
+        list-style: none;
+        transition: all 0.4s ease;
+      }
+
+      .menu-title {
+        color: #fff;
+        font-size: 14px;
+        padding: 15px 20px;
+      }
+
+      .submenu {
+        display: none; /* Hidden by default */
+        list-style: none;
+        padding-left: 20px; /* Indent submenu items */
+      }
+
+      .submenu-active {
+        display: block; /* Show the submenu when active */
+      }
+
+
+      .item a,
+      .submenu-item {
+        padding: 16px;
+        display: inline-block;
+        width: 100%;
+        border-radius: 12px;
+      }
+
+      .item a:hover,
+      .submenu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .navbar,
+      .main {
+        left: 260px;
+        width: calc(100% - 260px);
+        transition: all 0.5s ease;
+        z-index: 1000;
+      }
+
+      .navbar {
+        position: fixed;
+        color: #11101d;
+        padding: 15px 20px;
+        font-size: 25px;
+        background: white;
+      }
+
+      .main {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: white;
+        text-align: center;
+      }
+
+      .content-section {
+        display: none;
+        color: #11101d;
+        font-size: 20px;
+      }
+
+      #welcome-message {
+        color: #11101d;
+        font-size: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <img src="images/lgo.png" alt="Logo" />
+      <div class="menu-content">
+        <ul class="menu-items">
+          <li class="item">
+            <a href="#" id="keone-btn">North Bound</a>
+          </li>
+          <li class="item">
+            <a href="#" id="rex-btn">South Bound</a>
+          </li>
+
+        <li class="item">
+            <div class="submenu-item">
+            <span>Offenders</span>
+            <i class="fa-solid fa-chevron-right"></i>
+            </div>
+
+            <ul class="menu-items submenu">
+            <div class="menu-title">
+                <i class="fa-solid fa-chevron-left"></i>
+                Offenders
+            </div>
+            <li class="item">
+                <a href="#" id="north-btn">North Bound</a>
+            </li>
+            <li class="item">
+                <a href="#" id="south-btn">South Bound</a>
+            </li>
+            </ul>
+        </li>
+
+        <li class="item">
+            <div class="submenu-item">
+            <span>Option</span>
+            <i class="fa-solid fa-chevron-right"></i>
+            </div>
+
+            <ul class="menu-items submenu">
+            <div class="menu-title">
+                <i class="fa-solid fa-chevron-left"></i>
+                Option
+            </div>
+            <li class="item">
+                <a href="#" id="shbal-btn">Show Load Balance</a>
+                <a href="login2.html" id="sh-btn">Log out</a>
+            </li>
+            </ul>
+        </li>
+          <li class="item">
+            <a href="#" id="add-user-btn">Add User</a>
+          </li>
+          <li class="item">
+            <a href="#" id="add-vehicle-btn">Add Vehicle</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- <nav class="navbar">
+      <i class="fa-solid fa-bars" id="sidebar-close"></i>
+    </nav> -->
+
+    <main class="main">
+      <div class="content-section" id="keone-content">Keone Information Displayed Here.</div>
+      <div class="content-section" id="rex-content">Rex Information Displayed Here.</div>
+      <div class="content-section" id="north-content">North Bound Information Displayed Here.</div>
+      <div class="content-section" id="south-content">South Bound Information Displayed Here.</div>
+      <div class="content-section" id="shbal-content">Show Load Balance Information Displayed Here.</div>
+      <div class="content-section" id="add-user-content">Add User Information Displayed Here.</div>
+      <div class="content-section" id="add-vehicle-content">Add Vehicle Information Displayed Here.</div>
+    </main>
+
+    <script>
+        const sidebar = document.querySelector(".sidebar");
+        const sidebarClose = document.querySelector("#sidebar-close");
+        const keoneContent = document.querySelector("#keone-content");
+        const rexContent = document.querySelector("#rex-content");
+        const northContent = document.querySelector("#north-content");
+        const southContent = document.querySelector("#south-content");
+        const shContent = document.querySelector("#sh-content");
+        const shbalContent = document.querySelector("#shbal-content");
+        const addUserContent = document.querySelector("#add-user-content");
+        const menu = document.querySelector("#menu-content");
+        const menuItems = document.querySelectorAll(".submenu-item");
+        const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
+        const addVehicleContent = document.querySelector("#add-vehicle-content");
+        
+        document.querySelectorAll(".submenu-item").forEach(item => {
+          item.addEventListener("click", () => {
+            const submenu = item.nextElementSibling; // Get the corresponding submenu
+            const isActive = submenu.classList.contains("submenu-active");
+            
+            // Close any open submenus
+            document.querySelectorAll(".submenu").forEach(sub => sub.classList.remove("submenu-active"));
+
+            // Toggle the clicked submenu
+            if (!isActive) submenu.classList.add("submenu-active");
+          });
+        });
+
+
+        // Function to show specific content section
+      function showContent(content) {
+          // Hide all content sections
+          document.querySelectorAll(".content-section").forEach(section => section.style.display = "none");
+          // Show the selected content
+          content.style.display = "block";
+}
+
+
+        // Automatically display the first option content on load
+      window.addEventListener("DOMContentLoaded", () => {
+        showContent(keoneContent);
+
+        // Fetch and populate content for the first option
+        fetch("northbound.html")
+          .then(response => response.text())
+          .then(data => {
+            keoneContent.innerHTML = data;
+          })
+          .catch(error => console.error("Error loading North Bound content:", error));
+      });
+    
+        // Event listener for Keone button to load external file
+        document.querySelector("#keone-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(keoneContent);
+    
+            // Fetch content from keone-info.html
+            fetch("northbound.html")
+                .then(response => response.text())
+                .then(data => {
+                    keoneContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading North Bound content:", error));
+        });
+    
+        // Event listener for Keone button to load external file
+        document.querySelector("#rex-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(rexContent);
+    
+            // Fetch content from keone-info.html
+            fetch("southbound.html")
+                .then(response => response.text())
+                .then(data => {
+                    rexContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading South Bound content:", error));
+        });
+    
+        document.querySelector("#north-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(northContent);
+            
+            // Fetch content from keone-info.html
+            fetch("offense-north.html")
+                .then(response => response.text())
+                .then(data => {
+                    northContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading North Bound content:", error));
+        });
+    
+        document.querySelector("#south-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(southContent);
+
+            
+            // Fetch content from keone-info.html
+            fetch("offense-south.html")
+                .then(response => response.text())
+                .then(data => {
+                    southContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading South Bound content:", error));
+        });
+    
+        document.querySelector("#shbal-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(shbalContent);
+
+            fetch("sh-bal.html")
+                .then(response => response.text())
+                .then(data => {
+                  shbalContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading Show Balance content:", error));
+        });
+    
+        document.querySelector("#add-user-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(addUserContent);
+
+            fetch("adduserr.html")
+                .then(response => response.text())
+                .then(data => {
+                  addUserContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading South Bound content:", error));
+        });
+
+        document.querySelector("#add-vehicle-btn").addEventListener("click", (e) => {
+            e.preventDefault();
+            showContent(addVehicleContent);
+
+            fetch("addvehicle.html")
+                .then(response => response.text())
+                .then(data => {
+                  addVehicleContent.innerHTML = data;
+                })
+                .catch(error => console.error("Error loading South Bound content:", error));
+        });
+    
+    
+        sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
+    </script>
+    
+  </body>
+</html>

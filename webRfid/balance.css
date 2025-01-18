@@ -1,0 +1,239 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+.container {
+  display: flex;
+  flex-direction: column; /* Stack the sidebar and content vertically */
+  height: 100%;
+  margin-left: 20%; 
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #4CD080;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+  position: fixed; /* Fix the sidebar's position */
+  top: 0;          /* Align it to the top of the viewport */
+  left: 0;         /* Align it to the left of the viewport */
+  height: 100vh;   /* Full height of the viewport */
+  overflow-y: auto; 
+}
+.logo img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.menu {
+  list-style-type: none;
+  width: 100%;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.menu-item.active {
+  background-color: white;
+  color: #4CD080;
+  border-radius: 20px;
+}
+
+.menu-item:hover {
+  background-color: #38ec80;
+  color: white;
+  border-radius: 20px;
+}
+
+
+.styled-table {
+  width: 100%;
+  margin-top: 20px; /* Adds space between the header and table */
+  margin: 0px auto;
+  border-collapse: collapse; /* Removes extra spacing between cells */
+  border-radius: 10px; /* Rounded corners */
+  background-color: white; /* White background for the table */
+}
+
+.styled-table th, .styled-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #D9D9D9; /* Gray borders only between cells */
+}
+
+.styled-table th {
+  background-color: #4CD080; /* Green header */
+  color: white; /* White text for the header */
+}
+
+.styled-table td {
+  background-color: #fff; /* Light gray background for table cells */
+}
+.styled-table tbody {
+  color: #333333;
+}
+
+/* Overlay for blur effect */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  backdrop-filter: blur(5px); /* Adds blur to the background */
+  z-index: 999; /* Below the modal but above the rest of the content */
+}
+
+/* Modal styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000; /* Above the overlay */
+  left: 50%;
+  top: 50%;
+  width: 250px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  overflow: auto;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.modal-content .button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.modal-content .amount {
+  height: 25px;
+}
+
+h2 {
+  color: #333333;
+}
+
+label {
+  margin-bottom: 10px;
+  color: #333333;
+}
+
+/* Button Style */
+button {
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  background-color: #F761CA; /* Pink background */
+  color: white; /* White text */
+  border: none; /* Removes the default border */
+  border-radius: 5px; /* Rounded corners */
+}
+
+button:hover {
+  background-color: #4CD080; /* Darker green on hover */
+}
+
+/* Header and Search Bar Styling */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Ensures space at the top of the page */
+  gap: 20px; /* Space between the h1 and search bar */
+  width: 100%; /* Ensure it spans the full width */
+  margin-bottom: 20px;
+}
+
+.header-container h1 {
+  color: #333333; /* Keeps the existing h1 styling */
+  margin: 0;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid #bebdbd;
+  border-radius: 25px;
+  padding: 5px 10px;
+  background-color: white;
+  width: 250px;
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  position: relative; /* Ensure the suggestion box aligns relative to this element */
+}
+
+.search-bar:hover {
+  border-color: #F761CA; /* Change border color on hover */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect on hover */
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.search-bar i {
+  color: #aaa;
+  font-size: 18px;
+  transition: color 0.3s ease; /* Smooth transition for icon color */
+}
+
+.search-bar:hover i {
+  color: #F761CA; /* Change icon color on hover */
+}
+
+.suggestion-box {
+  position: absolute;
+  top: 100%; /* Position directly below the search bar */
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%; /* Match the width of the search bar */
+  z-index: 10;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+  display: none;
+  border-radius: 0 0 10px 10px; /* Rounded bottom corners for the dropdown */
+}
+
+.suggestion {
+  padding: 8px;
+  cursor: pointer;
+  font-size: 14px; /* Match input font size */
+}
+
+.suggestion:hover {
+  background: #f0f0f0;
+}
+
+

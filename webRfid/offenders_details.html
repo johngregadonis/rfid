@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offenders Details</title>
+  <link rel="stylesheet" href="offenders_details.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar" id="sidebar">
+      <a class="back-arrow" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <div class="op-list">
+        <p><strong>Name:</strong> <span id="name"></span></p>
+        <p><strong>Body Number:</strong> <span id="body-number"></span></p>
+        <p><strong>UID:</strong> <span id="uid"></span></p>
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="table-container">
+        <div class="table-wrapper">
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Date Arrival <br>(at checkpoint)</th>
+                <th>Time Arrival <br>(at checkpoint)</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody id="vehicle-operators-list">
+              <!-- Vehicle operator data will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="penalty-section">
+        <ul>
+          <li>Penalty: <span id="penalty">50.00</span></li>
+          <li>Unpaid Ticket: <span id="unpaid-ticket"></span></li>
+          <li>Initial Load: <span id="initial-load">50.00</span></li>
+        </ul>
+        <hr>
+        <p><strong>Amount To Be Paid:</strong> <span id="total-amount"></span></p>
+      </div>
+    </div>
+  </div>
+  <script src="offenders_details.js"></script>
+</body>
+</html>

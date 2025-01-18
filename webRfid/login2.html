@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Formm</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('images/twices.jpg'); /* Replace with your image URL or file path */
+      background-size: cover;  /* Make sure the background covers the whole page */
+      background-position: center; /* Center the background image */
+      background-repeat: no-repeat; /* Prevent the background image from repeating */
+      position: relative; /* Allow absolute positioning of the logo */
+    }
+    .logo {
+      position: absolute;
+      top: 50px; /* Adjust the top position for the logo */
+      left: 50%;
+      transform: translateX(-50%); /* Center the logo horizontally */
+      width: 130px; /* Set the width of the logo */
+      height: auto;
+    }
+    .login-container {
+      width: 300px;
+      background-color: rgba(255, 255, 255, 0.8); /* White with slight transparency for better readability */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .input-box {
+      margin-bottom: 15px;
+    }
+    .input-box label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .input-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .button input {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .button input:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo in the upper middle -->
+  <img src="images/lgo.png" alt="Logo" class="logo"> <!-- Replace with your logo path -->
+
+  <div class="login-container">
+    <h2>TERMINAL OPERATOR</h2>
+    <form id="loginForm" action="http://localhost:1000/login" method="POST">
+      <div class="input-box">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+      </div>
+      <div class="input-box">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <div class="button">
+        <input type="submit" value="Login">
+      </div>
+    </form>
+    
+  </div>
+
+  
+</body>
+</html>
