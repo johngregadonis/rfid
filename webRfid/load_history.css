@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .container1 {
+    display: flex;
+    height: 100%;
+    margin-left: 20%; 
+  }
+  
+  .sidebar {
+    
+    width: 20%;
+    background-color: #4CD080;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    position: fixed; /* Fix the sidebar's position */
+    top: 0;          /* Align it to the top of the viewport */
+    left: 0;         /* Align it to the left of the viewport */
+    height: 100vh;   /* Full height of the viewport */
+    overflow-y: auto; 
+  }
+  
+  .logo img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .menu {
+    list-style-type: none;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .menu-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .menu-item.active {
+    background-color: white;
+    color: #4CD080;
+    border-radius: 20px;
+  }
+  
+  .menu-item:hover {
+    background-color: #38ec80;
+    color: white;
+    border-radius: 20px;
+  }
+  .container {
+    max-width: 100%px;
+    width: 1000px;
+    margin: 20px auto;
+    margin: 0px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2%;
+}
+.search-bar {
+    margin-bottom: 3%;
+    text-align: center;
+}
+
+.search-bar input {
+    padding: 10px;
+    font-size: 16px;
+    width: 80%;
+    max-width: 300px;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth animation */
+}
+
+.search-bar input:hover {
+    border-color: #F761CA; /* Change border color on hover */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #4CD080;
+    color: white;
+}
+tr:hover {
+    background-color: #f1f1f1;
+}
+tr.highlight {
+    background-color: #F761CA; /* Yellow highlight */
+}
+.no-history {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 1.1em;
+    display: none; /* Initially hidden */
+}
+.total-load {
+    text-align: right;
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+   
+}
+.day-total {
+    margin-top: 10px;
+    font-weight: bold;
+}
+/* Header and Search Bar Styling */
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Ensures space at the top of the page */
+    gap: 20px; /* Space between the h1 and search bar */
+    width: 100%; /* Ensure it spans the full width */
+    margin-bottom: 20px;
+  }
+  
+  

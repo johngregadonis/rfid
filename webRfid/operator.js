@@ -8,7 +8,7 @@ if (operator) {
   // Fetch and display balance change logs for the selected operator
   async function fetchBalanceChangeLogs() {
     try {
-      const response = await fetch(`http://192.168.1.7:5000/get-balance-change?bodyNumber=${encodeURIComponent(operator.bodyNumber)}`);
+      const response = await fetch(`http://192.168.1.8:5000/get-balance-change?bodyNumber=${encodeURIComponent(operator.bodyNumber)}`);
       if (!response.ok) {
         throw new Error('Failed to fetch balance change logs');
       }

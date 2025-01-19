@@ -19,12 +19,15 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Register Vehicle') {
       window.location.href = 'add_vehicle.html';
     }
+    if (item.textContent === 'Load History') {
+      window.location.href = 'load_history.html'; // Redirect to balance.html
+    }
   });
 });
 
 async function fetchVehicleOperators() {
   try {
-    const response = await fetch('http://192.168.1.7:5000/get-vehicle-operators');
+    const response = await fetch('http://192.168.1.8:5000/get-vehicle-operators');
     const data = await response.json();
 
     const tableBody = document.getElementById('vehicle-operators-list');

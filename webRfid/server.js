@@ -76,23 +76,35 @@ app.post('/rfid', async (req, res) => {
 
     const newBalance = updateResult.rows[0].balance;
 
-    // Step 3: Log the RFID detection
-    await pool.query('INSERT INTO rfid_logs (uid, timestamp) VALUES ($1, NOW())', [uid]);
+    // Step 3: Determine the message based on the new balance
+    let message = null;
+    if (newBalance < 0) {
+      message = 'You violated the ticketing regulation, visit the terminal operator.';
+    } else if (currentBalance >= 5) {
+      message = '₱5.00 was deducted from your balance.';
+    }
 
-    // Step 4: Insert the deduction message into the vehicle_operator_messages table
-    const deductMessage = `₱5.00 was deducted from your balance.`;
-    const insertMessageQuery = `
-      INSERT INTO vehicle_operator_messages (vehicle_operator_id, message, deduct_message)
-      VALUES ($1, NULL, $2);
-    `;
-    await pool.query(insertMessageQuery, [vehicleOperatorId, deductMessage]);
+    // Step 4: Insert the message into the deduct_messages table if there is a message
+    if (message) {
+      const insertMessageQuery = `
+        INSERT INTO deduct_messages (vehicle_operator_id, deduct_message)
+        VALUES ($1, $2);
+      `;
+      await pool.query(insertMessageQuery, [vehicleOperatorId, message]);
+      console.log(`Message inserted for UID ${uid}: "${message}"`);
+    }
 
-    console.log(`Balance updated for UID ${uid}: ₱${newBalance}`);
-    res.status(200).json({
-      message: 'Balance updated successfully.',
+    // Prepare the response
+    const response = {
       uid,
       newBalance,
-    });
+    };
+
+    if (message) {
+      response.message = message;
+    }
+
+    res.status(200).json(response);
   } catch (err) {
     console.error('Error processing UID:', err);
     res.status(500).json({ error: 'Internal server error.' });
@@ -159,54 +171,86 @@ app.get('/get-balance-change', async (req, res) => {
 
 
 
-//add balance
+// Add balance and log history
 app.post('/update-balance', async (req, res) => {
   const { bodyNumber, amount } = req.body;
 
-  if (!bodyNumber || typeof amount !== 'number') {
-    console.log('Invalid input:', req.body);
-    return res.status(400).json({ success: false, message: 'Invalid input.' });
+  // Validate input
+  if (!bodyNumber || typeof amount !== 'number' || amount <= 0) {
+      console.log('Invalid input:', req.body);
+      return res.status(400).json({ success: false, message: 'Invalid input.' });
   }
 
   try {
-    // Step 1: Update the balance in the vehicle_operators table
-    const updateQuery = `
-      UPDATE vehicle_operators 
-      SET balance = balance + $1
-      WHERE body_number = $2
-      RETURNING id, balance; -- Return the id of the updated vehicle operator
-    `;
-    const values = [amount, bodyNumber];
-    const result = await pool.query(updateQuery, values);
+      // Step 1: Update the balance in the vehicle_operators table
+      const updateQuery = `
+          UPDATE vehicle_operators 
+          SET balance = balance + $1
+          WHERE body_number = $2
+          RETURNING id, balance;
+      `;
+      const values = [amount, bodyNumber];
+      const result = await pool.query(updateQuery, values);
 
-    if (result.rows.length === 0) {
-      console.log('Body number not found:', bodyNumber);
-      return res.status(404).json({ success: false, message: 'Body number not found.' });
-    }
+      if (result.rows.length === 0) {
+          console.log('Body number not found:', bodyNumber);
+          return res.status(404).json({ success: false, message: 'Body number not found.' });
+      }
 
-    const vehicleOperatorId = result.rows[0].id; // Get the id of the vehicle operator
-    const newBalance = parseFloat(result.rows[0].balance); // Convert to a number
-    console.log('Updated balance:', newBalance);
+      const vehicleOperatorId = result.rows[0].id; // Get the vehicle operator ID
+      const newBalance = parseFloat(result.rows[0].balance); // Convert to a number
+      console.log('Updated balance:', newBalance);
 
-    // Step 2: Insert the message into the vehicle_operator_messages table
-    const successMessage = `you've successfully added ${amount} pesos to the balance.`;
-    const insertMessageQuery = `
-      INSERT INTO vehicle_operator_messages (vehicle_operator_id, message)
-      VALUES ($1, $2);
-    `;
-    await pool.query(insertMessageQuery, [vehicleOperatorId, successMessage]);
+      // Step 2: Insert a success message into the vehicle_operator_messages table
+      const successMessage = `You've successfully added ${amount} pesos to the balance.`;
+      const insertMessageQuery = `
+          INSERT INTO vehicle_operator_messages (vehicle_operator_id, message)
+          VALUES ($1, $2);
+      `;
+      await pool.query(insertMessageQuery, [vehicleOperatorId, successMessage]);
 
-    // Send the response back to the client
-    const response = { success: true, newBalance, message: successMessage };
-    console.log('Response to frontend:', response);
-    res.status(200).json(response);
+      // Step 3: Log the transaction in the load_history table
+      const insertHistoryQuery = `
+          INSERT INTO load_history (body_number, amount, transaction_date, remarks)
+          VALUES ($1, $2, NOW(), $3);
+      `;
+      const remarks = 'Balance updated via UI';
+      await pool.query(insertHistoryQuery, [bodyNumber, amount, remarks]);
+
+      // Send the response back to the client
+      const response = { success: true, newBalance, message: successMessage };
+      console.log('Response to frontend:', response);
+      res.status(200).json(response);
   } catch (err) {
-    console.error('Error updating balance:', err);
-    res.status(500).json({ success: false, message: 'Internal server error.' });
+      console.error('Error updating balance:', err);
+      res.status(500).json({ success: false, message: 'Internal server error.' });
   }
+});
+
+
+// Endpoint to fetch load history (body_number, amount, transaction_date, remarks)
+app.get('/get-load-history', async (req, res) => {
+try {
+  // Query to fetch load history data
+  const result = await pool.query('SELECT body_number, amount, transaction_date, remarks FROM load_history ORDER BY transaction_date DESC');
+
+  // Update remarks for each record
+  const updatedRecords = result.rows.map(record => {
+    // Check if the remarks need to be updated
+    if (record.remarks === 'Balance updated via UI') {
+      record.remarks = 'Added successfully';  // Update remarks
+    }
+    return record;
+  });
+
+  res.status(200).json(updatedRecords);  // Send the updated result as JSON
+} catch (err) {
+  console.error('Database error:', err);
+  res.status(500).json({ error: 'Failed to fetch load history' });
+}
 });
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running on http://192.168.1.7:${port}`);
+  console.log(`Server running on http://192.168.1.8:${port}`);
 });

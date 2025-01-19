@@ -1,7 +1,7 @@
 // Fetch the vehicle operator data from the server
 async function fetchVehicleOperators() {
   try {
-      const response = await fetch('http://192.168.1.7:5000/get-vehicle-operators');
+      const response = await fetch('http://192.168.1.8:5000/get-vehicle-operators');
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
@@ -50,7 +50,7 @@ async function addBalanceToDB() {
   }
 
   try {
-      const response = await fetch('http://192.168.1.7:5000/update-balance', {
+      const response = await fetch('http://192.168.1.8:5000/update-balance', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ async function addBalanceToDB() {
 //diminish balance
   async function updateBalance(uid) {
 try {
-  const response = await fetch('http://192.168.1.7:5000/rfid', {
+  const response = await fetch('http://192.168.1.8:5000/rfid', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uid }),
@@ -215,6 +215,9 @@ document.querySelectorAll('.menu-item').forEach(item => {
       }
       if (item.textContent === 'South Bound') {
         window.location.href = 'southb.html'; // Redirect to balance.html
+      }
+      if (item.textContent === 'Load History') {
+        window.location.href = 'load_history.html'; // Redirect to balance.html
       }
     });
   });

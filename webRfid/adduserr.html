@@ -6,203 +6,219 @@
   <title>Responsive Registration Form | CodingLab</title>
   <link rel="stylesheet" href="adduser.css">
   
-<style>
-  /* Importing Google Fonts - Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-/* body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-}
+    body {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background: 
+        linear-gradient(126deg, rgba(57, 255, 20, 0.7) 9%, rgba(255, 0, 255, 0.7) 95%), 
+        url('images/bor5.jpg'); /* Replace with your image path */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
-.container {
-  max-width: 700px;
-  width: 100%;
-  background-color: #fff;
-  padding: 25px 30px;
-  border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-} */
-body {
-  height: 100vh;
-  width: auto;
-  display: flex;
-  justify-content: start; /* Aligns to the left */
-  align-items: center;
-  padding: 10px;
-  background: #fff;
-}
+    .logo {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: center;
+    }
 
-.container {
-  max-width: 700px;
-  width: 100%;
-  background-color: #fff;
-  padding: 25px 30px;
-  border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-  margin-left: auto; /* Keeps the form on the left side */
-  margin-right: auto;
-}
+    .logo img {
+      width: 100px; /* Adjust logo size as needed */
+      height: auto;
+    }
 
+    .logo h1 {
+      margin-top: 10px;
+      font-size: 24px;
+      color: #fff; /* Logo text color */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional text shadow */
+    }
 
-.container .title {
-  font-size: 25px;
-  font-weight: 500;
-  position: relative;
-}
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.9); /* White with slight transparency */
+      padding: 25px 30px;
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
 
-.container .title::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 3px;
-  width: 30px;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #71b7e6, #9b59b6);
-}
+    .container .title {
+      font-size: 25px;
+      font-weight: 500;
+      position: relative;
+      text-align: center;
+    }
 
-.content form .user-details {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 20px 0 12px 0;
-}
+    .container .title::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      height: 3px;
+      width: 30px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    }
 
-form .user-details .input-box {
-  margin-bottom: 15px;
-  width: calc(100% / 2 - 20px);
-}
+    .content form .user-details {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 20px 0 12px 0;
+    }
 
-form .input-box span.details {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
+    form .user-details .input-box {
+      margin-bottom: 15px;
+      width: calc(100% / 2 - 20px);
+    }
 
-.user-details .input-box input {
-  height: 45px;
-  width: 100%;
-  outline: none;
-  font-size: 16px;
-  border-radius: 5px;
-  padding-left: 15px;
-  border: 1px solid #ccc;
-  border-bottom-width: 2px;
-  transition: all 0.3s ease;
-}
+    form .input-box span.details {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
 
-.user-details .input-box input:focus,
-.user-details .input-box input:valid {
-  border-color: #4CD080;
-}
+    .user-details .input-box input {
+      height: 45px;
+      width: 100%;
+      outline: none;
+      font-size: 16px;
+      border-radius: 5px;
+      padding-left: 15px;
+      border: 1px solid #ccc;
+      border-bottom-width: 2px;
+      transition: all 0.3s ease;
+    }
 
-form .gender-details .gender-title {
-  font-size: 20px;
-  font-weight: 500;
-}
+    .user-details .input-box input:focus,
+    .user-details .input-box input:valid {
+      border-color: #4CD080;
+    }
 
-form .category {
-  display: flex;
-  width: 80%;
-  margin: 14px 0;
-  justify-content: space-between;
-}
+    form .gender-details .gender-title {
+      font-size: 20px;
+      font-weight: 500;
+    }
 
-form .category label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
+    form .category {
+      display: flex;
+      width: 80%;
+      margin: 14px 0;
+      justify-content: space-between;
+    }
 
-form .category label .dot {
-  height: 18px;
-  width: 18px;
-  border-radius: 50%;
-  margin-right: 10px;
-  background: #d9d9d9;
-  border: 5px solid transparent;
-  transition: all 0.3s ease;
-}
+    form .category label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
 
-#dot-1:checked~.category label .one,
-#dot-2:checked~.category label .two,
-#dot-3:checked~.category label .three {
-  border-color: #d9d9d9;
-}
+    form .category label .dot {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      margin-right: 10px;
+      background: #d9d9d9;
+      border: 5px solid transparent;
+      transition: all 0.3s ease;
+    }
 
-form input[type="radio"] {
-  display: none;
-}
+    #dot-1:checked~.category label .one,
+    #dot-2:checked~.category label .two,
+    #dot-3:checked~.category label .three {
+      border-color: #d9d9d9;
+    }
 
-form .button {
-  height: 45px;
-  margin: 35px 0
-}
+    form input[type="radio"] {
+      display: none;
+    }
 
-form .button input {
-  height: 100%;
-  width: 100%;
-  border-radius: 5px;
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: #4CD080;
-}
+    form .button {
+      height: 45px;
+      margin: 35px 0;
+    }
 
-form .button input:hover {
-  background: #F761CA;
-}
+    form .button input {
+      height: 100%;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #4CD080;
+    }
 
-/* Responsive media query code for mobile devices */
-@media(max-width: 584px) {
-  .container {
-    max-width: 100%;
-  }
+    form .button input:hover {
+      background: #F761CA;
+    }
 
-  form .user-details .input-box {
-    margin-bottom: 15px;
-    width: 100%;
-  }
+    .container p {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
 
-  form .category {
-    width: 100%;
-  }
+    .container p a {
+      color: #4CD080;
+      text-decoration: none;
+    }
 
-  .content form .user-details {
-    max-height: 300px;
-    overflow-y: scroll;
-  }
+    .container p a:hover {
+      color: #F761CA;
+    }
 
-  .user-details::-webkit-scrollbar {
-    width: 5px;
-  }
-}
+    @media(max-width: 584px) {
+      .container {
+        max-width: 100%;
+      }
 
-/* Responsive media query code for mobile devices */
-@media(max-width: 459px) {
-  .container .content .category {
-    flex-direction: column;
-  }
-}
-</style>
+      form .user-details .input-box {
+        width: 100%;
+      }
+
+      form .category {
+        width: 100%;
+      }
+    }
+
+    @media(max-width: 459px) {
+      .container .content .category {
+        flex-direction: column;
+      }
+    }
+  </style>
 
 </head>
 <body>
+  <!-- Logo Section -->
+  <div class="logo">
+    <img src="images/lgo.png" alt="Logo"> <!-- Replace with your logo path -->
+    <!-- <h1>My Application</h1> -->
+  </div>
+
+  <!-- Registration Form -->
   <div class="container">
     <div class="title">Terminal Operator</div>
     <div class="content">
@@ -210,27 +226,27 @@ form .button input:hover {
         <div class="user-details">
           <div class="input-box">
             <span class="details">Full Name</span>
-            <input type="text" name="fullname" id="fullname" placeholder="Enter your name" required>
+            <input type="text" name="fullname" placeholder="Enter your name" required>
           </div>
           <div class="input-box">
             <span class="details">Username</span>
-            <input type="text" name="username" id="username" placeholder="Enter your username" required>
+            <input type="text" name="username" placeholder="Enter your username" required>
           </div>
           <div class="input-box">
             <span class="details">Email</span>
-            <input type="email" name="email" id="email" placeholder="Enter your email" required>
+            <input type="email" name="email" placeholder="Enter your email" required>
           </div>
           <div class="input-box">
             <span class="details">Phone Number</span>
-            <input type="text" name="number" id="number" placeholder="Enter your number" required>
+            <input type="text" name="number" placeholder="Enter your number" required>
           </div>
           <div class="input-box">
             <span class="details">Password</span>
-            <input type="password" name="password" id="password" placeholder="Enter your password" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
           </div>
           <div class="input-box">
             <span class="details">Confirm Password</span>
-            <input type="password" name="confirmPassword" id="cpassword" placeholder="Confirm your password" required>
+            <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
           </div>
         </div>
       
@@ -259,8 +275,9 @@ form .button input:hover {
           <input type="submit" value="Register">
         </div>
       </form>
-      
     </div>
+
+    <p>Already have an account? <a href="login.html">Sign in</a>.</p>
   </div>
 </body>
 </html>

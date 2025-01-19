@@ -19,6 +19,9 @@ document.querySelectorAll('.menu-item').forEach(item => {
       if (item.textContent === 'Offenders') {
         window.location.href = 'offenders.html'; // Redirect to balance.html
       }
+      if (item.textContent === 'Load History') {
+        window.location.href = 'load_history.html'; // Redirect to balance.html
+      }
     });
   });
   document.querySelector('form').addEventListener('submit', async (event) => {
