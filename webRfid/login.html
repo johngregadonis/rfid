@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
     body {
       height: 100vh;
@@ -29,13 +31,14 @@
 
     .logo {
       position: relative;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
       text-align: center;
     }
 
     .logo img {
-      width: 100px; /* Adjust logo size as needed */
-      height: auto;
+      width: 150px;
+  height: 150px;
+
     }
 
     .logo h1 {
@@ -80,7 +83,7 @@
     .button input {
       width: 100%;
       padding: 10px;
-      background-color: #4CAF50;
+      background-color: #4CD080;
       color: white;
       border: none;
       border-radius: 5px;
@@ -89,7 +92,7 @@
     }
 
     .button input:hover {
-      background-color: #45a049;
+      background-color: #F761CA;
     }
 
     .login-container p {
@@ -115,15 +118,12 @@
   </style>
 </head>
 <body>
-  <!-- Logo Section -->
-  <div class="logo">
-    <img src="images/lgo.png" alt="Logo"> <!-- Replace with your logo path -->
-  </div>
+  
 
   <!-- Login Form -->
   <div class="login-container">
-    <h2>TERMINAL OPERATOR</h2>
-    <form id="loginForm" action="http://localhost:1000/login" method="POST">
+    <h2>Terminal Operator</h2>
+    <form id="loginForm" action="http://192.168.171.70:5000/login" method="POST">
       <div class="input-box">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Enter your username" required>

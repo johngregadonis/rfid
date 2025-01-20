@@ -29,9 +29,9 @@ body {
   overflow-y: auto; 
 }
 .logo img {
-  width: 100px;
-  height: auto;
-  margin-bottom: 20px;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 10px;
 }
 
 .menu {

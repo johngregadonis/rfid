@@ -1,17 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
 const app = express();
-const port = 5000;
+const PORT = 5000;
+const secretKey = 'your_secret_key';
 
-// Middleware to parse form data and handle CORS
-app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-// PostgreSQL configuration (shared between both parts of the server)
+// PostgreSQL configuration
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost', // or your database server's IP/URL
@@ -19,6 +22,81 @@ const pool = new Pool({
   password: 'adonis69',
   port: 5432, // Default PostgreSQL port
 });
+
+// --- Shared Middleware ---
+pool.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+  } else {
+    console.log('Connected to the PostgreSQL database');
+  }
+});
+
+// --- Authentication Routes ---
+
+// Login route
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const query = 'SELECT * FROM users WHERE username = $1';
+  pool.query(query, [username], (err, result) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
+
+    const user = result.rows[0];
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: 'Error comparing passwords' });
+      }
+
+      if (isMatch) {
+        const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '1h' });
+
+        res.status(200).json({
+          success: true,
+          message: 'Login successful',
+          token: token,
+        });
+      } else {
+        res.status(401).json({ success: false, message: 'Invalid username or password' });
+      }
+    });
+  });
+});
+
+// Signup route
+app.post('/signup', async (req, res) => {
+  const { fullname, username, email, number, password, confirmPassword, gender } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: 'Passwords do not match' });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = `
+      INSERT INTO users (fullname, username, email, phone_number, password, gender)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *`;
+    const result = await pool.query(query, [fullname, username, email, number, hashedPassword, gender]);
+
+    const savedUser = result.rows[0];
+    delete savedUser.password;
+
+    res.status(201).json({ message: 'User registered successfully', user: savedUser });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// --- RFID and Vehicle Operator Routes ---
 
 // --- Registration Routes ---
 app.post('/register', async (req, res) => {
@@ -250,7 +328,8 @@ try {
 }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://192.168.1.8:${port}`);
+
+// --- Start the Server ---
+app.listen(PORT, () => {
+  console.log(`Server running on http://192.168.171.70:${PORT}`);
 });

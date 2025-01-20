@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let loadHistory = [];
 
     // Fetch load history from the server
-    fetch('http://192.168.1.8:5000/get-load-history')
+    fetch('http://192.168.171.70:5000/get-load-history')
         .then(response => response.json())
         .then(data => {
             console.log('Data from server:', data); // Debug log
