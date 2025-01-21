@@ -1,7 +1,7 @@
 // Fetch the vehicle operator data from the server
 async function fetchVehicleOperators() {
   try {
-      const response = await fetch('http://192.168.171.70:5000/get-vehicle-operators');
+      const response = await fetch('http://localhost:5000/get-vehicle-operators');
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
@@ -50,7 +50,7 @@ async function addBalanceToDB() {
   }
 
   try {
-      const response = await fetch('http://192.168.171.70:5000/update-balance', {
+      const response = await fetch('http://localhost:5000/update-balance', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ async function addBalanceToDB() {
 //diminish balance
   async function updateBalance(uid) {
 try {
-  const response = await fetch('http://192.168.171.70:5000/rfid', {
+  const response = await fetch('http://localhost:5000/rfid', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uid }),
@@ -116,14 +116,45 @@ try {
   // Call fetchVehicleOperators when the page loads
   window.onload = fetchVehicleOperators;
 
-  function showAddBalanceDialog(bodyNumber) {
-// Show the modal and overlay
-document.getElementById("modal-overlay").style.display = "block";
-document.getElementById("add-balance-modal").style.display = "block";
+// Show the modal dialog to add balance with condition
+function showAddBalanceDialog(bodyNumber) {
+  // Get the current balance for the operator
+  const balanceElement = document.getElementById(`balance-${bodyNumber}`);
+  const currentBalance = parseFloat(balanceElement.innerText.replace('₱', ''));
 
-// Set the body number for the modal
-document.getElementById("bodyNumberInput").value = bodyNumber;
+  // Check if the balance is negative
+  if (currentBalance < 0) {
+      // Show the notification box
+      showNotification('The fine must be paid first before reloading.');
+      return;
+  }
+
+  // Show the modal and overlay
+  document.getElementById("modal-overlay").style.display = "block";
+  document.getElementById("add-balance-modal").style.display = "block";
+
+  // Set the body number for the modal
+  document.getElementById("bodyNumberInput").value = bodyNumber;
 }
+
+// Show the notification box with a message
+function showNotification(message) {
+  const notificationBox = document.getElementById('notification-box');
+  const notificationMessage = document.getElementById('notification-message');
+  
+  // Set the message text
+  notificationMessage.textContent = message;
+  
+  // Display the notification box
+  notificationBox.style.display = 'flex'; // Matches the flex display in CSS
+}
+
+// Close the notification box
+document.getElementById('close-notification').addEventListener('click', () => {
+  const notificationBox = document.getElementById('notification-box');
+  notificationBox.style.display = 'none';
+});
+
 
 function closeAddBalanceDialog() {
 // Hide the modal and overlay
@@ -218,6 +249,15 @@ document.querySelectorAll('.menu-item').forEach(item => {
       }
       if (item.textContent === 'Load History') {
         window.location.href = 'load_history.html'; // Redirect to balance.html
+      }
+      if (item.textContent === 'Fine Payment History') {
+        window.location.href = 'fine_history.html'; // Redirect to balance.html
+      }
+      if (item.textContent === 'Register Terminal Operator') {
+        window.location.href = 'add_tOperator.html'; // Redirect to balance.html
+      }
+      if (item.textContent === 'Detected Tricycle') {
+        window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
       }
     });
   });

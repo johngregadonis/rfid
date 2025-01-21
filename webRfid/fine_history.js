@@ -4,24 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateSearchInput = document.querySelector('#dateSearch');
     let loadHistory = [];
 
-    // Fetch load history from the server
-    fetch('http://localhost:5000/get-load-history')
+    // Fetch fine payment data from the server
+    fetch('http://localhost:5000/fine-payments')
         .then(response => response.json())
         .then(data => {
             console.log('Data from server:', data); // Debug log
             if (data && data.length > 0) {
                 // Group data by date
                 data.forEach(record => {
-                    const transactionDate = new Date(record.transaction_date);
-                    const localDate = transactionDate.toLocaleDateString('en-GB'); // Format to DD/MM/YYYY
+                    const paymentDate = new Date(record.date_paid);
+                    paymentDate.setDate(paymentDate.getDate() + 1); // Add 1 day
+                    const localDate = paymentDate.toLocaleDateString('en-GB'); // Format to DD/MM/YYYY
                     loadHistory.push({ ...record, localDate });
                 });
 
-                // Sort loadHistory by date in ascending order (oldest first)
-                loadHistory.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
-
-                // Reverse the loadHistory to show the most recent transactions at the top
-                loadHistory.reverse();
+                // Sort loadHistory by date
+                loadHistory.sort((a, b) => new Date(a.date_paid) - new Date(b.date_paid));
 
                 // Create table rows and group totals by date
                 let currentDay = '';
@@ -47,9 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${record.body_number}</td>
-                        <td>₱${amount}</td>
+                        <td>${record.time_paid}</td>
                         <td>${record.localDate}</td>
-                        <td>Added successfully</td>
+                        <td>₱${amount}</td>
                     `;
                     tableBody.appendChild(tr);
                 });
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            console.error('Error fetching load history:', error);
+            console.error('Error fetching fine payment history:', error);
             noHistoryDiv.style.display = 'block';
         });
 
@@ -84,57 +82,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // If search term exists, filter rows
         if (searchTerm) {
-            let found = false;
             rows.forEach(row => {
                 const dateCell = row.querySelector('td:nth-child(3)'); // Transaction Date column
                 if (dateCell && dateCell.textContent.toLowerCase().includes(searchTerm)) {
                     row.classList.add('highlight');
-                    // Scroll to the matched row
-                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    found = true;
                 }
             });
-
-            // If no row is found, ensure the table stays at its current position
-            if (!found) {
-                tableBody.scrollTop = 0; // Optionally reset scroll if no match
-            }
         }
     });
 });
 
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {
-      // Remove 'active' class from all items
-      document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-  
-      // Add 'active' class to the clicked item
-      item.classList.add('active');
-  
-      // Redirect to 'balance.html' if 'Reload Balance' is clicked
-      if (item.textContent === 'Reload Balance') {
-        window.location.href = 'balance.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'North Bound') {
-        window.location.href = 'dashboard.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'South Bound') {
-        window.location.href = 'southb.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'Offenders') {
-        window.location.href = 'offenders.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'Register Vehicle') {
-        window.location.href = 'add_vehicle.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'Fine Payment History') {
-        window.location.href = 'fine_history.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'Register Terminal Operator') {
-        window.location.href = 'add_tOperator.html'; // Redirect to balance.html
-      }
-      if (item.textContent === 'Detected Tricycle') {
-        window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
-      }
+        // Remove 'active' class from all items
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+        // Add 'active' class to the clicked item
+        item.classList.add('active');
+
+        // Redirect to appropriate page
+        if (item.textContent === 'Reload Balance') {
+            window.location.href = 'balance.html';
+        }
+        if (item.textContent === 'North Bound') {
+            window.location.href = 'dashboard.html';
+        }
+        if (item.textContent === 'South Bound') {
+            window.location.href = 'southb.html';
+        }
+        if (item.textContent === 'Offenders') {
+            window.location.href = 'offenders.html';
+        }
+        if (item.textContent === 'Register Vehicle') {
+            window.location.href = 'add_vehicle.html';
+        }
+        if (item.textContent === 'Load History') {
+            window.location.href = 'load_history.html';
+        }
+        if (item.textContent === 'Register Terminal Operator') {
+            window.location.href = 'add_tOperator.html'; // Redirect to balance.html
+          }
+          if (item.textContent === 'Detected Tricycle') {
+            window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
+          }
     });
-  });
+});

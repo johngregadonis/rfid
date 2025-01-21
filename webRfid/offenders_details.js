@@ -12,7 +12,7 @@ if (operator) {
   // Fetch and display balance change logs for the selected operator
   async function fetchBalanceChangeLogs() {
     try {
-      const response = await fetch(`http://192.168.171.70:5000/get-balance-change?bodyNumber=${encodeURIComponent(operator.bodyNumber)}`);
+      const response = await fetch(`http://localhost:5000/get-balance-change?bodyNumber=${encodeURIComponent(operator.bodyNumber)}`);
       if (!response.ok) {
         throw new Error('Failed to fetch balance change logs');
       }
@@ -68,4 +68,101 @@ if (operator) {
 // Go back to the previous page
 function goBack() {
   window.history.back();
+}
+
+// Open the modal
+function openModal() {
+  document.getElementById("modal-overlay").style.display = "block";
+  document.getElementById("pay-fine-modal").style.display = "block";
+}
+
+// Close the modal
+function closeModal() {
+  document.getElementById("modal-overlay").style.display = "none";
+  document.getElementById("pay-fine-modal").style.display = "none";
+}
+
+// Show notification
+function showNotification(message) {
+  const notificationBox = document.getElementById("notification-box");
+  const notificationMessage = document.getElementById("notification-message");
+  notificationMessage.textContent = message;
+  notificationBox.style.display = "flex";
+}
+
+// Close notification
+document.getElementById("close-notification").addEventListener("click", () => {
+  document.getElementById("notification-box").style.display = "none";
+});
+
+// Placeholder for addBalanceToDB function
+async function addBalanceToDB() {
+  const operator = JSON.parse(localStorage.getItem('selectedOperator'));
+  const bodyNumber = operator ? operator.bodyNumber : null; // Get bodyNumber from the stored operator
+
+  const amount = parseFloat(document.getElementById('balanceInput').value);  // This is the total amount input from the modal
+
+  if (!bodyNumber) {
+    showNotification('No body number found. Please try again.');
+    return;
+  }
+
+  if (isNaN(amount) || amount <= 0) {
+    showNotification('Please enter a valid amount.');
+    return;
+  }
+
+  const fineAmount = 50; // Fixed fine amount
+  const balanceAmount = amount - fineAmount; // Calculate the balance amount
+
+  try {
+    // 1. Save the fine payment to the database
+    const fineResponse = await fetch('http://localhost:5000/save-fine-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        bodyNumber,
+        amount: fineAmount, // The fine amount to save
+      }),
+    });
+
+    const fineResponseText = await fineResponse.text();
+    const fineData = JSON.parse(fineResponseText);
+    if (!fineResponse.ok || !fineData.success) {
+      showNotification(fineData.message || 'Failed to save fine payment.');
+      return;
+    }
+
+    console.log('Fine payment saved successfully:', fineData);
+
+    if (balanceAmount > 0) {
+      const balanceResponse = await fetch('http://localhost:5000/update-balance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bodyNumber,
+          amount: balanceAmount, // The remaining balance to update
+        }),
+      });
+
+      const balanceResponseText = await balanceResponse.text();
+      const balanceData = JSON.parse(balanceResponseText);
+      if (!balanceResponse.ok || !balanceData.success) {
+        showNotification(balanceData.message || 'Failed to update balance.');
+        return;
+      }
+
+      console.log('Balance updated successfully:', balanceData);
+    }
+
+    showNotification('Payment processed successfully.');
+    closeModal(); // Close the modal after successful processing
+  } catch (error) {
+    console.error('Error processing payment:', error);
+    showNotification('An error occurred while processing the payment.');
+  }
 }

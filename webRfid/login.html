@@ -61,6 +61,7 @@
       text-align: center;
       margin-bottom: 15px;
       color: #333;
+      font-size: 28px;
     }
 
     .input-box {
@@ -123,7 +124,7 @@
   <!-- Login Form -->
   <div class="login-container">
     <h2>Terminal Operator</h2>
-    <form id="loginForm" action="http://192.168.171.70:5000/login" method="POST">
+    <form id="loginForm" action="http://localhost:5000/login" method="POST">
       <div class="input-box">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -136,7 +137,7 @@
         <input type="submit" value="Login">
       </div>
     </form>
-    <p>Don't have an account? <a href="adduserr.html">Sign up</a>.</p>
+    
   </div>
 </body>
 <script src="login.js"></script> 

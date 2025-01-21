@@ -22,6 +22,15 @@ document.querySelectorAll('.menu-item').forEach(item => {
       if (item.textContent === 'Load History') {
         window.location.href = 'load_history.html'; // Redirect to balance.html
       }
+      if (item.textContent === 'Fine Payment History') {
+        window.location.href = 'fine_history.html'; // Redirect to balance.html
+      }
+      if (item.textContent === 'Register Terminal Operator') {
+        window.location.href = 'add_tOperator.html'; // Redirect to balance.html
+      }
+      if (item.textContent === 'Detected Tricycle') {
+        window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
+      }
     });
   });
   
@@ -31,7 +40,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
   // Fetch the vehicle operator data from the server
   async function fetchVehicleOperators() {
     try {
-      const response = await fetch('http://192.168.171.70:5000/get-vehicle-operators');
+      const response = await fetch('http://localhost:5000/get-vehicle-operators');
       const data = await response.json();
   
       if (Array.isArray(data) && data.length > 0) {

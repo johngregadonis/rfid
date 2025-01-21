@@ -71,7 +71,9 @@ app.post('/login', (req, res) => {
 
 // Signup route
 app.post('/signup', async (req, res) => {
-  const { fullname, username, email, number, password, confirmPassword, gender } = req.body;
+  const { fullname, username, email, number, password, confirmPassword } = req.body;
+
+  console.log('Phone Number Received:', number); // Debug log
 
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match' });
@@ -81,10 +83,10 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = `
-      INSERT INTO users (fullname, username, email, phone_number, password, gender)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO users (fullname, username, email, phone_number, password)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *`;
-    const result = await pool.query(query, [fullname, username, email, number, hashedPassword, gender]);
+    const result = await pool.query(query, [fullname, username, email, number, hashedPassword]);
 
     const savedUser = result.rows[0];
     delete savedUser.password;
@@ -96,11 +98,12 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+
 // --- RFID and Vehicle Operator Routes ---
 
 // --- Registration Routes ---
 app.post('/register', async (req, res) => {
-  const { name, contact, address, bodyNumber, password, confirmPassword, uid, balance } = req.body;
+  const { name, bodyNumber, password, balance, confirmPassword, uid, barangay, address} = req.body;
 
   
 
@@ -110,9 +113,9 @@ app.post('/register', async (req, res) => {
 
   try {
     const query = `
-      INSERT INTO vehicle_operators (name, contact, address, body_number, password, uid, balance)
+      INSERT INTO vehicle_operators (name, body_number, password, balance, uid, barangay, address)
       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
-    const values = [name, contact, address, bodyNumber, password, uid, balance];
+    const values = [name, bodyNumber, password, balance, uid, barangay, address];
 
     await pool.query(query, values);
 
@@ -133,7 +136,7 @@ app.post('/rfid', async (req, res) => {
 
   try {
     // Step 1: Find the matching UID in the vehicle_operators table
-    const findQuery = 'SELECT id, balance FROM vehicle_operators WHERE uid = $1';
+    const findQuery = 'SELECT id, balance, body_number FROM vehicle_operators WHERE uid = $1';
     const findResult = await pool.query(findQuery, [uid]);
 
     if (findResult.rows.length === 0) {
@@ -142,11 +145,65 @@ app.post('/rfid', async (req, res) => {
 
     const vehicleOperatorId = findResult.rows[0].id;
     const currentBalance = parseFloat(findResult.rows[0].balance);
+    const bodyNumber = findResult.rows[0].body_number;
 
-    // Step 2: Deduct 5 pesos regardless of balance
+    // Step 2: Get the current date and time
+    const now = new Date();
+    const timeDetected = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
+    const dateDetected = now.toISOString().split('T')[0];  // Get YYYY-MM-DD
+
+    // Step 3: Check if UID was detected previously today
+    const checkDetectionQuery = `
+      SELECT time_detected, times_detected 
+      FROM detected_uid 
+      WHERE uid = $1 AND date_detected = $2 
+      ORDER BY time_detected DESC LIMIT 1;
+    `;
+    const detectionResult = await pool.query(checkDetectionQuery, [uid, dateDetected]);
+
+    // Step 4: Deduct balance after 1 minute or if it's a fresh detection
+    let deductionMessage = null;
+
+    if (detectionResult.rows.length > 0) {
+      const lastDetectionTime = detectionResult.rows[0].time_detected;
+      const lastDetectionDate = `${dateDetected} ${lastDetectionTime}`;
+      const lastDetectionDateObj = new Date(lastDetectionDate);
+
+      const timeDifference = (now - lastDetectionDateObj) / 1000 / 60; // Time difference in minutes
+
+      // If detected again within 1 minute, no deduction
+      if (timeDifference < 1) {
+        deductionMessage = `Already detected within 1 minute. Current balance: ₱${currentBalance}`;
+
+        // Log the detection even if no deduction happens
+        const insertBalanceLogQuery = `
+          INSERT INTO balance_change_log (vehicle_operator_id, balance, date_arrival, time_arrival)
+          VALUES ($1, $2, $3, $4);
+        `;
+        await pool.query(insertBalanceLogQuery, [vehicleOperatorId, currentBalance, dateDetected, timeDetected]);
+
+        // Prepare the response without deduction
+        const response = {
+          uid,
+          currentBalance,
+          message: deductionMessage,
+        };
+
+        // Increment times_detected even if no deduction happens
+        await pool.query(`
+          UPDATE detected_uid
+          SET times_detected = times_detected + 1, time_detected = $1
+          WHERE uid = $2 AND date_detected = $3;
+        `, [timeDetected, uid, dateDetected]);
+
+        return res.status(200).json(response);
+      }
+    }
+
+    // Deduct 5 pesos regardless of balance
     const updateQuery = `
-      UPDATE vehicle_operators
-      SET balance = balance - 5
+      UPDATE vehicle_operators 
+      SET balance = balance - 5 
       WHERE uid = $1
       RETURNING balance;
     `;
@@ -154,33 +211,55 @@ app.post('/rfid', async (req, res) => {
 
     const newBalance = updateResult.rows[0].balance;
 
-    // Step 3: Determine the message based on the new balance
-    let message = null;
+    // Step 5: Prepare the message based on new balance
     if (newBalance < 0) {
-      message = 'You violated the ticketing regulation, visit the terminal operator.';
+      deductionMessage = 'You violated the ticketing regulation, visit the terminal operator.';
     } else if (currentBalance >= 5) {
-      message = '₱5.00 was deducted from your balance.';
+      deductionMessage = '₱5.00 was deducted from your balance.';
     }
 
-    // Step 4: Insert the message into the deduct_messages table if there is a message
-    if (message) {
+    // Step 6: Insert the message into the deduct_messages table if there is a message
+    if (deductionMessage) {
       const insertMessageQuery = `
         INSERT INTO deduct_messages (vehicle_operator_id, deduct_message)
         VALUES ($1, $2);
       `;
-      await pool.query(insertMessageQuery, [vehicleOperatorId, message]);
-      console.log(`Message inserted for UID ${uid}: "${message}"`);
+      await pool.query(insertMessageQuery, [vehicleOperatorId, deductionMessage]);
+      console.log(`Message inserted for UID ${uid}: "${deductionMessage}"`);
     }
+
+    // Step 7: Insert detection data into detected_uid table if not already inserted
+    if (detectionResult.rows.length === 0) {
+      const detectionInsertQuery = `
+        INSERT INTO detected_uid (vehicle_operator_id, uid, body_number, time_detected, date_detected, times_detected)
+        VALUES ($1, $2, $3, $4, $5, $6);
+      `;
+      await pool.query(detectionInsertQuery, [vehicleOperatorId, uid, bodyNumber, timeDetected, dateDetected, 1]);
+    } else {
+      // If detected again, increment times_detected (this happens regardless of deduction)
+      const updatedTimesDetected = detectionResult.rows[0].times_detected + 1;
+
+      const updateDetectionQuery = `
+        UPDATE detected_uid 
+        SET times_detected = $1, time_detected = $2
+        WHERE uid = $3 AND date_detected = $4;
+      `;
+      await pool.query(updateDetectionQuery, [updatedTimesDetected, timeDetected, uid, dateDetected]);
+    }
+
+    // Insert balance change log for deducted balance
+    const insertBalanceLogQuery = `
+      INSERT INTO balance_change_log (vehicle_operator_id, balance, date_arrival, time_arrival)
+      VALUES ($1, $2, $3, $4);
+    `;
+    await pool.query(insertBalanceLogQuery, [vehicleOperatorId, newBalance, dateDetected, timeDetected]);
 
     // Prepare the response
     const response = {
       uid,
       newBalance,
+      message: deductionMessage,
     };
-
-    if (message) {
-      response.message = message;
-    }
 
     res.status(200).json(response);
   } catch (err) {
@@ -188,7 +267,6 @@ app.post('/rfid', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
-
 
 
 // Endpoint to fetch recent RFID logs
@@ -328,8 +406,80 @@ try {
 }
 });
 
+// Save fine payment endpoint
+app.post('/save-fine-payment', async (req, res) => {
+  const { bodyNumber, amount } = req.body;
+
+  if (!bodyNumber || typeof amount !== 'number' || amount <= 0) {
+    return res.status(400).json({ success: false, message: 'Invalid input data.' });
+  }
+
+  try {
+    const vehicleOperator = await pool.query(
+      'SELECT id FROM vehicle_operators WHERE body_number = $1',
+      [bodyNumber]
+    );
+
+    if (vehicleOperator.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Vehicle operator not found.' });
+    }
+
+    const vehicleOperatorId = vehicleOperator.rows[0].id;
+
+    const now = new Date();
+    const datePaid = now.toISOString().split('T')[0];
+    const timePaid = now.toTimeString().split(' ')[0];
+
+    await pool.query(
+      `INSERT INTO fine_payment (vehicle_operator_id, body_number, date_paid, time_paid, amount)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [vehicleOperatorId, bodyNumber, datePaid, timePaid, amount]
+    );
+
+    res.status(200).json({ success: true, message: 'Fine payment saved successfully.' });
+  } catch (error) {
+    console.error('Error saving fine payment:', error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+});
+
+// Endpoint to fetch fine_payment data
+app.get('/fine-payments', async (req, res) => {
+  try {
+    const query = 'SELECT body_number, date_paid, time_paid, amount FROM fine_payment';
+    const result = await pool.query(query);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error fetching fine_payment data:', error);
+    res.status(500).send('An error occurred while fetching the data.');
+  }
+});
+
+app.get('/detected-tricycles', async (req, res) => {
+  try {
+    console.log('Fetching detected tricycles...');
+    
+    const query = `
+      SELECT body_number, time_detected, date_detected, times_detected 
+      FROM detected_uid 
+      ORDER BY date_detected DESC, time_detected DESC
+    `;
+    const result = await pool.query(query);
+
+    if (result.rows.length === 0) {
+      console.log('No detected tricycles found.');
+    } else {
+      console.log('Data retrieved:', result.rows);
+    }
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error('Error fetching detected tricycles:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
 
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server running on http://192.168.171.70:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

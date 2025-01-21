@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Load History</title>
-    <link rel="stylesheet" href="load_history.css">
+    <link rel="stylesheet" href="detected_tricycle.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -21,9 +21,11 @@
               <li class="menu-item">Register Vehicle</li>
               <li class="menu-item">Register Terminal Operator</li>
               <li class="menu-item">Reload Balance</li>
-              <li class="menu-item active">Load History</li>
+              <li class="menu-item">Load History</li>
               <li class="menu-item">Fine Payment History</li>
-              <li class="menu-item">Detected Tricycle</li>
+              <li class="menu-item active">Detected Tricycle</li>
+              
+              
             </ul>
           </div>
 
@@ -31,31 +33,32 @@
      
     <div class="container">
 
-        <h1>Load History</h1>
+        <h1>DETECTED TRICYCLE</h1>
 
         <div class="search-bar">
             <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
         </div>
         
 
-        <table id="loadHistoryTable" >
+        <table>
             <thead>
                 <tr>
                     <th>Body Number</th>
-                    <th>Amount</th>
-                    <th>Transaction Date</th>
-                    <th>Remarks</th>
+                    <th>Date Detected</th>
+                    <th>Times Detected</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Rows will be dynamically inserted here -->
+            <tbody id="tricycle-data">
+                <!-- Data will be inserted here dynamically -->
             </tbody>
         </table>
 
-        <div class="no-history">No load history available.</div>
+        <p id="total-times">Total Times Detected: 0</p>
+        
     </div>
 </div>
-    <script src="load_history.js"></script>
+
+    <script src="detected_tricycle.js"></script>
     
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Load History</title>
-    <link rel="stylesheet" href="load_history.css">
+    <title>Fine Payment History</title>
+    <link rel="stylesheet" href="fine_history.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -21,8 +21,8 @@
               <li class="menu-item">Register Vehicle</li>
               <li class="menu-item">Register Terminal Operator</li>
               <li class="menu-item">Reload Balance</li>
-              <li class="menu-item active">Load History</li>
-              <li class="menu-item">Fine Payment History</li>
+              <li class="menu-item ">Load History</li>
+              <li class="menu-item active">Fine Payment History</li>
               <li class="menu-item">Detected Tricycle</li>
             </ul>
           </div>
@@ -31,7 +31,7 @@
      
     <div class="container">
 
-        <h1>Load History</h1>
+        <h1>Fine Payment History</h1>
 
         <div class="search-bar">
             <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
@@ -42,9 +42,9 @@
             <thead>
                 <tr>
                     <th>Body Number</th>
+                    <th>Time Paid</th>
+                    <th>Date Paid</th>
                     <th>Amount</th>
-                    <th>Transaction Date</th>
-                    <th>Remarks</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,10 +52,10 @@
             </tbody>
         </table>
 
-        <div class="no-history">No load history available.</div>
+        <div class="no-history">No fine payment history available.</div>
     </div>
 </div>
-    <script src="load_history.js"></script>
+    <script src="fine_history.js"></script>
     
 </body>
 </html>

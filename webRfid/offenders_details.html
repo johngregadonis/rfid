@@ -9,18 +9,17 @@
 </head>
 <body>
   <div class="container">
-    <div class="sidebar" id="sidebar">
-      <a class="back-arrow" onclick="goBack()">
-        <i class="fas fa-arrow-left"></i>
-      </a>
+    <a class="back-arrow" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="content-container">
       <div class="op-list">
         <p><strong>Name:</strong> <span id="name"></span></p>
         <p><strong>Body Number:</strong> <span id="body-number"></span></p>
         <p><strong>UID:</strong> <span id="uid"></span></p>
       </div>
-    </div>
 
-    <div class="content-container">
       <div class="table-container">
         <div class="table-wrapper">
           <table class="styled-table">
@@ -38,17 +37,47 @@
         </div>
       </div>
 
-      <div class="penalty-section">
-        <ul>
-          <li>Penalty: <span id="penalty">50.00</span></li>
-          <li>Unpaid Ticket: <span id="unpaid-ticket"></span></li>
-          <li>Initial Load: <span id="initial-load">50.00</span></li>
-        </ul>
-        <hr>
-        <p><strong>Amount To Be Paid:</strong> <span id="total-amount"></span></p>
+      <div class="penalty-container">
+        <div class="penalty-section">
+          <ul>
+            <li>Fine: <span id="penalty">50.00</span></li>
+            <li>Unpaid Ticket: <span id="unpaid-ticket"></span></li>
+            <li>Initial Load: <span id="initial-load">50.00</span></li>
+          </ul>
+          <hr>
+          <p><strong>Amount To Be Paid:</strong> <span id="total-amount"></span></p>
+        </div>
+        <button class="pay-fine-button" onclick="openModal()">Pay Fine</button>
       </div>
+      
     </div>
   </div>
+
+<!-- Overlay for blur effect -->
+<div id="modal-overlay" class="modal-overlay"></div>
+
+<!-- Modal for adding balance -->
+<div id="pay-fine-modal" class="modal">
+  <div class="modal-content">
+    <h2>Pay Fine</h2>
+    <label for="balanceInput">Amount (₱): </label>
+    <input type="number" class="amount" id="balanceInput" min="1" step="0.01" placeholder="Enter amount">
+    <input type="hidden" id="bodyNumberInput">
+    <br><br>
+    <div class="button-container">
+      <button onclick="addBalanceToDB()">Add</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="notification-box" class="notification-overlay" style="display: none;">
+  <div class="notification-content">
+    <span id="notification-message"></span>
+    <button id="close-notification">Close</button>
+  </div>
+</div>
+
   <script src="offenders_details.js"></script>
 </body>
 </html>
