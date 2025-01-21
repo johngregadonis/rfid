@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keone Information</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Main content area styles */
+        .main-content {
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 400px;
+            margin-right: 800px;
+         
+
+        }
+
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Balance color coding */
+        .balance-green {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .balance-yellow {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .balance-red {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Body No.</th>
+                    <th>Operator</th>
+                    <th>UID</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr onclick="window.location.href='nbound-info.html'">
+                    <td>456</td>
+                    <td>Andres Dimaguiba</td>
+                    <td>0x1F2B3C4D5E6Z</td>
+                    <td class="balance-green"></td>
+                </tr>
+                <tr>
+                    <td>564</td>
+                    <td>Raul Araba</td>
+                    <td>0x1F2B3C4D5E7X</td>
+                    <td class="balance-yellow"></td>
+                </tr>
+                <tr>
+                    <td>645</td>
+                    <td>Pedro Penduko</td>
+                    <td>0x1F2B3C4D5F8Y</td>
+                    <td class="balance-yellow"></td>
+                </tr>
+                <tr>
+                    <td>546</td>
+                    <td>Trae Young</td>
+                    <td>0x1F2B3C4D5F69</td>
+                    <td class="balance-red"></td>
+                </tr>
+                <tr>
+                    <td>654</td>
+                    <td>Auncle Ben</td>
+                    <td>0x1F2B3C4D5F51</td>
+                    <td class="balance-green"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

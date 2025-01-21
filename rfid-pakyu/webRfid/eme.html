@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Vehicle</title>
+  <link rel="stylesheet" href="eme.css">
+</head>
+<body>
+  
+  <div class="containers">
+    <div class="sidebar">
+      <div class="logo">
+        <img src="images/lgo.png" alt="Logo">
+      </div>
+      <ul class="menu">
+        <li class="menu-item">North Bound</li>
+        <li class="menu-item">South Bound</li>
+        <li class="menu-item">Offenders</li>
+        <li class="menu-item active">Register Vehicle</li>
+        <li class="menu-item">Reload Balance</li>
+        <li class="menu-item">Load History</li>
+      </ul>
+    </div>
+
+    <div class="container">
+      <!-- Title section -->
+      <div class="title">Vehicle Operator Registration</div>
+      <div class="content">
+        <!-- Registration form -->
+        <form action="http://192.168.1.3:5000/register" method="POST">
+          <div class="user-details">
+            <div class="input-box">
+              <span class="details">Full Name</span>
+              <input type="text" name="name" placeholder="Enter your name" required>
+            </div>
+
+              <!-- Searchable dropdown for city and barangay -->
+              <div class="input-box">
+                <label for="city">Select City/Municipality:</label>
+                <select id="city" class="dropdown" name="address">
+                  <option value="">Select a city...</option>
+                  <option value="BoronganCity">Borongan City</option>
+                  <option value="Maydolong">Maydolong</option> 
+                  <option value="SanJulian">San Julian</option>
+                </select>
+              </div>
+
+            <div class="input-box">
+              <span class="details">Body Number</span>
+              <input type="text" name="bodyNumber" placeholder="Enter your body number" required>
+            </div>
+
+            
+            <div class="input-box">
+                <label for="barangay">Select Barangay:</label>
+                <select id="barangay" class="dropdown" name="barangay">
+                  <option value="">Select a barangay...</option>
+                </select>
+              </div>
+
+            <div class="input-box">
+              <span class="details">Password</span>
+              <input type="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="input-box">
+              <span class="details">Confirm Password</span>
+              <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+
+            <div class="input-box">
+              <span class="details">UID (Unique Identifier)</span>
+              <input type="text" name="uid" placeholder="Enter UID" required>
+            </div>
+
+            <div class="input-box">
+              <span class="details">Load Balance Amount</span>
+              <input type="text" name="balance" placeholder="Enter Load Balance Amount" required>
+            </div>
+
+          
+
+          </div>
+
+          <div class="button">
+            <input type="submit" value="Register">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification-box" class="notification-overlay" style="display: none;">
+    <div class="notification-content">
+      <span id="notification-message"></span>
+      <button id="close-notification">Close</button>
+    </div>
+  </div>
+
+  <script src="eme.js"></script>
+</body>
+</html>
