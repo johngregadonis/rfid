@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keone Information with Bottom-right Table</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Styles */
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            height: 100%;
+            width: 260px;
+            background: #4CD080;
+            padding: 40px;
+            z-index: 99;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Vertically centers the content */
+            align-items: center; /* Horizontally centers the content */
+        }
+
+        /* Title in Sidebar */
+        .sidebar h2 {
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Information in Sidebar */
+        .sidebar .info {
+            text-align: left;
+        }
+
+        .sidebar .info p {
+            color: white;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        /* Back Button (Arrow) */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #4CD080;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Perfect circle */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .back-button::before {
+            content: '\2190'; /* Left arrow symbol */
+            font-size: 24px;
+        }
+
+        /* Hover Effect on Back Button */
+        .back-button:hover {
+            background-color: #3a9f6e; /* Darker green on hover */
+        }
+
+        /* Main content area styles */
+        .main-content {
+            margin-left: 280px; /* Adjusted for sidebar width */
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .last-info {
+            margin-top: 50px;
+        }
+
+        .last-info p {
+            margin-bottom: 25px;
+        }
+
+        /* Small Table Styles */
+        .small-table {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 20%; /* Set smaller width to make the table smaller */
+            border-collapse: collapse;
+            font-size: 12px; /* Keep the font size the same */
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .small-table td {
+            padding: 4px 6px; /* Adjust the padding to make cells tighter, but keeping font size same */
+            text-align: left;
+        }
+        /* Horizontal line above the last row */
+        tr:last-child {
+            border-top: 2px solid black;
+        }
+
+        tr:last-child td {
+            border-bottom: none; /* Remove the bottom border from the last row */
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar with Personal Info -->
+    <aside class="sidebar">
+        <!-- Back Button (Arrow) -->
+        <button class="back-button" onclick="window.history.back();"></button>
+
+        <div class="info">
+            <p><strong>Body No.:</strong> 123</p>
+            <p><strong>Operator:</strong> Joemark Velasco</p>
+            <p><strong>UID:</strong> 0x1F2B3C4D5E6F</p>
+            <p><strong>Balance:</strong> PHP 0.00</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="header">
+            <h3 class="extra">AS OF OCTOBER 14</h3>
+            <h3>ROUTE: TERMINAL-MAY-ESSU-TAB</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>TIME DEPARTURE</th>
+                    <th>TIME ARRIVAL AT THE CHECKPOINT(PEPELITAN)</th>
+                    <th>BALANCE</th>
+                    <th>PENALTY</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>3:30 PM</td>
+                    <td>4:00 PM</td>
+                    <td>PHP -5.00</td>
+                    <td>-50</td>
+                </tr>
+                <tr>
+                    <td>1:30 AM</td>
+                    <td>2:00 PM</td>
+                    <td>PHP 0.00</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>1:00 AM</td>
+                    <td>12:30 AM</td>
+                    <td>PHP 5.00</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+
+    <!-- Small Table Positioned in Bottom-right Corner -->
+    <table class="small-table">
+        <tbody>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+            </tr>
+            <tr>
+                <td>Data 3</td>
+                <td>Data 4</td>
+            </tr>
+            <tr>
+                <td>Data 5</td>
+                <td>Data 6</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
