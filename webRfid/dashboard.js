@@ -53,10 +53,10 @@ async function fetchVehicleOperators() {
         vehicleList += 
           `<tr class="body-number-row" 
                data-body-number="${operator.body_number}" 
-               data-name="${operator.name}" 
+               data-balance="${operator.balance}" 
                data-uid="${operator.uid}">
             <td>${operator.body_number}</td>
-            <td>${operator.name}</td>
+           
             <td>${operator.uid}</td>
             <td class="${balanceClass}"></td>
           </tr>`;
@@ -67,21 +67,21 @@ async function fetchVehicleOperators() {
       document.querySelectorAll('.body-number-row').forEach(row => {
         row.addEventListener('click', () => {
           const bodyNumber = row.getAttribute('data-body-number');
-          const name = row.getAttribute('data-name');
+          const balance = row.getAttribute('data-balance');
           const uid = row.getAttribute('data-uid');
 
           // Save the details to localStorage or sessionStorage to share across pages
-          localStorage.setItem('selectedOperator', JSON.stringify({ bodyNumber, name, uid }));
+          localStorage.setItem('selectedOperator', JSON.stringify({ bodyNumber, balance, uid }));
 
           // Redirect to the sidebar page
           window.location.href = 'operator_details.html';
         });
       });
     } else {
-      document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">No operators found.</td></tr>';
+      document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="3">No operators found.</td></tr>';
     }
   } catch (error) {
     console.error('Error fetching data:', error);
-    document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">Failed to load vehicle operators.</td></tr>';
+    document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="3">Failed to load vehicle operators.</td></tr>';
   }
 }

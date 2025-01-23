@@ -18,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadHistory.push({ ...record, localDate });
                 });
 
-                // Sort loadHistory by date
-                loadHistory.sort((a, b) => new Date(a.date_paid) - new Date(b.date_paid));
+                // Sort loadHistory by date (latest date first)
+loadHistory.sort((a, b) => new Date(b.date_paid) - new Date(a.date_paid));
+
 
                 // Create table rows and group totals by date
                 let currentDay = '';

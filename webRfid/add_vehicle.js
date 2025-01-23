@@ -114,3 +114,26 @@ document.getElementById('close-notification').addEventListener('click', () => {
   document.getElementById('notification-box').style.display = 'none';
   document.querySelector('form').reset();
 });
+
+document.querySelector('form').addEventListener('submit', function (e) {
+  const uidInput = document.querySelector('input[name="uid"]');
+  const balanceInput = document.querySelector('input[name="balance"]');
+  const uid = uidInput.value.trim();
+  const balance = balanceInput.value.trim();
+  
+  // Validate UID (exactly 4 digits)
+  if (!/^\d{4}$/.test(uid)) {
+    e.preventDefault();
+    alert("UID must be exactly 4 digits.");
+    uidInput.focus();
+    return;
+  }
+  
+  // Validate Balance (numeric with up to 2 decimal places)
+  if (!/^\d+(\.\d{1,2})?$/.test(balance)) {
+    e.preventDefault();
+    alert("Balance must be a numeric value with up to 2 decimal places.");
+    balanceInput.focus();
+    return;
+  }
+});

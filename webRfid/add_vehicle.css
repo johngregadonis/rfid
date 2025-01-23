@@ -280,3 +280,9 @@ select {
 .dropdown {
   width: 100%;
 }
+
+.warning {
+  color: red;
+  font-size: 14px;
+  display: none; /* Hidden by default */
+}

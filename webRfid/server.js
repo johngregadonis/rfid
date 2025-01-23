@@ -147,63 +147,10 @@ app.post('/rfid', async (req, res) => {
     const currentBalance = parseFloat(findResult.rows[0].balance);
     const bodyNumber = findResult.rows[0].body_number;
 
-    // Step 2: Get the current date and time
-    const now = new Date();
-    const timeDetected = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
-    const dateDetected = now.toISOString().split('T')[0];  // Get YYYY-MM-DD
-
-    // Step 3: Check if UID was detected previously today
-    const checkDetectionQuery = `
-      SELECT time_detected, times_detected 
-      FROM detected_uid 
-      WHERE uid = $1 AND date_detected = $2 
-      ORDER BY time_detected DESC LIMIT 1;
-    `;
-    const detectionResult = await pool.query(checkDetectionQuery, [uid, dateDetected]);
-
-    // Step 4: Deduct balance after 1 minute or if it's a fresh detection
-    let deductionMessage = null;
-
-    if (detectionResult.rows.length > 0) {
-      const lastDetectionTime = detectionResult.rows[0].time_detected;
-      const lastDetectionDate = `${dateDetected} ${lastDetectionTime}`;
-      const lastDetectionDateObj = new Date(lastDetectionDate);
-
-      const timeDifference = (now - lastDetectionDateObj) / 1000 / 60; // Time difference in minutes
-
-      // If detected again within 1 minute, no deduction
-      if (timeDifference < 1) {
-        deductionMessage = `Already detected within 1 minute. Current balance: ₱${currentBalance}`;
-
-        // Log the detection even if no deduction happens
-        const insertBalanceLogQuery = `
-          INSERT INTO balance_change_log (vehicle_operator_id, balance, date_arrival, time_arrival)
-          VALUES ($1, $2, $3, $4);
-        `;
-        await pool.query(insertBalanceLogQuery, [vehicleOperatorId, currentBalance, dateDetected, timeDetected]);
-
-        // Prepare the response without deduction
-        const response = {
-          uid,
-          currentBalance,
-          message: deductionMessage,
-        };
-
-        // Increment times_detected even if no deduction happens
-        await pool.query(`
-          UPDATE detected_uid
-          SET times_detected = times_detected + 1, time_detected = $1
-          WHERE uid = $2 AND date_detected = $3;
-        `, [timeDetected, uid, dateDetected]);
-
-        return res.status(200).json(response);
-      }
-    }
-
-    // Deduct 5 pesos regardless of balance
+    // Step 2: Deduct 5 pesos regardless of balance
     const updateQuery = `
-      UPDATE vehicle_operators 
-      SET balance = balance - 5 
+      UPDATE vehicle_operators
+      SET balance = balance - 5
       WHERE uid = $1
       RETURNING balance;
     `;
@@ -211,55 +158,62 @@ app.post('/rfid', async (req, res) => {
 
     const newBalance = updateResult.rows[0].balance;
 
-    // Step 5: Prepare the message based on new balance
+    // Step 3: Determine the message based on the new balance
+    let message = null;
     if (newBalance < 0) {
-      deductionMessage = 'You violated the ticketing regulation, visit the terminal operator.';
+      message = 'You violated the ticketing regulation, visit the terminal operator.';
     } else if (currentBalance >= 5) {
-      deductionMessage = '₱5.00 was deducted from your balance.';
+      message = '₱5.00 was deducted from your balance.';
     }
 
-    // Step 6: Insert the message into the deduct_messages table if there is a message
-    if (deductionMessage) {
+    // Step 4: Insert the message into the deduct_messages table if there is a message
+    if (message) {
       const insertMessageQuery = `
         INSERT INTO deduct_messages (vehicle_operator_id, deduct_message)
         VALUES ($1, $2);
       `;
-      await pool.query(insertMessageQuery, [vehicleOperatorId, deductionMessage]);
-      console.log(`Message inserted for UID ${uid}: "${deductionMessage}"`);
+      await pool.query(insertMessageQuery, [vehicleOperatorId, message]);
+      console.log(`Message inserted for UID ${uid}: "${message}"`);
     }
 
-    // Step 7: Insert detection data into detected_uid table if not already inserted
-    if (detectionResult.rows.length === 0) {
-      const detectionInsertQuery = `
-        INSERT INTO detected_uid (vehicle_operator_id, uid, body_number, time_detected, date_detected, times_detected)
-        VALUES ($1, $2, $3, $4, $5, $6);
-      `;
-      await pool.query(detectionInsertQuery, [vehicleOperatorId, uid, bodyNumber, timeDetected, dateDetected, 1]);
-    } else {
-      // If detected again, increment times_detected (this happens regardless of deduction)
-      const updatedTimesDetected = detectionResult.rows[0].times_detected + 1;
+    // Step 5: Insert detection data into detected_uid table
+    const now = new Date();
+    const timeDetected = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
+    const dateDetected = now.toISOString().split('T')[0];  // Get YYYY-MM-DD
 
+    // Check if UID was detected before
+    const checkDetectionQuery = `
+      SELECT times_detected FROM detected_uid WHERE uid = $1 AND date_detected = $2;
+    `;
+    const detectionResult = await pool.query(checkDetectionQuery, [uid, dateDetected]);
+
+    if (detectionResult.rows.length > 0) {
+      // Update existing detection count
+      const updatedTimesDetected = detectionResult.rows[0].times_detected + 1;
       const updateDetectionQuery = `
         UPDATE detected_uid 
         SET times_detected = $1, time_detected = $2
         WHERE uid = $3 AND date_detected = $4;
       `;
       await pool.query(updateDetectionQuery, [updatedTimesDetected, timeDetected, uid, dateDetected]);
+    } else {
+      // Insert new detection record
+      const insertDetectionQuery = `
+        INSERT INTO detected_uid (vehicle_operator_id, uid, body_number, time_detected, date_detected, times_detected)
+        VALUES ($1, $2, $3, $4, $5, $6);
+      `;
+      await pool.query(insertDetectionQuery, [vehicleOperatorId, uid, bodyNumber, timeDetected, dateDetected, 1]);
     }
-
-    // Insert balance change log for deducted balance
-    const insertBalanceLogQuery = `
-      INSERT INTO balance_change_log (vehicle_operator_id, balance, date_arrival, time_arrival)
-      VALUES ($1, $2, $3, $4);
-    `;
-    await pool.query(insertBalanceLogQuery, [vehicleOperatorId, newBalance, dateDetected, timeDetected]);
 
     // Prepare the response
     const response = {
       uid,
       newBalance,
-      message: deductionMessage,
     };
+
+    if (message) {
+      response.message = message;
+    }
 
     res.status(200).json(response);
   } catch (err) {
@@ -267,6 +221,8 @@ app.post('/rfid', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
+
 
 
 // Endpoint to fetch recent RFID logs
@@ -328,61 +284,67 @@ app.get('/get-balance-change', async (req, res) => {
 
 
 // Add balance and log history
+// Add balance and log history
 app.post('/update-balance', async (req, res) => {
   const { bodyNumber, amount } = req.body;
 
   // Validate input
   if (!bodyNumber || typeof amount !== 'number' || amount <= 0) {
-      console.log('Invalid input:', req.body);
-      return res.status(400).json({ success: false, message: 'Invalid input.' });
+    console.log('Invalid input:', req.body);
+    return res.status(400).json({ success: false, message: 'Invalid input.' });
   }
 
   try {
-      // Step 1: Update the balance in the vehicle_operators table
-      const updateQuery = `
-          UPDATE vehicle_operators 
-          SET balance = balance + $1
-          WHERE body_number = $2
-          RETURNING id, balance;
-      `;
-      const values = [amount, bodyNumber];
-      const result = await pool.query(updateQuery, values);
+    // Disable triggers temporarily to avoid logging into balance_change_log
+    await pool.query('SET session_replication_role = replica;');
 
-      if (result.rows.length === 0) {
-          console.log('Body number not found:', bodyNumber);
-          return res.status(404).json({ success: false, message: 'Body number not found.' });
-      }
+    // Step 1: Update the balance in the vehicle_operators table
+    const updateQuery = `
+      UPDATE vehicle_operators 
+      SET balance = balance + $1
+      WHERE body_number = $2
+      RETURNING id, balance;
+    `;
+    const values = [amount, bodyNumber];
+    const result = await pool.query(updateQuery, values);
 
-      const vehicleOperatorId = result.rows[0].id; // Get the vehicle operator ID
-      const newBalance = parseFloat(result.rows[0].balance); // Convert to a number
-      console.log('Updated balance:', newBalance);
+    // Enable triggers back after the update
+    await pool.query('SET session_replication_role = DEFAULT;');
 
-      // Step 2: Insert a success message into the vehicle_operator_messages table
-      const successMessage = `You've successfully added ${amount} pesos to the balance.`;
-      const insertMessageQuery = `
-          INSERT INTO vehicle_operator_messages (vehicle_operator_id, message)
-          VALUES ($1, $2);
-      `;
-      await pool.query(insertMessageQuery, [vehicleOperatorId, successMessage]);
+    if (result.rows.length === 0) {
+      console.log('Body number not found:', bodyNumber);
+      return res.status(404).json({ success: false, message: 'Body number not found.' });
+    }
 
-      // Step 3: Log the transaction in the load_history table
-      const insertHistoryQuery = `
-          INSERT INTO load_history (body_number, amount, transaction_date, remarks)
-          VALUES ($1, $2, NOW(), $3);
-      `;
-      const remarks = 'Balance updated via UI';
-      await pool.query(insertHistoryQuery, [bodyNumber, amount, remarks]);
+    const vehicleOperatorId = result.rows[0].id; // Get the vehicle operator ID
+    const newBalance = parseFloat(result.rows[0].balance); // Convert to a number
+    console.log('Updated balance:', newBalance);
 
-      // Send the response back to the client
-      const response = { success: true, newBalance, message: successMessage };
-      console.log('Response to frontend:', response);
-      res.status(200).json(response);
+    // Step 2: Insert a success message into the vehicle_operator_messages table
+    const successMessage = `You've successfully added ${amount} pesos to the balance.`;
+    const insertMessageQuery = `
+      INSERT INTO vehicle_operator_messages (vehicle_operator_id, message)
+      VALUES ($1, $2);
+    `;
+    await pool.query(insertMessageQuery, [vehicleOperatorId, successMessage]);
+
+    // Step 3: Log the transaction in the load_history table
+    const insertHistoryQuery = `
+      INSERT INTO load_history (body_number, amount, transaction_date, remarks)
+      VALUES ($1, $2, NOW(), $3);
+    `;
+    const remarks = 'Balance updated via UI';
+    await pool.query(insertHistoryQuery, [bodyNumber, amount, remarks]);
+
+    // Send the response back to the client
+    const response = { success: true, newBalance, message: successMessage };
+    console.log('Response to frontend:', response);
+    res.status(200).json(response);
   } catch (err) {
-      console.error('Error updating balance:', err);
-      res.status(500).json({ success: false, message: 'Internal server error.' });
+    console.error('Error updating balance:', err);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
   }
 });
-
 
 // Endpoint to fetch load history (body_number, amount, transaction_date, remarks)
 app.get('/get-load-history', async (req, res) => {

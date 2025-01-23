@@ -2,7 +2,7 @@
 const operator = JSON.parse(localStorage.getItem('selectedOperator'));
 if (operator) {
   document.getElementById('body-number').textContent = operator.bodyNumber;
-  document.getElementById('name').textContent = operator.name;
+  document.getElementById('balance').textContent = operator.balance;
   document.getElementById('uid').textContent = operator.uid;
 
   // Fetch and display balance change logs for the selected operator
