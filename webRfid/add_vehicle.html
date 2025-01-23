@@ -27,40 +27,37 @@
     </div>
 
     <div class="container">
-      <!-- Title section -->
       <div class="title">Vehicle Owner Registration</div>
       <div class="content">
-        <!-- Registration form -->
-        <form action="http://localhost:5000/register" method="POST">
+        <form id="vehicleForm" action="http://localhost:5000/register" method="POST">
           <div class="user-details">
             <div class="input-box">
               <span class="details">Full Name</span>
               <input type="text" name="name" placeholder="Enter your name" required>
             </div>
 
-              <!-- Searchable dropdown for city and barangay -->
-              <div class="input-box">
-                <label for="city">Select City/Municipality:</label>
-                <select id="city" class="dropdown" name="address">
-                  <option value="">Select a city...</option>
-                  <option value="BoronganCity">Borongan City</option>
-                  <option value="Maydolong">Maydolong</option> 
-                  <option value="SanJulian">San Julian</option>
-                </select>
-              </div>
+            <div class="input-box">
+              <label for="city">Select City/Municipality:</label>
+              <select id="city" class="dropdown" name="address">
+                <option value="">Select a city...</option>
+                <option value="BoronganCity">Borongan City</option>
+                <option value="Maydolong">Maydolong</option> 
+                <option value="SanJulian">San Julian</option>
+              </select>
+            </div>
 
             <div class="input-box">
               <span class="details">Body Number</span>
-              <input type="text" name="bodyNumber" placeholder="Enter your body number" required>
+              <input type="text" id="bodyNumber" name="bodyNumber" placeholder="Enter your body number" required>
+              <small class="error-message"></small>
             </div>
 
-            
             <div class="input-box">
-                <label for="barangay">Select Barangay:</label>
-                <select id="barangay" class="dropdown" name="barangay">
-                  <option value="">Select a barangay...</option>
-                </select>
-              </div>
+              <label for="barangay">Select Barangay:</label>
+              <select id="barangay" class="dropdown" name="barangay">
+                <option value="">Select a barangay...</option>
+              </select>
+            </div>
 
             <div class="input-box">
               <span class="details">Password</span>
@@ -74,16 +71,15 @@
 
             <div class="input-box">
               <span class="details">UID (Unique Identifier)</span>
-              <input type="text" name="uid" placeholder="Enter UID" required>
+              <input type="text" id="uid" name="uid" placeholder="Enter UID" required>
+              <small class="error-message"></small>
             </div>
 
             <div class="input-box">
               <span class="details">Load Balance Amount</span>
-              <input type="text" name="balance" placeholder="Enter Load Balance Amount (₱)" required>
+              <input type="text" id="balance" name="balance" placeholder="Enter Load Balance Amount (₱)" required>
+              <small class="error-message"></small>
             </div>
-
-          
-
           </div>
 
           <div class="button">

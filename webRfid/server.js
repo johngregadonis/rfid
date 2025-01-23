@@ -103,21 +103,30 @@ app.post('/signup', async (req, res) => {
 
 // --- Registration Routes ---
 app.post('/register', async (req, res) => {
-  const { name, bodyNumber, password, balance, confirmPassword, uid, barangay, address} = req.body;
-
-  
+  const { name, bodyNumber, password, balance, confirmPassword, uid, barangay, address } = req.body;
 
   if (password !== confirmPassword) {
     return res.status(400).json({ success: false, message: 'Passwords do not match.' });
   }
 
   try {
+    // Step 1: Insert into vehicle_operators table
     const query = `
       INSERT INTO vehicle_operators (name, body_number, password, balance, uid, barangay, address)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;
+    `;
     const values = [name, bodyNumber, password, balance, uid, barangay, address];
+    const result = await pool.query(query, values);
+    const vehicleOperatorId = result.rows[0].id;
 
-    await pool.query(query, values);
+    // Step 2: Insert into load_history table
+    const loadHistoryQuery = `
+      INSERT INTO load_history (body_number, amount, transaction_date, remarks)
+      VALUES ($1, $2, NOW(), $3);
+    `;
+    const remarks = 'Initial balance added';
+    const loadHistoryValues = [bodyNumber, balance, remarks];
+    await pool.query(loadHistoryQuery, loadHistoryValues);
 
     res.status(200).json({ success: true, message: 'Registration successful!' });
   } catch (err) {
@@ -125,6 +134,7 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ success: false, message: 'Registration failed. Please try again.' });
   }
 });
+
 
 // --- RFID Routes to reduce balance ---
 app.post('/rfid', async (req, res) => {
@@ -284,7 +294,6 @@ app.get('/get-balance-change', async (req, res) => {
 
 
 // Add balance and log history
-// Add balance and log history
 app.post('/update-balance', async (req, res) => {
   const { bodyNumber, amount } = req.body;
 
@@ -333,7 +342,7 @@ app.post('/update-balance', async (req, res) => {
       INSERT INTO load_history (body_number, amount, transaction_date, remarks)
       VALUES ($1, $2, NOW(), $3);
     `;
-    const remarks = 'Balance updated via UI';
+    const remarks = 'Reloaded Successfully';
     await pool.query(insertHistoryQuery, [bodyNumber, amount, remarks]);
 
     // Send the response back to the client
@@ -355,8 +364,8 @@ try {
   // Update remarks for each record
   const updatedRecords = result.rows.map(record => {
     // Check if the remarks need to be updated
-    if (record.remarks === 'Balance updated via UI') {
-      record.remarks = 'Added successfully';  // Update remarks
+    if (record.remarks === 'Reloaded Successfully') {
+       // Update remarks
     }
     return record;
   });

@@ -32,8 +32,8 @@ body {
   padding: 25px 30px;
   border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-  height: 550px;
-  margin-top: 8%;
+  height: 600px;
+  margin-top: 2%;
 }
 
 .container .title {
@@ -281,8 +281,9 @@ select {
   width: 100%;
 }
 
-.warning {
+.error-message {
   color: red;
-  font-size: 14px;
-  display: none; /* Hidden by default */
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
 }

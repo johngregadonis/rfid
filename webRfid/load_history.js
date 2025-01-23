@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${record.body_number}</td>
                         <td>₱${amount}</td>
                         <td>${record.localDate}</td>
-                        <td>Added successfully</td>
+                        <td>${record.remarks}</td>
                     `;
                     tableBody.appendChild(tr);
                 });

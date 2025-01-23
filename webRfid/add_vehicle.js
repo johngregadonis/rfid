@@ -115,25 +115,42 @@ document.getElementById('close-notification').addEventListener('click', () => {
   document.querySelector('form').reset();
 });
 
-document.querySelector('form').addEventListener('submit', function (e) {
-  const uidInput = document.querySelector('input[name="uid"]');
-  const balanceInput = document.querySelector('input[name="balance"]');
-  const uid = uidInput.value.trim();
-  const balance = balanceInput.value.trim();
-  
-  // Validate UID (exactly 4 digits)
-  if (!/^\d{4}$/.test(uid)) {
-    e.preventDefault();
-    alert("UID must be exactly 4 digits.");
-    uidInput.focus();
-    return;
+document.getElementById('vehicleForm').addEventListener('submit', function(event) {
+  let isValid = true;
+
+  // Validate Body Number
+  const bodyNumber = document.getElementById('bodyNumber');
+  const bodyNumberError = bodyNumber.nextElementSibling;
+  if (!/^\d{3,4}$/.test(bodyNumber.value)) {
+    bodyNumberError.textContent = 'Body Number must be 3 or 4 digits.';
+    isValid = false;
+  } else {
+    bodyNumberError.textContent = '';
   }
-  
-  // Validate Balance (numeric with up to 2 decimal places)
-  if (!/^\d+(\.\d{1,2})?$/.test(balance)) {
-    e.preventDefault();
-    alert("Balance must be a numeric value with up to 2 decimal places.");
-    balanceInput.focus();
-    return;
+
+  // Validate UID
+  const uid = document.getElementById('uid');
+  const uidError = uid.nextElementSibling;
+  if (!/^\w{4}$/.test(uid.value)) {
+    uidError.textContent = 'UID must be exactly 4 characters.';
+    isValid = false;
+  } else {
+    uidError.textContent = '';
+  }
+
+  // Validate Balance
+  const balance = document.getElementById('balance');
+  const balanceError = balance.nextElementSibling;
+  if (!/^\d+(\.\d{1,2})?$/.test(balance.value)) {
+    balanceError.textContent = 'Balance must be a numeric value.';
+    isValid = false;
+  } else {
+    balanceError.textContent = '';
+  }
+
+  // Prevent form submission if any validation fails
+  if (!isValid) {
+    event.preventDefault();
   }
 });
+
