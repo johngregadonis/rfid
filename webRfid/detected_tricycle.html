@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detected Tricycle</title>
+    <link rel="stylesheet" href="detected_tricycle.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container1">
+        <div class="sidebar">
+            <div class="logo">
+              <img src="images/lgo.png" alt="Logo">
+            </div>
+            <ul class="menu">
+              <li class="menu-item">North Bound</li>
+              <li class="menu-item">South Bound</li>
+              <li class="menu-item">Offenders</li>
+              <li class="menu-item">Register Vehicle</li>
+              <li class="menu-item">Register Terminal Operator</li>
+              <li class="menu-item">Reload Balance</li>
+              <li class="menu-item">Load History</li>
+              <li class="menu-item">Fine Payment History</li>
+              <li class="menu-item active">Detected Tricycle</li>
+            </ul>
+        </div>
+
+        <div class="container">
+            <h1>Detected Tricycle</h1>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
+            </div>
+
+            <!-- Detected Tricycles Table -->
+            <table id="detectedTricyclesTable">
+                <thead>
+                    <tr>
+                        <th>Body Number</th>
+                        <th>Date Detected</th>
+                        <th>Times Detected</th>
+                    </tr>
+                </thead>
+                <tbody id="tricycle-data">
+                    <!-- Data will be inserted here dynamically -->
+                </tbody>
+            </table>
+
+            <!-- Total Times Detected -->
+        
+        </div>
+    </div>
+
+    <script src="detected_tricycle.js"></script>
+</body>
+</html>
