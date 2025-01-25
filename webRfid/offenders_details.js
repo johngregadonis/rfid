@@ -2,7 +2,7 @@
 const operator = JSON.parse(localStorage.getItem('selectedOperator'));
 if (operator) {
   document.getElementById('body-number').textContent = operator.bodyNumber;
-  document.getElementById('name').textContent = operator.name;
+  document.getElementById('balance').textContent = operator.balance;
   document.getElementById('uid').textContent = operator.uid;
 
   // Constants for penalty and initial load
@@ -70,11 +70,26 @@ function goBack() {
   window.history.back();
 }
 
-// Open the modal
+// Open the modal and populate fields
 function openModal() {
+  const operator = JSON.parse(localStorage.getItem('selectedOperator')); // Get operator details
+  if (!operator) {
+    showNotification("No operator selected. Please try again.");
+    return;
+  }
+
+  // Fetch the total amount to be paid
+  const totalAmount = parseFloat(document.getElementById('total-amount').textContent);
+
+  // Populate modal fields
+  document.getElementById('balanceInput').value = totalAmount.toFixed(2); // Set the amount
+  document.getElementById('bodyNumberInput').value = operator.bodyNumber; // Set the body number (hidden)
+
+  // Display the modal
   document.getElementById("modal-overlay").style.display = "block";
   document.getElementById("pay-fine-modal").style.display = "block";
 }
+
 
 // Close the modal
 function closeModal() {
@@ -97,10 +112,8 @@ document.getElementById("close-notification").addEventListener("click", () => {
 
 // Placeholder for addBalanceToDB function
 async function addBalanceToDB() {
-  const operator = JSON.parse(localStorage.getItem('selectedOperator'));
-  const bodyNumber = operator ? operator.bodyNumber : null; // Get bodyNumber from the stored operator
-
-  const amount = parseFloat(document.getElementById('balanceInput').value);  // This is the total amount input from the modal
+  const bodyNumber = document.getElementById('bodyNumberInput').value; // Get body number from hidden field
+  const amount = parseFloat(document.getElementById('balanceInput').value); // Get the amount to be paid
 
   if (!bodyNumber) {
     showNotification('No body number found. Please try again.');
@@ -116,7 +129,7 @@ async function addBalanceToDB() {
   const balanceAmount = amount - fineAmount; // Calculate the balance amount
 
   try {
-    // 1. Save the fine payment to the database
+    // Save the fine payment to the database
     const fineResponse = await fetch('http://localhost:5000/save-fine-payment', {
       method: 'POST',
       headers: {
@@ -166,3 +179,8 @@ async function addBalanceToDB() {
     showNotification('An error occurred while processing the payment.');
   }
 }
+
+// Modify the close button to navigate to the dashboard after closing
+document.getElementById("close-notification").addEventListener("click", () => {
+  window.location.href = 'offenders.html'; // Replace with your actual dashboard page URL
+}, { once: true }); // Ensure the event is triggered only once

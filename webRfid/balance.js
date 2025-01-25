@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const rows = vehicleTable.querySelectorAll('tr');
-    const matches = Array.from(rows).filter(row => 
+    const matches = Array.from(rows).filter(row =>
       row.cells[0]?.textContent.includes(query)
     );
 
@@ -196,6 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchBar.value = item.textContent;
         suggestionBox.style.display = 'none';
         highlightRow(item.textContent);
+
+        // Clear the search bar after selection
+        searchBar.value = '';
       });
     });
   });
@@ -214,17 +217,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let found = false;
 
     rows.forEach(row => {
-      row.classList.remove('highlight');
-      if (row.cells[0]?.textContent === bodyNumber) {
+      row.classList.remove('highlight'); // Remove highlight from all rows
+
+      const bodyNumberCell = row.cells[0]; // Check the first cell
+      if (bodyNumberCell && bodyNumberCell.textContent.trim() === bodyNumber) {
+        console.log("Match found! Highlighting row:", bodyNumber); // Debugging line
         row.scrollIntoView({ behavior: 'smooth', block: 'center' });
         row.classList.add('highlight');
         found = true;
       }
     });
 
-    if (!found) alert('Body number not found.');
+    if (!found) {
+      alert('Body number not found.');
+      console.log("No match found for:", bodyNumber); // Debugging line
+    }
+
+    // Clear the search bar
+    searchBar.value = '';
   }
 });
+
 
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {

@@ -280,3 +280,12 @@ button:hover {
 .notification-content button:hover {
   background-color: #38ec80;
 }
+/* Highlight effect for the matched row */
+.styled-table tbody tr.highlight {
+  background-color: #4CD080 !important;
+  color: white !important;
+}
+
+.styled-table tbody tr td {
+  background-color: inherit; /* Let child cells inherit the row's background */
+}

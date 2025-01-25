@@ -15,9 +15,10 @@
 
     <div class="content-container">
       <div class="op-list">
-        <p><strong>Name:</strong> <span id="name"></span></p>
+        
         <p><strong>Body Number:</strong> <span id="body-number"></span></p>
         <p><strong>UID:</strong> <span id="uid"></span></p>
+        <p><strong>Balance:</strong> <span id="balance"></span></p>
       </div>
 
       <div class="table-container">
@@ -61,11 +62,11 @@
   <div class="modal-content">
     <h2>Pay Fine</h2>
     <label for="balanceInput">Amount (₱): </label>
-    <input type="number" class="amount" id="balanceInput" min="1" step="0.01" placeholder="Enter amount">
+    <input type="number" class="amount" id="balanceInput" min="1" step="0.01" placeholder="Enter amount" readonly>
     <input type="hidden" id="bodyNumberInput">
     <br><br>
     <div class="button-container">
-      <button onclick="addBalanceToDB()">Add</button>
+      <button onclick="addBalanceToDB()">Pay Now</button>
       <button onclick="closeModal()">Cancel</button>
     </div>
   </div>

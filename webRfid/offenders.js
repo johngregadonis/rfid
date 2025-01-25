@@ -47,15 +47,13 @@ async function fetchVehicleOperators() {
         const row = document.createElement('tr');
         row.classList.add('body-number-row'); // Add class for event listener
         row.setAttribute('data-body-number', operator.body_number);
-        row.setAttribute('data-name', operator.name);
+        row.setAttribute('data-balance', operator.balance);
         row.setAttribute('data-uid', operator.uid);
 
         const bodyNumberCell = document.createElement('td');
         bodyNumberCell.textContent = operator.body_number;
 
-        const nameCell = document.createElement('td');
-        nameCell.textContent = operator.name;
-
+        
         const uidCell = document.createElement('td');
         uidCell.textContent = operator.uid;
 
@@ -63,7 +61,7 @@ async function fetchVehicleOperators() {
         offenseCell.textContent = 'Insufficient Balance';
 
         row.appendChild(bodyNumberCell);
-        row.appendChild(nameCell);
+       
         row.appendChild(uidCell);
         row.appendChild(offenseCell);
 
@@ -75,11 +73,11 @@ async function fetchVehicleOperators() {
     document.querySelectorAll('.body-number-row').forEach(row => {
       row.addEventListener('click', () => {
         const bodyNumber = row.getAttribute('data-body-number');
-        const name = row.getAttribute('data-name');
+        const balance = row.getAttribute('data-balance');
         const uid = row.getAttribute('data-uid');
 
         // Save the details to localStorage to share across pages
-        localStorage.setItem('selectedOperator', JSON.stringify({ bodyNumber, name, uid }));
+        localStorage.setItem('selectedOperator', JSON.stringify({ bodyNumber, balance, uid }));
 
         // Redirect to the sidebar page
         window.location.href = 'offenders_details.html';
@@ -94,3 +92,79 @@ async function fetchVehicleOperators() {
 }
 
 fetchVehicleOperators();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const searchBar = document.querySelector('.search-bar input');
+  const vehicleTable = document.getElementById('vehicle-operators-list');
+
+  // Create a suggestion box
+  const suggestionBox = document.createElement('div');
+  suggestionBox.className = 'suggestion-box';
+  document.querySelector('.search-bar').appendChild(suggestionBox);
+
+  // Handle input in search bar
+  searchBar.addEventListener('input', () => {
+    const query = searchBar.value.trim();
+    if (query === '') {
+      suggestionBox.innerHTML = '';
+      suggestionBox.style.display = 'none';
+      return;
+    }
+
+    const rows = vehicleTable.querySelectorAll('tr');
+    const matches = Array.from(rows).filter(row =>
+      row.cells[0]?.textContent.includes(query)
+    );
+
+    suggestionBox.innerHTML = matches
+      .map(match => `<div class="suggestion">${match.cells[0].textContent}</div>`)
+      .join('');
+    suggestionBox.style.display = matches.length > 0 ? 'block' : 'none';
+
+    // Add click event for suggestions
+    suggestionBox.querySelectorAll('.suggestion').forEach(item => {
+      item.addEventListener('click', () => {
+        searchBar.value = item.textContent;
+        suggestionBox.style.display = 'none';
+        highlightRow(item.textContent);
+
+        // Clear the search bar after selection
+        searchBar.value = '';
+      });
+    });
+  });
+
+  // Handle Enter key in search bar
+  searchBar.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const query = searchBar.value.trim();
+      if (query !== '') highlightRow(query);
+    }
+  });
+
+  // Highlight the row matching the body number
+  function highlightRow(bodyNumber) {
+    const rows = vehicleTable.querySelectorAll('tr');
+    let found = false;
+
+    rows.forEach(row => {
+      row.classList.remove('highlight'); // Remove highlight from all rows
+
+      const bodyNumberCell = row.cells[0]; // Check the first cell
+      if (bodyNumberCell && bodyNumberCell.textContent.trim() === bodyNumber) {
+        console.log("Match found! Highlighting row:", bodyNumber); // Debugging line
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.classList.add('highlight');
+        found = true;
+      }
+    });
+
+    if (!found) {
+      alert('Body number not found.');
+      console.log("No match found for:", bodyNumber); // Debugging line
+    }
+
+    // Clear the search bar
+    searchBar.value = '';
+  }
+});

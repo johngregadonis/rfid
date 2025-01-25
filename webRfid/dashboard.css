@@ -151,7 +151,7 @@ body {
 }
 
 .search-bar:hover i {
-  color: #F761CA; /* Change icon color on hover */
+  color: #4CD080; /* Change icon color on hover */
 }
 
 .suggestion-box {
@@ -177,4 +177,13 @@ body {
 
 .suggestion:hover {
   background: #f0f0f0;
+}
+/* Highlight effect for the matched row */
+.styled-table tbody tr.highlight {
+  background-color: #F761CA !important;
+  color: white !important;
+}
+
+.styled-table tbody tr td {
+  background-color: inherit; /* Let child cells inherit the row's background */
 }
