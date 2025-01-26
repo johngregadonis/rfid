@@ -154,3 +154,6 @@ tr.highlight {
     
     font-weight: bold;
   }
+  input:focus {
+    outline: none;
+}

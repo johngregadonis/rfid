@@ -147,4 +147,14 @@ tr.highlight {
     margin-bottom: 20px;
   }
   
-  
+  .transac{
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  .static-date{
+    
+    font-weight: bold;
+  }
+  input:focus {
+    outline: none;
+}

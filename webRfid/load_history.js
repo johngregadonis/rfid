@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Append the totals for the previous day (moved to bottom)
                             const dayTotalRow = document.createElement('tr');
                             dayTotalRow.innerHTML = `
-                                <td colspan="3" class="day-total">Total for today: ₱${dailyTotal.toFixed(2)}</td>
+                                <td colspan="3" class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</td>
                                 <td colspan="4" class="transac">Total Transactions: ${transactionCount}</td>
                             `;
                             tableBody.appendChild(dayTotalRow);
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Add the weekday at the top of the new day
                         const staticDateRow = document.createElement('tr');
                         staticDateRow.innerHTML = `
-                            <td colspan="4" class="static-date">${record.weekday}, ${record.localDate}</td>
+                            <td colspan="4" class="static-date">${record.weekday}</td>
                         `;
                         tableBody.appendChild(staticDateRow);
 
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentDay !== '') {
                     const dayTotalRow = document.createElement('tr');
                     dayTotalRow.innerHTML = `
-                        <td colspan="3" class="day-total">Total for : ₱${dailyTotal.toFixed(2)}</td>
+                        <td colspan="3" class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</td>
                         <td colspan="4" class="transac">Total Transactions: ${transactionCount}</td>
                     `;
                     tableBody.appendChild(dayTotalRow);
@@ -89,35 +89,39 @@ document.addEventListener('DOMContentLoaded', () => {
             noHistoryDiv.style.display = 'block';
         });
 
-    // Search functionality
-    dateSearchInput.addEventListener('input', () => {
-        const searchTerm = dateSearchInput.value.trim().toLowerCase();
-
-        // Reset highlighting
-        const rows = tableBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            row.classList.remove('highlight');
-        });
-
-        // If search term exists, filter rows
-        if (searchTerm) {
-            let found = false;
-            rows.forEach(row => {
-                const dateCell = row.querySelector('td:nth-child(3)'); // Transaction Date column
-                if (dateCell && dateCell.textContent.toLowerCase().includes(searchTerm)) {
-                    row.classList.add('highlight');
-                    // Scroll to the matched row
-                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    found = true;
+        dateSearchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') { // Check if the Enter key is pressed
+                const searchTerm = dateSearchInput.value.trim().toLowerCase();
+        
+                // Reset highlighting
+                const rows = tableBody.querySelectorAll('tr');
+                rows.forEach(row => row.classList.remove('highlight'));
+        
+                // If search term exists, filter rows
+                if (searchTerm) {
+                    let firstMatchScrolled = false; // Track if we've scrolled to the first match
+        
+                    rows.forEach(row => {
+                        const dateCell = row.querySelector('td:nth-child(3)'); // Adjust to your table's column index
+                        if (dateCell && dateCell.textContent.toLowerCase().includes(searchTerm)) {
+                            row.classList.add('highlight');
+        
+                            // Scroll to the first matched row
+                            if (!firstMatchScrolled) {
+                                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                firstMatchScrolled = true;
+                            }
+                        }
+                    });
+        
+                    // Handle case where no match is found
+                    if (!firstMatchScrolled) {
+                        console.warn('No matches found');
+                    }
                 }
-            });
-
-            // If no row is found, ensure the table stays at its current position
-            if (!found) {
-                tableBody.scrollTop = 0; // Optionally reset scroll if no match
             }
-        }
-    });
+        });
+        
 
     // Menu item click functionality
     document.querySelectorAll('.menu-item').forEach(item => {
