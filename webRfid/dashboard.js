@@ -10,7 +10,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Reload Balance') {
       window.location.href = 'balance.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'South Bound') {
+    if (item.textContent === 'North Bound') {
       window.location.href = 'southb.html'; // Redirect to balance.html
     }
     if (item.textContent === 'Offenders') {
@@ -63,20 +63,7 @@ async function fetchVehicleOperators() {
       });
       document.getElementById('vehicle-operators-list').innerHTML = vehicleList;
 
-      // Add event listeners for each row
-      document.querySelectorAll('.body-number-row').forEach(row => {
-        row.addEventListener('click', () => {
-          const bodyNumber = row.getAttribute('data-body-number');
-          const balance = row.getAttribute('data-balance');
-          const uid = row.getAttribute('data-uid');
-
-          // Save the details to localStorage or sessionStorage to share across pages
-          localStorage.setItem('selectedOperator', JSON.stringify({ bodyNumber, balance, uid }));
-
-          // Redirect to the sidebar page
-          window.location.href = 'operator_details.html';
-        });
-      });
+      
     } else {
       document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="3">No operators found.</td></tr>';
     }

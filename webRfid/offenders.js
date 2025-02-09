@@ -10,10 +10,10 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Reload Balance') {
       window.location.href = 'balance.html';
     }
-    if (item.textContent === 'North Bound') {
+    if (item.textContent === 'Registered Vehicles') {
       window.location.href = 'dashboard.html';
     }
-    if (item.textContent === 'South Bound') {
+    if (item.textContent === 'North Bound') {
       window.location.href = 'southb.html';
     }
     if (item.textContent === 'Register Vehicle') {

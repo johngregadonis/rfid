@@ -219,13 +219,15 @@ app.post('/rfid', async (req, res) => {
     const response = {
       uid,
       newBalance,
+      bodyNumber, // Include body number in the response
     };
-
+    
     if (message) {
       response.message = message;
     }
-
+    
     res.status(200).json(response);
+    
   } catch (err) {
     console.error('Error processing UID:', err);
     res.status(500).json({ error: 'Internal server error.' });
@@ -263,6 +265,28 @@ app.get('/get-vehicle-operators', async (req, res) => {
   }
 });
 
+// Fetch ONLY the most recently detected vehicle
+app.get('/get-detected-vehicle', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT body_number, uid, balance 
+       FROM vehicle_operators 
+       WHERE updated_at IS NOT NULL 
+       ORDER BY updated_at DESC 
+       LIMIT 1`
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: "No detected vehicle found" });
+    }
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Failed to fetch detected vehicle' });
+  }
+});
+
 // Endpoint to fetch from balance_change_log
 app.get('/get-balance-change', async (req, res) => {
   try {
@@ -290,7 +314,6 @@ app.get('/get-balance-change', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch balance change logs' });
   }
 });
-
 
 
 // Add balance and log history

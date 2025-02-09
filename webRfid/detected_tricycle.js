@@ -133,8 +133,8 @@ dateSearchInput.addEventListener('keydown', (event) => {
             // Handle redirection
             const pageRoutes = {
                 'Reload Balance': 'balance.html',
-                'North Bound': 'dashboard.html',
-                'South Bound': 'southb.html',
+                'Registered Vehicles': 'dashboard.html',
+                'North Bound': 'southb.html',
                 'Offenders': 'offenders.html',
                 'Register Vehicle': 'add_vehicle.html',
                 'Register Terminal Operator': 'add_tOperator.html',

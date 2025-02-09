@@ -134,8 +134,8 @@ document.querySelectorAll('.menu-item').forEach(item => {
         // Redirect to appropriate page
         const pageMap = {
             'Reload Balance': 'balance.html',
-            'North Bound': 'dashboard.html',
-            'South Bound': 'southb.html',
+            'Registered Vehicles': 'dashboard.html',
+            'North Bound': 'southb.html',
             'Offenders': 'offenders.html',
             'Register Vehicle': 'add_vehicle.html',
             'Load History': 'load_history.html',

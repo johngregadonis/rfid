@@ -248,7 +248,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
       item.classList.add('active');
   
       // Redirect to 'balance.html' if 'Reload Balance' is clicked
-      if (item.textContent === 'North Bound') {
+      if (item.textContent === 'Registered Vehicles') {
         window.location.href = 'dashboard.html'; // Redirect to balance.html
       }
       if (item.textContent === 'Register Vehicle') {
@@ -257,7 +257,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
       if (item.textContent === 'Offenders') {
         window.location.href = 'offenders.html'; // Redirect to balance.html
       }
-      if (item.textContent === 'South Bound') {
+      if (item.textContent === 'North Bound') {
         window.location.href = 'southb.html'; // Redirect to balance.html
       }
       if (item.textContent === 'Load History') {
