@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine Payment History</title>
+    <link rel="stylesheet" href="fine_history.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container1">
+        <div class="sidebar">
+            <div class="logo">
+              <img src="images/lgo.png" alt="Logo">
+            </div>
+            <ul class="menu">
+              <li class="menu-item">Registered Vehicles</li>
+              <li class="menu-item">Register Terminal Operator</li>
+              <li class="menu-item ">Load History</li>
+              <li class="menu-item active">Fine Payment History</li>
+              <li class="menu-item">Detected Vehicle</li>
+            </ul>
+          </div>
+
+         
+     
+    <div class="container">
+
+        <h1>Fine Payment History</h1>
+
+        <div class="search-bar">
+            <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
+        </div>
+        
+
+        <table id="loadHistoryTable" >
+            <thead>
+                <tr>
+                    <th>Body Number</th>
+                    <th>Time Paid</th>
+                    <th>Date Paid</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <div class="no-history">No fine payment history available.</div>
+    </div>
+</div>
+    <script src="fine_history.js"></script>
+    
+</body>
+</html>

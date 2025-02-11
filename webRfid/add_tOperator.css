@@ -1,0 +1,290 @@
+/* Importing Google Fonts - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.containers {
+  display: flex;
+  height: 100%;
+  margin-left: 20%; 
+}
+
+.container {
+  max-width: 700px;
+  width: 100%;
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  height: 450px;
+  margin-top: 12%;
+  justify-content: center;
+}
+
+.container .title {
+  font-size: 25px;
+  font-weight: 500;
+  position: relative;
+}
+
+.container .title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 30px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #4CD080, #F761CA);
+}
+
+.content form .user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0;
+}
+
+form .user-details .input-box {
+  margin-bottom: 15px;
+  width: calc(100% / 2 - 20px);
+}
+
+form .input-box span.details {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.user-details .input-box input {
+  height: 45px;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.user-details .input-box input:focus,
+.user-details .input-box input:valid {
+  border-color: #4CD080;
+}
+
+.input-box {
+    width: 100%;
+    margin-bottom: 15px;
+}
+  
+.input-box .details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+  
+.input-box input[type="text"],
+.input-box input[type="file"] {
+    width: 100%;
+    height: 40px; /* Set height for uniform look */
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+}
+  
+/* File upload specific styling */
+.input-box input[type="file"] {
+    padding: 8px; /* To align the file input text and button */
+    cursor: pointer;
+}
+
+form input[type="radio"] {
+  display: none;
+}
+
+form .button {
+  height: 45px;
+  margin: 35px 0
+}
+
+form .button input {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #4CD080;
+}
+
+form .button input:hover {
+  background: #F761CA;
+}
+
+/* Responsive media query code for mobile devices */
+@media(max-width: 584px) {
+  .container {
+    max-width: 100%;
+  }
+
+  form .user-details .input-box {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+
+  form .category {
+    width: 100%;
+  }
+
+  .content form .user-details {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+
+  .user-details::-webkit-scrollbar {
+    width: 5px;
+  }
+}
+
+/* Responsive media query code for mobile devices */
+@media(max-width: 459px) {
+  .container .content .category {
+    flex-direction: column;
+  }
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #4CD080;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+  position: fixed; /* Fix the sidebar's position */
+  top: 0;          /* Align it to the top of the viewport */
+  left: 0;         /* Align it to the left of the viewport */
+  height: 100vh;   /* Full height of the viewport */
+  overflow-y: auto; 
+}
+
+.logo img {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 10px;
+}
+
+.menu {
+  list-style-type: none;
+  width: 100%;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.menu-item.active {
+  background-color: white;
+  color: #4CD080;
+  border-radius: 20px;
+}
+
+.menu-item:hover {
+  background-color: #38ec80;
+  color: white;
+  border-radius: 20px;
+}
+
+/* Overlay effect */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Notification box styling */
+.notification-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for emphasis */
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+}
+
+.notification-content span {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.notification-content button {
+  padding: 10px 20px;
+  background-color: #4CD080;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.notification-content button:hover {
+  background-color: #38ec80;
+}
+
+/* Select box styling */
+select {
+  width: 200px;
+  padding: 8px;
+  font-size: 14px;
+  margin: 5px 0;
+  border-radius: 5px;
+  /* border: 1px solid rgba(0, 0, 0, 0.2); */
+  border-color: #4CD080;
+
+}
+
+
+.dropdown {
+  width: 100%;
+}
+
+small#error-email {
+  font-size: 12px;
+  color: red;
+  margin-top: 5px;
+  display: block;
+}
