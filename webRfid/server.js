@@ -265,13 +265,12 @@ app.get('/get-vehicle-operators', async (req, res) => {
   }
 });
 
-// Fetch ONLY the most recently detected vehicle
 app.get('/get-detected-vehicle', async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT body_number, uid, balance 
        FROM vehicle_operators 
-       WHERE updated_at IS NOT NULL 
+       WHERE updated_at >= NOW() - INTERVAL '1 hour' 
        ORDER BY updated_at DESC 
        LIMIT 1`
     );
@@ -286,6 +285,7 @@ app.get('/get-detected-vehicle', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch detected vehicle' });
   }
 });
+
 
 // Endpoint to fetch from balance_change_log
 app.get('/get-balance-change', async (req, res) => {
@@ -314,7 +314,7 @@ app.get('/get-balance-change', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch balance change logs' });
   }
 });
-
+//old
 
 // Add balance and log history
 app.post('/update-balance', async (req, res) => {

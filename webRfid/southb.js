@@ -28,7 +28,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Register Terminal Operator') {
       window.location.href = 'add_tOperator.html';
     }
-    if (item.textContent === 'Detected Vehicle') {
+    if (item.textContent === 'Detected Tricycle') {
       window.location.href = 'detected_tricycle.html';
     }
   });
@@ -44,27 +44,36 @@ setInterval(fetchDetectedVehicle, 1000); // Poll every 3 seconds
 }
 
 async function fetchDetectedVehicle() {
-try {
-  const response = await fetch('http://localhost:5000/get-detected-vehicle');
+  try {
+    const response = await fetch('http://localhost:5000/get-detected-vehicle');
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log("No recently detected vehicle found");
+        detectedVehicles = []; // Clear detected vehicles
+        localStorage.setItem('detectedVehicles', JSON.stringify(detectedVehicles));
+        updateDisplay(); // Refresh UI to show nothing
+        return;
+      }
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Fetched detected vehicle:", data);
+
+    if (data && data.body_number) {
+      // Prevent duplicates
+      detectedVehicles = detectedVehicles.filter(v => v.body_number !== data.body_number);
+      detectedVehicles.unshift(data);
+
+      localStorage.setItem('detectedVehicles', JSON.stringify(detectedVehicles));
+      updateDisplay();
+    }
+  } catch (error) {
+    console.error('Error fetching detected vehicle:', error);
   }
-
-  const data = await response.json();
-  console.log("Fetched detected vehicle:", data);
-
-  if (data && data.body_number) {
-    detectedVehicles = detectedVehicles.filter(v => v.body_number !== data.body_number);
-    detectedVehicles.unshift(data); // Move detected vehicle to the top
-
-    localStorage.setItem('detectedVehicles', JSON.stringify(detectedVehicles));
-    updateDisplay();
-  }
-} catch (error) {
-  console.error('Error fetching detected vehicle:', error);
 }
-}
+
 
 function updateDisplay() {
 let vehicleList = '';
