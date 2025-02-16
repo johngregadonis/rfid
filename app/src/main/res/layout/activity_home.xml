@@ -2,14 +2,16 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff">
+        android:background="@drawable/gradient_background">
 
         <!-- Top Profile Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,10 +54,9 @@
             <!-- Settings Icon -->
             <ImageView
                 android:id="@+id/settings_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="34dp"
+                android:layout_height="33dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/settings_back"
                 android:contentDescription="Settings"
                 android:src="@drawable/baseline_settings_24"
                 app:layout_constraintBottom_toBottomOf="parent"

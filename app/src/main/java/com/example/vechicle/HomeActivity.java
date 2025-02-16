@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void fetchBalance(String bodyNumber) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.7:3001/") // Use your server's IP or localhost
+                .baseUrl("http://192.168.38.88:3001/") // Use your server's IP or localhost
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

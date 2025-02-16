@@ -3,9 +3,11 @@ package com.example.vechicle;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,8 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
     private EditText bodyNumberField, passwordField;
     private Button loginButton;
+    private ImageView passwordToggle;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,23 @@ public class LoginActivity extends AppCompatActivity {
         bodyNumberField = findViewById(R.id.bodyNumber);
         passwordField = findViewById(R.id.password);
         loginButton = findViewById(R.id.login_button);
+        passwordToggle = findViewById(R.id.passwordToggle); // Add this in your XML layout
+
+        // Password visibility toggle feature
+        passwordToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPasswordVisible = !isPasswordVisible;
+                if (isPasswordVisible) {
+                    passwordField.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    passwordToggle.setImageResource(R.drawable.baseline_visibility_24);
+                } else {
+                    passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    passwordToggle.setImageResource(R.drawable.baseline_visibility_off_24);
+                }
+                passwordField.setSelection(passwordField.getText().length()); // Keep cursor at the end
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.1.7:3001/login"; // Update with your server URL
+        String url = "http://192.168.38.88:3001/login"; // Update with your server URL
 
         // Create JSON payload
         JSONObject loginData = new JSONObject();

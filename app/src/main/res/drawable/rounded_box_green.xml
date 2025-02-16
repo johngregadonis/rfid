@@ -6,6 +6,5 @@
     <!-- Set the rounded corners -->
     <corners android:radius="16dp"/>
 
-    <!-- Optionally, add a border (stroke) -->
-    <stroke android:width="2dp" android:color="#FFFFFF"/> <!-- White border (optional) -->
+
 </shape>

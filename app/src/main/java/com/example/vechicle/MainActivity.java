@@ -24,13 +24,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView nameText, contactText, addressText, bodyNumberText;
+    private TextView nameText, barangayText, addressText, bodyNumberText;
     private ImageView photoImageView;
     private Button changePhotoButton;
     private TextView addPhotoText;
     private Uri selectedImageUri;
 
-    private static final String BASE_URL = "http://192.168.1.7:3001/"; // Replace with your actual backend URL
+    private static final String BASE_URL = "http://192.168.38.88:3001/"; // Replace with your actual backend URL
     private static final String PREFS_NAME = "UserPrefs";
     private static final int REQUEST_GALLERY = 100;
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize views
         nameText = findViewById(R.id.nameRectangle);
-        contactText = findViewById(R.id.contactRectangle);
-        addressText = findViewById(R.id.addressRectangle);
+        barangayText = findViewById(R.id.addressRectangle);
+        addressText = findViewById(R.id.contactRectangle);
         bodyNumberText = findViewById(R.id.bodyNumberRectangle);
         photoImageView = findViewById(R.id.photoImageView);
         addPhotoText = findViewById(R.id.addPhotoText);
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Operator operator = response.body();
                     nameText.setText(operator.getName());
-                    contactText.setText(operator.getContact());
+                    barangayText.setText(operator.getBarangay());
                     addressText.setText(operator.getAddress());
                     bodyNumberText.setText(operator.getBodyNumber());
                 } else {

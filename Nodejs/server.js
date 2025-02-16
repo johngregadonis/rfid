@@ -26,6 +26,15 @@ const pgClient = new Client({
   connectionString: 'postgres://postgres:12345@localhost:5432/rfid', // Replace with your details
 });
 
+pgClient.connect();
+
+// Listen for PostgreSQL notifications (balance_update)
+pgClient.query('LISTEN balance_update');
+
+
+// Middleware for body parsing
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Registration Endpoint
 app.post('/register', async (req, res) => {
@@ -53,7 +62,7 @@ app.get('/operators', async (req, res) => {
   }
 });
 
-// Fetch Operator Details with Balance Endpoint
+// Fetch Operator Details with Barangay Instead of Contact
 app.get('/operatorDetails', async (req, res) => {
   try {
     const bodyNumber = req.query.bodyNumber; // Pass body number as a query parameter
@@ -63,7 +72,7 @@ app.get('/operatorDetails', async (req, res) => {
     }
 
     const query = `
-      SELECT name, contact, address, body_number, balance
+      SELECT name, barangay, address, body_number, balance
       FROM vehicle_operators
       WHERE body_number = $1;
     `;
@@ -78,6 +87,7 @@ app.get('/operatorDetails', async (req, res) => {
     res.status(500).json({ message: 'Error fetching operator details', error: error.message });
   }
 });
+
 
 // Login Endpoint
 app.post('/login', async (req, res) => {

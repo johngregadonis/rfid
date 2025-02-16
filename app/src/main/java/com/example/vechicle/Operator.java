@@ -2,7 +2,7 @@ package com.example.vechicle;
 
 public class Operator {
     private String name;
-    private String contact;
+    private String barangay;
     private String body_number;
     private String address;
     private String balance;
@@ -16,12 +16,12 @@ public class Operator {
         this.name = name;
     }
 
-    public String getContact() {
-        return contact;
+    public String getBarangay() {
+        return barangay;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setBarangay(String contact) {
+        this.barangay = barangay;
     }
 
     public String getBodyNumber() {
@@ -52,7 +52,7 @@ public class Operator {
     @Override
     public String toString() {
         return "Operator{" +
-                "contact='" + contact + '\'' +
+                "barangay='" + barangay + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }
