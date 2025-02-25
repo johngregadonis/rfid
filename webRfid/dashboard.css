@@ -1,0 +1,241 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  
+}
+
+.container {
+  display: flex;
+  flex-direction: column; /* Stack the sidebar and content vertically */
+  height: 100%;
+  margin-left: 20%; 
+  margin-top: 80px; /* Push content below navbar */
+}
+
+.sidebar {
+  margin-top: 40px;
+  width: 20%;
+  background-color: #4CD080;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+  position: fixed; /* Fix the sidebar's position */
+  top: 0;          /* Align it to the top of the viewport */
+  left: 0;         /* Align it to the left of the viewport */
+  height: 100vh;   /* Full height of the viewport */
+  overflow-y: auto; 
+}
+
+
+
+.menu {
+  list-style-type: none;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.menu-item.active {
+  background-color: white;
+  color: #4CD080;
+  border-radius: 20px;
+}
+
+.menu-item:hover {
+  background-color: #38ec80;
+  color: white;
+  border-radius: 20px;
+}
+
+
+.table-container {
+  margin-bottom: 20px;
+}
+
+.table-wrapper {
+  max-height: 70vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  background-color: white;
+  padding: 20px; /* Adds padding around the table */
+  margin: 0 auto; /* Centers the table */
+  width: calc(100% - 10px); /* Leaves space on both sides */
+  max-width: 1200px; /* Prevents it from becoming too wide */
+
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+}
+
+.styled-table th{
+  padding: 10px;
+}
+.styled-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #D9D9D9;
+}
+
+.styled-table th {
+  background-color: #4CD080;
+  color: #fff;
+}
+
+.styled-table td {
+  background-color: #fff;
+}
+
+
+.red {
+  background-color: rgb(247, 121, 121) !important;
+  color: white !important;
+}
+
+.yellow {
+  background-color: rgb(240, 240, 81) !important;
+  color: black !important;
+}
+
+.green {
+  background-color: #4CD080 !important;
+  color: white !important;
+}
+/* Header and Search Bar Styling */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Ensures space at the top of the page */
+  gap: 20px; /* Space between the h1 and search bar */
+  width: 100%; /* Ensure it spans the full width */
+  margin-bottom: 20px;
+}
+
+.header-container h1 {
+  color: #333333; /* Keeps the existing h1 styling */
+  margin: 0;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid #bebdbd;
+  border-radius: 25px;
+  padding: 5px 10px;
+  background-color: white;
+  width: 250px;
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  position: relative; /* Ensure the suggestion box aligns relative to this element */
+}
+
+.search-bar:hover {
+  border-color: #4CD080; /* Change border color on hover */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect on hover */
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.search-bar i {
+  color: #aaa;
+  font-size: 18px;
+  transition: color 0.3s ease; /* Smooth transition for icon color */
+}
+
+.search-bar:hover i {
+  color: #4CD080; /* Change icon color on hover */
+}
+
+.suggestion-box {
+  position: absolute;
+  top: 100%; /* Position directly below the search bar */
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%; /* Match the width of the search bar */
+  z-index: 10;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+  display: none;
+  border-radius: 0 0 10px 10px; /* Rounded bottom corners for the dropdown */
+}
+
+.suggestion {
+  padding: 8px;
+  cursor: pointer;
+  font-size: 14px; /* Match input font size */
+}
+
+.suggestion:hover {
+  background: #f0f0f0;
+}
+/* Highlight effect for the matched row */
+.styled-table tbody tr.highlight {
+  background-color: #F761CA !important;
+  color: white !important;
+}
+
+.styled-table tbody tr td {
+  background-color: inherit; /* Let child cells inherit the row's background */
+}
+
+ /* Top Navigation Bar */
+ .top-nav {
+  width: 100%;
+ background-color: #4CD080;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 60px; /* Fixed navbar height */
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.top-nav .logo img {
+  width: 70px; /* Increase width */
+  height: 70px; /* Maintain aspect ratio */
+  
+}
+
+
+.top-nav .title {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  
+}
+
+.top-nav .menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  
+}
