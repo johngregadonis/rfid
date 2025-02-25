@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Terminal Operator</title>
+  <link rel="stylesheet" href="add_tOperator.css">
+
+  
+</head>
+<body>
+  
+  
+  <div class="containers">
+    <div class="sidebar">
+      <div class="logo">
+        <img src="images/lgo.png" alt="Logo">
+      </div>
+      <ul class="menu">
+        <li class="menu-item ">Registered Vehicles</li>
+        <li class="menu-item">North Bound</li>
+        <li class="menu-item ">Offenders</li>
+        <li class="menu-item ">Register Vehicle</li>
+        <li class="menu-item active">Register Terminal Operator</li>
+        <li class="menu-item">Reload Balance</li>
+        <li class="menu-item">Load History</li>
+        <li class="menu-item">Fine Payment History</li>
+        <li class="menu-item">Detected Tricycle</li>
+      </ul>
+    </div>
+    <div class="container">
+      <div class="title">Terminal Operator</div>
+      <div class="content">
+        <form id="registrationForm">
+          <div class="user-details">
+            <div class="input-box">
+              <span class="details">Full Name</span>
+              <input type="text" name="fullname" placeholder="Enter your name" required>
+            </div>
+            <div class="input-box">
+              <span class="details">Username</span>
+              <input type="text" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="input-box">
+              <span class="details">Email</span>
+              <input type="text" id="email" name="email" placeholder="Enter your email">
+              <small id="email-error" style="color: red; display: none;">Invalid email address.</small>
+            </div>
+            
+            <div class="input-box">
+              <span class="details">Phone Number</span>
+              <div style="display: flex; align-items: center;">
+                <select id="country-code" name="countryCode" style="width: 70px; margin-right: 5px;">
+                  <option value="+63" selected>+63</option>
+                </select>
+                <input
+                  type="text"
+                  id="phone-number"
+                  name="number"
+                  placeholder="Enter your number"
+                  maxlength="10"
+                  required
+                />
+              </div>
+              <small id="phone-error" style="color: red; display: none;">Invalid phone number.</small>
+            </div>
+            
+            
+            
+            <div class="input-box">
+              <span class="details">Password</span>
+              <input type="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="input-box">
+              <span class="details">Confirm Password</span>
+              <input type="password" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+          </div>
+          
+          <div class="button">
+            <input type="submit" value="Signup">
+          </div>
+        </form>
+      </div>
+      
+    </div>
+</div>
+<div id="notification-box" class="notification-overlay" style="display: none;">
+  <div class="notification-content">
+    <span id="notification-message"></span>
+    <button id="close-notification">Close</button>
+  </div>
+</div>
+
+
+<script src="add_tOperator.js"></script>
+</body>
+</html>
