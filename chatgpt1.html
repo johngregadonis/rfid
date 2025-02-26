@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Navigation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar .option {
+            padding: 15px;
+            margin: 5px 0;
+            transition: background 0.3s, border-radius 0.3s, width 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .sidebar .option:hover {
+            background-color: #34495e;
+        }
+        .sidebar .option.active {
+            color: #2c3e50;
+            background-color: white;
+            width: 300px;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        .sidebar .option.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: -1;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="option" onclick="loadContent('content1.html', this)">Option 1</div>
+        <div class="option" onclick="loadContent('content2.html', this)">Option 2</div>
+        <div class="option" onclick="loadContent('content3.html', this)">Option 3</div>
+    </div>
+    <div class="content" id="main-content">
+        <h2>Welcome</h2>
+        <p>Select an option from the sidebar.</p>
+    </div>
+    <script>
+        function loadContent(page, element) {
+            fetch(page)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('main-content').innerHTML = data;
+                });
+            
+            document.querySelectorAll('.option').forEach(option => option.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>

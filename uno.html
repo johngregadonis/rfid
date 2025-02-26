@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Layout</title>
+    <link rel="stylesheet" href="uno.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="dos.html" onclick="loadContent(event, 'dos.html')">Registered Vehicles</a></li>
+                <li><a href="tres.html" onclick="loadContent(event, 'tres.html')">Registered Terminal Operator</a></li>
+                <li><a href="quatro.html" onclick="loadContent(event, 'quatro.html')">Load History</a></li>
+                <li><a href="cinco.html" onclick="loadContent(event, 'cinco.html')">Fine Payment History</a></li>
+                <li><a href="sies.html" onclick="loadContent(event, 'sies.html')">Detected Vehicle</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main content -->
+        <main id="content">
+            <h2>Welcome!</h2>
+            <p>Select a menu item to load content dynamically.</p>
+        </main>
+    </div>
+
+    <script>
+        function loadContent(event, page) {
+            event.preventDefault();
+            fetch(page)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("content").innerHTML = data;
+                })
+                .catch(error => console.log("Error loading content:", error));
+        }
+    </script>
+
+</body>
+</html>
