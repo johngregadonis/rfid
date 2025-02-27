@@ -6,6 +6,7 @@
     <title>Detected Tricycle</title>
     <link rel="stylesheet" href="detected_tricycle.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body>
 
@@ -15,22 +16,30 @@
               <img src="images/lgo.png" alt="Logo">
             </div>
             <ul class="menu">
-             
-              <li class="menu-item">North Bound</li>
-              <li class="menu-item active">Detected Vehicle</li>
+                <li class="menu-item ">North Bound</li>
+        <li class="menu-item active">Detected Tricycles</li>
             </ul>
         </div>
 
-        <div class="container">
-            <h1>Detected Vehicle</h1>
-
-            <!-- Search Bar -->
-            <div class="search-bar">
-                <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
-            </div>
+        <div class="admin-header">
+      
+            <span class="admin-text">Terminal Administrator</span>
+            
+            <i class="fas fa-user-circle profile-icon"></i>
+          </div>
+     
+          <div class="table-container">
+            <div class="table-wrapper">
+       <div class="header-container">
+        <h1>Detected Tricycles</h1>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
+        </div>
+    </div>
 
             <!-- Detected Tricycles Table -->
-            <table id="detectedTricyclesTable">
+            <table class="styled-table" id="detectedTricyclesTable">
                 <thead>
                     <tr>
                         <th>Body Number</th>
@@ -46,6 +55,7 @@
             <!-- Total Times Detected -->
         
         </div>
+    </div>
     </div>
 
     <script src="detected_tricycle.js"></script>

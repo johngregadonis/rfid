@@ -28,7 +28,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Register Terminal Operator') {
       window.location.href = 'add_tOperator.html';
     }
-    if (item.textContent === 'Detected Vehicle') {
+    if (item.textContent === 'Detected Tricycles') {
       window.location.href = 'detected_tricycle.html';
     }
   });

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let detectedTricycles = [];
 
     // Fetch detected tricycles from the server
-    fetch('http://localhost:2000/detected-tricycles')
+    fetch('http://localhost:5000/detected-tricycles')
         .then(response => response.json())
         .then(data => {
             console.log('Data from server:', data); // Debug log
@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Append the totals for the previous day (moved to bottom)
                             const dayTotalRow = document.createElement('tr');
                             dayTotalRow.innerHTML = `
-                                <td colspan="2" class="day-total">Total for ${currentDay}: ${totalTimesDetected}</td>
-                                <td colspan="2" class="transac">Total detected body number: ${recordCount}</td>
-                            `;
+                              <td colspan="2"><div class="day-total">Total for ${currentDay}: ${totalTimesDetected}</div></td>
+    <td colspan="2"><div class="transac">Total detected body number: ${recordCount}</div></td>
+`;
                             tableBody.appendChild(dayTotalRow);
                         }
 
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Add the weekday at the top of the new day
                         const staticDateRow = document.createElement('tr');
                         staticDateRow.innerHTML = `
-                            <td colspan="4" class="static-date">${record.weekday}</td>
+                           <td colspan="4"><div class="static-date">${record.weekday}</div></td>
                         `;
                         tableBody.appendChild(staticDateRow);
 
@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentDay !== '') {
                     const dayTotalRow = document.createElement('tr');
                     dayTotalRow.innerHTML = `
-                        <td colspan="2" class="day-total">Total for ${currentDay}: ${totalTimesDetected}</td>
-                        <td colspan="2" class="transac">Total detected body number: ${recordCount}</td>
-                    `;
+                          <td colspan="2"><div class="day-total">Total for ${currentDay}: ${totalTimesDetected}</div></td>
+    <td colspan="2"><div class="transac">Total detected body number: ${recordCount}</div></td>
+`;
                     tableBody.appendChild(dayTotalRow);
                 }
             } else {
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching detected tricycles:', error);
             noHistoryDiv.style.display = 'block';
         });
-
     // Search functionality for detected tricycles
 dateSearchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') { // Check if the Enter key is pressed

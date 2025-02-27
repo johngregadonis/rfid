@@ -22,11 +22,11 @@ body {
   left: 10px;
   font-size: 24px;
   cursor: pointer;
-  color: #4CD080;
+  color: #000000;
 }
 
 .back-arrow:hover {
-  color: #F761CA;
+  color: #F7971D;
 }
 
 .content-container {
@@ -78,7 +78,7 @@ body {
 }
 
 .styled-table th {
-  background-color: #4CD080;
+  background-color: #000000;
   color: #fff;
 }
 
