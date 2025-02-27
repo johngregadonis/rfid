@@ -10,51 +10,48 @@
 
 </head>
 <body>
-
- <!-- Top Navigation Bar -->
- <nav class="top-nav">
-  <div class="logo">
-    <img src="images/lgo.png" alt="Logo">
-  </div>
-  <div class="title">Terminal Administrator</div>
-  <div class="menu-icon">
-    <i class="fas fa-bars"></i>
-  </div>
-</nav>
-
   <div class="container">
     <div class="sidebar">
-      
-      
+      <div class="logo">
+        <img src="images/lgo.png" alt="Logo">
+      </div>
       <ul class="menu">
-        <li class="menu-item active">Registered Vehicles</li>
-        <li class="menu-item">Register Terminal Operator</li>
-        <li class="menu-item">Load History</li>
-        <li class="menu-item">Fine Payment History</li>
-        <li class="menu-item">Detected Vehicle</li>
+        <li class="menu-item active">Registered Tricycles</li>
+                <li class="menu-item">Register Operator</li>
+                <li class="menu-item ">Load Transaction</li>
+                <li class="menu-item">Penalty Transaction</li>
+                <li class="menu-item ">Detected Tricycles</li>
         
       </ul>
     </div>
 
+    <div class="admin-header">
+      
+      <span class="admin-text">Terminal Administrator</span>
+      
+      <i class="fas fa-user-circle profile-icon"></i>
+    </div>
+    
+
+
+    <div class="table-container">
+      <div class="table-wrapper">
+        
     <div class="header-container">
-      <h1>Registered Vehicles</h1>
+      <h1>Registered Tricycles</h1>
       <div class="search-bar">
         <i class="fas fa-search"></i>
         <input type="text" placeholder="Search Body Number">
         
       </div>
     </div>
-
-    <div class="table-container">
-      <div class="table-wrapper">
     <table class="styled-table">
       <thead>
         <tr>
-          <th>Body Number</th>
-          
-          <th>UID</th>
+          <th>Body Number</th>         
+          <th>Unique Id</th>
           <th>Balance</th>
-          
+          <th>Manage Account</th>
 
         </tr>
       </thead>
@@ -64,6 +61,7 @@
       </tbody>
     </table>
   </div>
+
 </div>
   </div>
   <script src="dashboard.js"></script>

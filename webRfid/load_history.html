@@ -6,6 +6,8 @@
     <title>Load History</title>
     <link rel="stylesheet" href="load_history.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    
 </head>
 <body>
 
@@ -15,27 +17,32 @@
               <img src="images/lgo.png" alt="Logo">
             </div>
             <ul class="menu">
-              <li class="menu-item">Registered Vehicles</li>
-          
-              <li class="menu-item">Register Terminal Operator</li>
-              <li class="menu-item active">Load History</li>
-              <li class="menu-item">Fine Payment History</li>
-              <li class="menu-item">Detected Vehicle</li>
+                <li class="menu-item">Registered Tricycles</li>
+                <li class="menu-item">Register Operator</li>
+                <li class="menu-item active">Load Transaction</li>
+                <li class="menu-item">Penalty Transaction</li>
+                <li class="menu-item ">Detected Tricycles</li>
             </ul>
           </div>
 
-         
+          <div class="admin-header">
+      
+            <span class="admin-text">Terminal Administrator</span>
+            
+            <i class="fas fa-user-circle profile-icon"></i>
+          </div>
      
-    <div class="container">
-
-        <h1>Load History</h1>
-
+          <div class="table-container">
+            <div class="table-wrapper">
+       <div class="header-container">
+        <h1>Load Transaction</h1>
         <div class="search-bar">
+            <i class="fas fa-search"></i>
             <input type="text" id="dateSearch" placeholder="Search by date (DD/MM/YYYY)" />
         </div>
-        
+    </div>
 
-        <table id="loadHistoryTable" >
+        <table class="styled-table" id="loadHistoryTable" >
             <thead>
                 <tr>
                     <th>Body Number</th>
@@ -51,6 +58,7 @@
 
         <div class="no-history">No load history available.</div>
     </div>
+</div>
 </div>
     <script src="load_history.js"></script>
     

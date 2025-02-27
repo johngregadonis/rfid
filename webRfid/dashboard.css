@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  
+  background-color: #FAFAFA;
 }
 
 .container {
@@ -14,13 +14,12 @@ body {
   flex-direction: column; /* Stack the sidebar and content vertically */
   height: 100%;
   margin-left: 20%; 
-  margin-top: 80px; /* Push content below navbar */
 }
 
 .sidebar {
-  margin-top: 40px;
+  
   width: 20%;
-  background-color: #4CD080;
+  background-color: #000000;
   color: white;
   display: flex;
   flex-direction: column;
@@ -33,12 +32,17 @@ body {
   overflow-y: auto; 
 }
 
-
+.logo img {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 10px;
+}
 
 .menu {
   list-style-type: none;
   width: 100%;
-  margin-top: 25px;
+  padding: 0;
+  margin: 0;
 }
 
 .menu-item {
@@ -49,90 +53,110 @@ body {
 }
 
 .menu-item.active {
-  background-color: white;
-  color: #4CD080;
+  background-color: #F7971D;
+  color: black;
   border-radius: 20px;
+  
 }
 
 .menu-item:hover {
-  background-color: #38ec80;
-  color: white;
+  background-color: white;
+  color: #F7971D;
   border-radius: 20px;
+  
 }
+
 
 
 .table-container {
   margin-bottom: 20px;
 }
-
 .table-wrapper {
-  max-height: 70vh;
+  max-height: 80vh;
   overflow-y: auto;
   border-radius: 10px;
   background-color: white;
-  padding: 20px; /* Adds padding around the table */
-  margin: 0 auto; /* Centers the table */
-  width: calc(100% - 10px); /* Leaves space on both sides */
-  max-width: 1200px; /* Prevents it from becoming too wide */
 
+  padding: 0 20px 20px 20px; /* Removes top padding but keeps others */
+  margin: 0 auto;
+  width: calc(100% - 10px);
+  max-width: 1000px;
+  position: relative;
 }
 
 .styled-table {
+  font-size: 14px;
   width: 100%;
   border-collapse: collapse;
   border-radius: 10px;
+  table-layout: fixed;
+  
 }
-
-.styled-table th{
-  padding: 10px;
+.styled-table thead {
+  position: sticky;
+  top: 80px; /* Adjust this to match the header-container's height */
+  z-index: 5;
 }
-.styled-table td {
+.styled-table th, .styled-table td {
+  width: calc(100% / var(--column-count));
   padding: 10px;
   text-align: center;
-  border: 1px solid #D9D9D9;
+  border-bottom: 1px solid #D9D9D9;
+  word-wrap: break-word;
 }
-
 .styled-table th {
-  background-color: #4CD080;
+  background-color: #000000;
   color: #fff;
+  
+}
+.styled-table th, .styled-table td {
+  width: 33%;
 }
 
-.styled-table td {
-  background-color: #fff;
+.red, .yellow, .green {
+  display: inline-block;
+  width: 45px;  /* Small square */
+  height: 15px;
+  border-radius: 4px; /* Optional: Rounds the corners */
 }
-
 
 .red {
-  background-color: rgb(247, 121, 121) !important;
-  color: white !important;
+  background-color: red !important;
 }
 
 .yellow {
-  background-color: rgb(240, 240, 81) !important;
-  color: black !important;
+  background-color: yellow !important;
 }
 
 .green {
-  background-color: #4CD080 !important;
-  color: white !important;
+  background-color: green !important;
 }
-/* Header and Search Bar Styling */
+
+.header-container,
+.styled-table thead {
+  background-color: white;
+}
+
 .header-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 20px; /* Ensures space at the top of the page */
-  gap: 20px; /* Space between the h1 and search bar */
-  width: 100%; /* Ensure it spans the full width */
-  margin-bottom: 20px;
+  background: white;
+  height: 80px;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #D9D9D9;
+}
+.header-container h1 {
+  font-size: 18px;
+  color: #333333;
 }
 
-.header-container h1 {
-  color: #333333; /* Keeps the existing h1 styling */
-  margin: 0;
-}
 
 .search-bar {
+  z-index: 50; 
   display: flex;
   align-items: center;
   border: 2px solid #bebdbd;
@@ -145,7 +169,7 @@ body {
 }
 
 .search-bar:hover {
-  border-color: #4CD080; /* Change border color on hover */
+  border-color: #F7971D; /* Change border color on hover */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect on hover */
 }
 
@@ -164,7 +188,7 @@ body {
 }
 
 .search-bar:hover i {
-  color: #4CD080; /* Change icon color on hover */
+  color: #F7971D; /* Change icon color on hover */
 }
 
 .suggestion-box {
@@ -176,7 +200,7 @@ body {
   max-height: 150px;
   overflow-y: auto;
   width: 100%; /* Match the width of the search bar */
-  z-index: 10;
+  z-index: 1000;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
   display: none;
   border-radius: 0 0 10px 10px; /* Rounded bottom corners for the dropdown */
@@ -193,49 +217,43 @@ body {
 }
 /* Highlight effect for the matched row */
 .styled-table tbody tr.highlight {
-  background-color: #F761CA !important;
+  background-color: #F7971D !important;
   color: white !important;
 }
 
 .styled-table tbody tr td {
   background-color: inherit; /* Let child cells inherit the row's background */
 }
-
- /* Top Navigation Bar */
- .top-nav {
-  width: 100%;
- background-color: #4CD080;
+.deactivate-btn {
+  background-color: red;
   color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  
+ 
+  gap: 5px;
+}
+
+.deactivate-btn i {
+  color: white;
+}
+
+.deactivate-btn:hover {
+  background-color: rgb(219, 3, 3);
+}
+
+.admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  height: 60px; /* Fixed navbar height */
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.top-nav .logo img {
-  width: 70px; /* Increase width */
-  height: 70px; /* Maintain aspect ratio */
-  
-}
-
-
-.top-nav .title {
-  flex-grow: 1;
-  text-align: center;
-  font-size: 18px;
+  padding: 20px 45px; 
+  font-size: 20px;
   font-weight: bold;
-  
 }
 
-.top-nav .menu-icon {
+.profile-icon {
   font-size: 24px;
-  cursor: pointer;
-  
+  color: #F7971D;
 }

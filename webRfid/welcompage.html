@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+            position: relative;
+            background: url('/webRfid/images/bg.png') no-repeat center center/cover;
+            background-blend-mode: overlay;
+            color: #FF8C0F;
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 65px;
+            width: 200px;
+        }
+
+        .left-container {
+            margin-left: 45px;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 50px;
+        }
+
+        .title {
+            margin-top: 150px;
+            font-size: 35px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .tagline {
+            margin-top: 40px;
+            font-size: 25px;
+        }
+
+        .login-container {
+            margin-top: 50px;
+        }
+
+        .login-btn {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            background-color: #FF8C0F;
+        }
+
+        .right-container {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right-container img {
+            width: 350px;
+            height: auto;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <img src="/webRfid/images/rfidlogo.png" alt="Logo" class="logo">
+    <div class="left-container">
+        <div class="title">Smart Transit</div>
+        <div class="tagline">"Unlock the Future of Transit with <br>RFID Technology."</div>
+        
+        <div class="login-container">
+            <button class="login-btn" onclick="redirectToLogin()">Login</button>
+        </div>
+    </div>
+
+    <div class="right-container">
+        <div class="image-wrapper">
+            <img src="/webRfid/images/Frame 9.png" alt="Phone Image">
+        </div>
+    </div>
+
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'admin_login.html';
+        }
+    </script>
+</body>
+</html>

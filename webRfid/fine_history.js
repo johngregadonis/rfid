@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (currentDay !== '') {
                             const dayTotalRow = document.createElement('tr');
                             dayTotalRow.innerHTML = `
-                                <td colspan="3" class="day-total"><strong>Total for ${currentDay}:</strong> ₱${dailyTotal.toFixed(2)}</td>
-                                <td class="day-total"><strong>Total Transactions:</strong> ${dailyTransactionCount}</td>
-                            `;
+                                <td colspan="3"><div class="day-total"><strong>Total for ${currentDay}:</strong> ₱${dailyTotal.toFixed(2)}</div></td>
+    <td colspan="4"><div class="transac">Total Transactions: ${dailyTransactionCount}</div></td>
+`;
                             tableBody.appendChild(dayTotalRow);
                         }
 
@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const dayHeaderRow = document.createElement('tr');
                         dayHeaderRow.innerHTML = `
-                            <td colspan="4" class="day-header"><strong>${record.weekDay}</strong></td>
-                        `;
+                            <td colspan="4"><div class="day-header"><strong>${record.weekDay}</strong></div></td>
+`;
                         tableBody.appendChild(dayHeaderRow);
                     }
 
@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentDay !== '') {
                     const dayTotalRow = document.createElement('tr');
                     dayTotalRow.innerHTML = `
-                        <td colspan="3" class="day-total"><strong>Total for ${currentDay}:</strong> ₱${dailyTotal.toFixed(2)}</td>
-                        <td class="day-total"><strong>Total Transactions:</strong> ${dailyTransactionCount}</td>
-                    `;
+                        <td colspan="3"><div class="day-total"><strong>Total for ${currentDay}:</strong> ₱${dailyTotal.toFixed(2)}</div></td>
+    <td colspan="4"><div class="transac">Total Transactions: ${dailyTransactionCount}</div></td>
+`;
                     tableBody.appendChild(dayTotalRow);
                 }
             } else {
@@ -134,13 +134,13 @@ document.querySelectorAll('.menu-item').forEach(item => {
         // Redirect to appropriate page
         const pageMap = {
             'Reload Balance': 'balance.html',
-            'Registered Vehicles': 'dashboard.html',
+            'Registered Tricycles': 'dashboard.html',
             'North Bound': 'southb.html',
             'Offenders': 'offenders.html',
             'Register Vehicle': 'add_vehicle.html',
-            'Load History': 'load_history.html',
-            'Register Terminal Operator': 'add_tOperator.html',
-            'Detected Vehicle': 'detected_tricycle.html'
+            'Load Transaction': 'load_history.html',
+            'Register Operator': 'add_tOperator.html',
+            'Detected Tricycles': 'detected_tricycle.html'
         };
 
         const destination = pageMap[item.textContent];

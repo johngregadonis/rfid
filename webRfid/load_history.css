@@ -6,18 +6,20 @@
   
   body {
     font-family: 'Poppins', sans-serif;
+    background-color: #FAFAFA;
   }
   
   .container1 {
     display: flex;
     height: 100%;
     margin-left: 20%; 
+    flex-direction: column; /* Stack the sidebar and content vertically */
   }
   
   .sidebar {
-    
+  
     width: 20%;
-    background-color: #4CD080;
+    background-color: #000000;
     color: white;
     display: flex;
     flex-direction: column;
@@ -30,6 +32,7 @@
     overflow-y: auto; 
   }
   
+  
   .logo img {
     width: 150px;
     height: 150px;
@@ -39,7 +42,8 @@
   .menu {
     list-style-type: none;
     width: 100%;
-    font-family: 'Poppins', sans-serif;
+    padding: 0;
+    margin: 0;
   }
   
   .menu-item {
@@ -47,19 +51,20 @@
     cursor: pointer;
     text-align: left;
     margin-bottom: 10px;
-    font-family: 'Poppins', sans-serif;
   }
   
   .menu-item.active {
-    background-color: white;
-    color: #4CD080;
+    background-color: #F7971D;
+    color: black;
     border-radius: 20px;
+    
   }
   
   .menu-item:hover {
-    background-color: #38ec80;
-    color: white;
+    background-color: white;
+    color: #F7971D;
     border-radius: 20px;
+    
   }
   .container {
     max-width: 100%px;
@@ -71,52 +76,112 @@
     border-radius: 8px;
     
 }
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 2%;
-}
+
 .search-bar {
-    margin-bottom: 3%;
-    text-align: center;
+  z-index: 50; 
+  display: flex;
+  align-items: center;
+  border: 2px solid #bebdbd;
+  border-radius: 25px;
+  padding: 5px 10px;
+  background-color: white;
+  width: 250px;
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  position: relative; /* Ensure the suggestion box aligns relative to this element */
+}
+
+.search-bar:hover {
+  border-color: #F7971D; /* Change border color on hover */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect on hover */
 }
 
 .search-bar input {
-    padding: 10px;
-    font-size: 16px;
-    width: 80%;
-    max-width: 300px;
-    border-radius: 20px;
-    border: 2px solid #ccc;
-    
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth animation */
+  border: none;
+  outline: none;
+  width: 100%;
+  padding-left: 10px;
+  font-size: 14px;
 }
 
-.search-bar input:hover {
-    border-color: #F761CA; /* Change border color on hover */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+.search-bar i {
+  color: #aaa;
+  font-size: 18px;
+  transition: color 0.3s ease; /* Smooth transition for icon color */
+}
+
+.search-bar:hover i {
+  color: #F7971D; /* Change icon color on hover */
 }
 
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.table-container {
+  margin-bottom: 20px;
 }
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.table-wrapper {
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  background-color: white;
+
+  padding: 0 20px 20px 20px; /* Removes top padding but keeps others */
+  margin: 0 auto;
+  width: calc(100% - 10px);
+  max-width: 1000px;
+  position: relative;
 }
-th {
-    background-color: #4CD080;
-    color: white;
+
+.styled-table {
+  font-size: 14px;
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  table-layout: fixed;
+  
 }
-tr:hover {
-    background-color: #f1f1f1;
+.styled-table thead {
+  position: sticky;
+  top: 80px; /* Adjust this to match the header-container's height */
+  z-index: 5;
 }
+.styled-table th, .styled-table td {
+  width: calc(100% / var(--column-count));
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #D9D9D9;
+  word-wrap: break-word;
+}
+.styled-table th {
+  background-color: #000000;
+  color: #fff;
+  
+}
+.styled-table th, .styled-table td {
+  width: 33%;
+}
+.header-container,
+.styled-table thead {
+  background-color: white;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  height: 80px;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #D9D9D9;
+}
+.header-container h1 {
+  font-size: 18px;
+  color: #333333;
+}
+
 tr.highlight {
-    background-color: #F761CA; /* Yellow highlight */
+    background-color: #F7971D; /* Yellow highlight */
 }
 .no-history {
     text-align: center;
@@ -133,27 +198,39 @@ tr.highlight {
    
 }
 .day-total {
-    margin-top: 10px;
+   
     font-weight: bold;
+    text-align: left;
+    
 }
-/* Header and Search Bar Styling */
-.header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px; /* Ensures space at the top of the page */
-    gap: 20px; /* Space between the h1 and search bar */
-    width: 100%; /* Ensure it spans the full width */
-    margin-bottom: 20px;
-  }
+
   .transac{
     margin-top: 10px;
     font-weight: bold;
+    text-align: right;
   }
-  .static-date{
-    
+  .static-date {
+    font-size: 15px;
     font-weight: bold;
-  }
+    color: black;
+    text-align: left; /* Align text to the left */
+    
+}
+
   input:focus {
     outline: none;
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 45px; 
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.profile-icon {
+  font-size: 24px;
+  color: #F7971D;
+  
 }

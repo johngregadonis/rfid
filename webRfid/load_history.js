@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Append the totals for the previous day (moved to bottom)
                             const dayTotalRow = document.createElement('tr');
                             dayTotalRow.innerHTML = `
-                                <td colspan="3" class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</td>
-                                <td colspan="4" class="transac">Total Transactions: ${transactionCount}</td>
-                            `;
+                                <td colspan="3"><div class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</div></td>
+    <td colspan="4"><div class="transac">Total Transactions: ${transactionCount}</div></td>
+`;
                             tableBody.appendChild(dayTotalRow);
                         }
 
@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Add the weekday at the top of the new day
                         const staticDateRow = document.createElement('tr');
                         staticDateRow.innerHTML = `
-                            <td colspan="4" class="static-date">${record.weekday}</td>
-                        `;
+                           <td colspan="4"><div class="static-date">${record.weekday}</div></td>
+`;
                         tableBody.appendChild(staticDateRow);
 
                         currentDay = record.localDate;
@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentDay !== '') {
                     const dayTotalRow = document.createElement('tr');
                     dayTotalRow.innerHTML = `
-                        <td colspan="3" class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</td>
-                        <td colspan="4" class="transac">Total Transactions: ${transactionCount}</td>
-                    `;
+                        <td colspan="3"><div class="day-total">Total for ${currentDay}: ₱${dailyTotal.toFixed(2)}</div></td>
+    <td colspan="4"><div class="transac">Total Transactions: ${transactionCount}</div></td>
+`;
                     tableBody.appendChild(dayTotalRow);
                 }
             } else {
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.textContent === 'Reload Balance') {
                 window.location.href = 'balance.html'; // Redirect to balance.html
             }
-            if (item.textContent === 'Registered Vehicles') {
+            if (item.textContent === 'Registered Tricycles') {
                 window.location.href = 'dashboard.html'; // Redirect to dashboard.html
             }
             if (item.textContent === 'North Bound') {
@@ -148,13 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.textContent === 'Register Vehicle') {
                 window.location.href = 'add_vehicle.html'; // Redirect to add_vehicle.html
             }
-            if (item.textContent === 'Fine Payment History') {
+            if (item.textContent === 'Penalty Transaction') {
                 window.location.href = 'fine_history.html'; // Redirect to fine_history.html
             }
-            if (item.textContent === 'Register Terminal Operator') {
+            if (item.textContent === 'Register Operator') {
                 window.location.href = 'add_tOperator.html'; // Redirect to add_tOperator.html
             }
-            if (item.textContent === 'Detected Vehicle') {
+            if (item.textContent === 'Detected Tricycles') {
                 window.location.href = 'detected_tricycle.html'; // Redirect to detected_tricycle.html
             }
         });

@@ -54,7 +54,7 @@
   
       if (response.ok) {
         notificationMessage.textContent = 'Registration successful!';
-        notificationMessage.style.color = 'green';
+        notificationMessage.style.color = '#F7971D';
   
         // Reset the form
         document.getElementById('registrationForm').reset();
@@ -98,7 +98,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
       if (item.textContent === 'Reload Balance') {
         window.location.href = 'balance.html';
       }
-      if (item.textContent === 'Registered Vehicles') {
+      if (item.textContent === 'Registered Tricycles') {
         window.location.href = 'dashboard.html';
       }
       if (item.textContent === 'North Bound') {
@@ -107,16 +107,16 @@ document.querySelectorAll('.menu-item').forEach(item => {
       if (item.textContent === 'Offenders') {
         window.location.href = 'offenders.html';
       }
-      if (item.textContent === 'Load History') {
+      if (item.textContent === 'Load Transaction') {
         window.location.href = 'load_history.html';
       }
-      if (item.textContent === 'Fine Payment History') {
+      if (item.textContent === 'Penalty Transaction') {
         window.location.href = 'fine_history.html'; // Redirect to balance.html
       }
       if (item.textContent === 'Register Vehicle') {
         window.location.href = 'add_vehicle.html'; // Redirect to balance.html
       }
-      if (item.textContent === 'Detected Vehicle') {
+      if (item.textContent === 'Detected Tricycles') {
         window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
       }
     });

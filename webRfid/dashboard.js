@@ -19,16 +19,16 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Register Vehicle') {
       window.location.href = 'add_vehicle.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'Load History') {
+    if (item.textContent === 'Load Transaction') {
       window.location.href = 'load_history.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'Fine Payment History') {
+    if (item.textContent === 'Penalty Transaction') {
       window.location.href = 'fine_history.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'Register Terminal Operator') {
+    if (item.textContent === 'Register Operator') {
       window.location.href = 'add_tOperator.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'Detected Vehicle') {
+    if (item.textContent === 'Detected Tricycles') {
       window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
     }
   });
@@ -56,22 +56,24 @@ async function fetchVehicleOperators() {
                data-balance="${operator.balance}" 
                data-uid="${operator.uid}">
             <td>${operator.body_number}</td>
-           
             <td>${operator.uid}</td>
-            <td class="${balanceClass}"></td>
+            <td><span class="${balanceClass}"></span></td>
+            <td>
+              <button class="deactivate-btn">Delete</button>
+            </td>
           </tr>`;
       });
-      document.getElementById('vehicle-operators-list').innerHTML = vehicleList;
 
-      
+      document.getElementById('vehicle-operators-list').innerHTML = vehicleList;
     } else {
-      document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="3">No operators found.</td></tr>';
+      document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">No operators found.</td></tr>';
     }
   } catch (error) {
     console.error('Error fetching data:', error);
-    document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="3">Failed to load vehicle operators.</td></tr>';
+    document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">Failed to load vehicle operators.</td></tr>';
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const searchBar = document.querySelector('.search-bar input');
@@ -189,3 +191,4 @@ document.addEventListener('DOMContentLoaded', () => {
       ws.close();
   });
 });
+

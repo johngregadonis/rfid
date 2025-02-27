@@ -22,7 +22,7 @@
       align-items: center;
       padding: 10px;
       background: 
-        linear-gradient(126deg, rgba(57, 255, 20, 0.7) 9%, rgba(255, 0, 255, 0.7) 95%), 
+      linear-gradient(126deg, rgba(34, 34, 34, 0.7) 9%, rgba(43, 42, 42, 0.7) 100%), 
         url('images/bor5.jpg'); /* Replace with your background image path */
       background-size: cover;
       background-position: center;
@@ -74,17 +74,26 @@
       color: #333;
     }
 
+    
     .input-box input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #fafafa; /* Updated border color */
+  border-radius: 5px;
+  outline: none; /* Remove default focus outline */
+  transition: border-color 0.3s ease-in-out; /* Smooth transition */
+}
+
+.input-box input:focus {
+  border-color: #F7971D; /* Ensure it stays the same when focused */
+  box-shadow: 0 0 5px rgba(247, 151, 29, 0.5); /* Optional glow effect */
+}
+
 
     .button input {
       width: 100%;
       padding: 10px;
-      background-color: #4CD080;
+      background-color: #000000;
       color: white;
       border: none;
       border-radius: 5px;
@@ -93,7 +102,9 @@
     }
 
     .button input:hover {
-      background-color: #F761CA;
+      background-color: #F7971D;
+      color: #000000;
+      
     }
 
     .login-container p {

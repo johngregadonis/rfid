@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Append the totals for the previous day (moved to bottom)
                             const dayTotalRow = document.createElement('tr');
                             dayTotalRow.innerHTML = `
-                                <td colspan="2" class="day-total">Total for ${currentDay}: ${totalTimesDetected}</td>
-                                <td colspan="2" class="transac">Total detected body number: ${recordCount}</td>
-                            `;
+                              <td colspan="2"><div class="day-total">Total for ${currentDay}: ${totalTimesDetected}</div></td>
+    <td colspan="2"><div class="transac">Total detected body number: ${recordCount}</div></td>
+`;
                             tableBody.appendChild(dayTotalRow);
                         }
 
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Add the weekday at the top of the new day
                         const staticDateRow = document.createElement('tr');
                         staticDateRow.innerHTML = `
-                            <td colspan="4" class="static-date">${record.weekday}</td>
+                           <td colspan="4"><div class="static-date">${record.weekday}</div></td>
                         `;
                         tableBody.appendChild(staticDateRow);
 
@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentDay !== '') {
                     const dayTotalRow = document.createElement('tr');
                     dayTotalRow.innerHTML = `
-                        <td colspan="2" class="day-total">Total for ${currentDay}: ${totalTimesDetected}</td>
-                        <td colspan="2" class="transac">Total detected body number: ${recordCount}</td>
-                    `;
+                          <td colspan="2"><div class="day-total">Total for ${currentDay}: ${totalTimesDetected}</div></td>
+    <td colspan="2"><div class="transac">Total detected body number: ${recordCount}</div></td>
+`;
                     tableBody.appendChild(dayTotalRow);
                 }
             } else {
@@ -133,13 +133,13 @@ dateSearchInput.addEventListener('keydown', (event) => {
             // Handle redirection
             const pageRoutes = {
                 'Reload Balance': 'balance.html',
-                'Registered Vehicles': 'dashboard.html',
+                'Registered Tricycles': 'dashboard.html',
                 'North Bound': 'southb.html',
                 'Offenders': 'offenders.html',
                 'Register Vehicle': 'add_vehicle.html',
-                'Register Terminal Operator': 'add_tOperator.html',
-                'Load History': 'load_history.html',
-                'Fine Payment History': 'fine_history.html'
+                'Register Operator': 'add_tOperator.html',
+                'Load Transaction': 'load_history.html',
+                'Penalty Transaction': 'fine_history.html'
             };
 
             if (pageRoutes[item.textContent]) {
