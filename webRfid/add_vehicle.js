@@ -63,7 +63,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Register Terminal Operator') {
       window.location.href = 'add_tOperator.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'Detected Vehicle') {
+    if (item.textContent === 'Detected Tricycles') {
       window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
     }
   });
@@ -77,7 +77,7 @@ document.querySelector('form').addEventListener('submit', async (event) => {
   const data = Object.fromEntries(formData.entries());
 
   // Check if required fields are empty
-  if (!data.name || !data.bodyNumber || !data.password || !data.balance|| !data.confirmPassword || !data.uid || !data.barangay || !data.address) {
+  if (!data.name || !data.bodyNumber || !data.password || !data.balance|| !data.confirmPassword || !data.uid || !data.barangay || !data.address || !data.email || !data.contact) {
     alert('Please fill in all required fields.');
     return;
   }

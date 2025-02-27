@@ -16,7 +16,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'North Bound') {
       window.location.href = 'southb.html';
     }
-    if (item.textContent === 'Register Vehicle') {
+    if (item.textContent === 'Register Tricycle') {
       window.location.href = 'add_vehicle.html';
     }
     if (item.textContent === 'Load History') {
@@ -28,7 +28,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     if (item.textContent === 'Register Terminal Operator') {
       window.location.href = 'add_tOperator.html'; // Redirect to balance.html
     }
-    if (item.textContent === 'Detected Vehicle') {
+    if (item.textContent === 'Detected Tricycles') {
       window.location.href = 'detected_tricycle.html'; // Redirect to balance.html
     }
   });

@@ -6,6 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  background-color: #FAFAFA;
 }
 
 .container {
@@ -18,7 +19,7 @@ body {
 .sidebar {
   
   width: 20%;
-  background-color: #4CD080;
+  background-color: #000000;
   color: white;
   display: flex;
   flex-direction: column;
@@ -40,6 +41,8 @@ body {
 .menu {
   list-style-type: none;
   width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .menu-item {
@@ -50,45 +53,65 @@ body {
 }
 
 .menu-item.active {
-  background-color: white;
-  color: #4CD080;
+  background-color: #F7971D;
+  color: black;
   border-radius: 20px;
+  
 }
 
 .menu-item:hover {
-  background-color: #38ec80;
-  color: white;
+  background-color: white;
+  color: #F7971D;
   border-radius: 20px;
+  
 }
 
+
+
+.table-container {
+  margin-bottom: 20px;
+}
+.table-wrapper {
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  background-color: white;
+
+  padding: 0 20px 20px 20px; /* Removes top padding but keeps others */
+  margin: 0 auto;
+  width: calc(100% - 10px);
+  max-width: 1000px;
+  position: relative;
+}
 
 .styled-table {
+  font-size: 14px;
   width: 100%;
-  margin-top: 20px; /* Adds space between the header and table */
-  margin: 0px auto;
-  border-collapse: collapse; /* Removes extra spacing between cells */
-  border-radius: 10px; /* Rounded corners */
-  background-color: white; /* White background for the table */
+  border-collapse: collapse;
+  border-radius: 10px;
+  table-layout: fixed;
+  
 }
-
+.styled-table thead {
+  position: sticky;
+  top: 80px; /* Adjust this to match the header-container's height */
+  z-index: 5;
+}
 .styled-table th, .styled-table td {
+  width: calc(100% / var(--column-count));
   padding: 10px;
   text-align: center;
-  border: 1px solid #D9D9D9; /* Gray borders only between cells */
+  border-bottom: 1px solid #D9D9D9;
+  word-wrap: break-word;
 }
-
 .styled-table th {
-  background-color: #F761CA; /* Green header */
-  color: white; /* White text for the header */
+  background-color: #000000;
+  color: #fff;
+  
 }
-
-.styled-table td {
-  background-color: #fff; /* Light gray background for table cells */
+.styled-table th, .styled-table td {
+  width: 33%;
 }
-.styled-table tbody {
-  color: #333333;
-}
-
 .red {
   background-color: rgb(247, 121, 121) !important;
   color: white !important;
@@ -103,23 +126,31 @@ body {
   background-color: #4CD080 !important;
   color: white !important;
 }
-/* Header and Search Bar Styling */
+.header-container,
+.styled-table thead {
+  background-color: white;
+}
+
 .header-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 20px; /* Ensures space at the top of the page */
-  gap: 20px; /* Space between the h1 and search bar */
-  width: 100%; /* Ensure it spans the full width */
-  margin-bottom: 20px;
+  background: white;
+  height: 80px;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #D9D9D9;
+}
+.header-container h1 {
+  font-size: 18px;
+  color: #333333;
 }
 
-.header-container h1 {
-  color: #333333; /* Keeps the existing h1 styling */
-  margin: 0;
-}
 
 .search-bar {
+  z-index: 50; 
   display: flex;
   align-items: center;
   border: 2px solid #bebdbd;
@@ -132,7 +163,7 @@ body {
 }
 
 .search-bar:hover {
-  border-color: #4CD080; /* Change border color on hover */
+  border-color: #F7971D; /* Change border color on hover */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect on hover */
 }
 
@@ -151,7 +182,7 @@ body {
 }
 
 .search-bar:hover i {
-  color: #4CD080; /* Change icon color on hover */
+  color: #F7971D; /* Change icon color on hover */
 }
 
 .suggestion-box {
@@ -163,7 +194,7 @@ body {
   max-height: 150px;
   overflow-y: auto;
   width: 100%; /* Match the width of the search bar */
-  z-index: 10;
+  z-index: 1000;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
   display: none;
   border-radius: 0 0 10px 10px; /* Rounded bottom corners for the dropdown */
@@ -180,10 +211,23 @@ body {
 }
 /* Highlight effect for the matched row */
 .styled-table tbody tr.highlight {
-  background-color: #F761CA !important;
+  background-color: #F7971D !important;
   color: white !important;
 }
 
 .styled-table tbody tr td {
   background-color: inherit; /* Let child cells inherit the row's background */
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 45px; 
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.profile-icon {
+  font-size: 24px;
+  color: #F7971D;
 }

@@ -14,7 +14,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: #fff;
+  background: #FAFAFA;
   font-family: Arial, sans-serif;
   margin: 20px;
 }
@@ -31,9 +31,10 @@ body {
   background-color: #fff;
   padding: 25px 30px;
   border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-  height: 600px;
-  margin-top: 2%;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  height: 630px;
+  
+  justify-content: center;
 }
 
 .container .title {
@@ -50,7 +51,7 @@ body {
   height: 3px;
   width: 30px;
   border-radius: 5px;
-  background: linear-gradient(135deg, #4CD080, #F761CA);
+  background: linear-gradient(135deg, #000000, #F7971D);
 }
 
 .content form .user-details {
@@ -85,7 +86,7 @@ form .input-box span.details {
 
 .user-details .input-box input:focus,
 .user-details .input-box input:valid {
-  border-color: #4CD080;
+  border-color: #F7971D;
 }
 
 .input-box {
@@ -136,11 +137,12 @@ form .button input {
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #4CD080;
+  background: #000000;
 }
 
 form .button input:hover {
-  background: #F761CA;
+  background: #F7971D;
+  color: #000000;
 }
 
 /* Responsive media query code for mobile devices */
@@ -177,7 +179,7 @@ form .button input:hover {
 
 .sidebar {
   width: 20%;
-  background-color: #4CD080;
+  background-color: #000000;
   color: white;
   display: flex;
   flex-direction: column;
@@ -199,6 +201,8 @@ form .button input:hover {
 .menu {
   list-style-type: none;
   width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .menu-item {
@@ -209,16 +213,19 @@ form .button input:hover {
 }
 
 .menu-item.active {
-  background-color: white;
-  color: #4CD080;
+  background-color: #F7971D;
+  color: black;
   border-radius: 20px;
+  
 }
 
 .menu-item:hover {
-  background-color: #38ec80;
-  color: white;
+  background-color: white;
+  color: #F7971D;
   border-radius: 20px;
+  
 }
+
 
 /* Overlay effect */
 .notification-overlay {
@@ -253,7 +260,7 @@ form .button input:hover {
 
 .notification-content button {
   padding: 10px 20px;
-  background-color: #4CD080;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 5px;
@@ -261,7 +268,8 @@ form .button input:hover {
 }
 
 .notification-content button:hover {
-  background-color: #38ec80;
+  background-color: #F7971D;
+  color: #000000;
 }
 
 /* Select box styling */
@@ -272,7 +280,8 @@ select {
   margin: 5px 0;
   border-radius: 5px;
   /* border: 1px solid rgba(0, 0, 0, 0.2); */
-  border-color: #4CD080;
+ background: #fff;
+ color: #000000;
 
 }
 
@@ -280,6 +289,10 @@ select {
 .dropdown {
   width: 100%;
 }
+
+
+
+
 
 .error-message {
   color: red;

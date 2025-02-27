@@ -14,11 +14,10 @@
         <img src="images/lgo.png" alt="Logo">
       </div>
       <ul class="menu">
-        <li class="menu-item">Registered Vehicles</li>
-        <li class="menu-item">Offenders</li>
-        <li class="menu-item active">Register Vehicle</li>
+        <li class="menu-item active">Register Tricycle</li>
         <li class="menu-item">Reload Balance</li>
-        <li class="menu-item">Detected Vehicle</li>
+        <li class="menu-item">Offenders</li>
+     
       </ul>
     </div>
 
@@ -31,6 +30,36 @@
               <span class="details">Full Name</span>
               <input type="text" name="name" placeholder="Enter your name" required>
             </div>
+            <div class="input-box">
+              <span class="details">Email</span>
+              <input type="text" id="email" name="email" placeholder="Enter your email" required>
+              <small id="email-error" style="color: red; display: none;">Invalid email address.</small>
+            </div>
+            
+            
+            <div class="input-box">
+              <span class="details">Phone Number</span>
+              <div style="display: flex; align-items: center;">
+                <select id="country-code" name="countryCode" style="width: 70px; margin-right: 5px;">
+                  <option value="+63" selected>+63</option>
+                </select>
+                <input
+                  type="text"
+                  id="phone-number"
+                  name="contact"
+                  placeholder="Enter your number"
+                  maxlength="10"
+                  required
+                />
+              </div>
+              <small id="phone-error" style="color: red; display: none;">Invalid phone number.</small>
+            </div>
+
+            <div class="input-box">
+              <span class="details">Body Number</span>
+              <input type="text" id="bodyNumber" name="bodyNumber" placeholder="Enter your body number" required>
+              <small class="error-message"></small>
+            </div>
 
             <div class="input-box">
               <label for="city">Select City/Municipality:</label>
@@ -42,11 +71,7 @@
               </select>
             </div>
 
-            <div class="input-box">
-              <span class="details">Body Number</span>
-              <input type="text" id="bodyNumber" name="bodyNumber" placeholder="Enter your body number" required>
-              <small class="error-message"></small>
-            </div>
+            
 
             <div class="input-box">
               <label for="barangay">Select Barangay:</label>

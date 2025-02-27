@@ -144,38 +144,57 @@ app.post('/signup', async (req, res) => {
 // --- RFID and Vehicle Operator Routes ---
 
 // --- Registration Routes ---
+// --- Registration Route ---
 app.post('/register', async (req, res) => {
-  const { name, bodyNumber, password, balance, confirmPassword, uid, barangay, address } = req.body;
+  const { 
+    name, bodyNumber, password, balance, confirmPassword, 
+    uid, barangay, address, email, contact
+  } = req.body;
 
+  // Step 1: Validate Passwords
   if (password !== confirmPassword) {
     return res.status(400).json({ success: false, message: 'Passwords do not match.' });
   }
 
   try {
-    // Step 1: Insert into vehicle_operators table
-    const query = `
-      INSERT INTO vehicle_operators (name, body_number, password, balance, uid, barangay, address)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;
+    // Step 2: Check if body number already exists
+    const checkUserQuery = `SELECT id FROM vehicle_operators WHERE body_number = $1`;
+    const checkUser = await pool.query(checkUserQuery, [bodyNumber]);
+
+    if (checkUser.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'Body number already registered.' });
+    }
+
+    // Step 3: Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Step 4: Insert into vehicle_operators table
+    const insertOperatorQuery = `
+      INSERT INTO vehicle_operators 
+      (name, body_number, password, balance, uid, barangay, address, email_address, contact_number)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id;
     `;
-    const values = [name, bodyNumber, password, balance, uid, barangay, address];
-    const result = await pool.query(query, values);
+    const values = [name, bodyNumber, hashedPassword, balance, uid, barangay, address, email, contact];
+    const result = await pool.query(insertOperatorQuery, values);
     const vehicleOperatorId = result.rows[0].id;
 
-    // Step 2: Insert into load_history table
+    // Step 5: Insert into load_history table
     const loadHistoryQuery = `
       INSERT INTO load_history (body_number, amount, transaction_date, remarks)
       VALUES ($1, $2, NOW(), $3);
     `;
     const remarks = 'Initial balance added';
-    const loadHistoryValues = [bodyNumber, balance, remarks];
-    await pool.query(loadHistoryQuery, loadHistoryValues);
+    await pool.query(loadHistoryQuery, [bodyNumber, balance, remarks]);
 
-    res.status(200).json({ success: true, message: 'Registration successful!' });
+    res.status(201).json({ success: true, message: 'Registration successful!' });
   } catch (err) {
     console.error('Error registering user:', err);
     res.status(500).json({ success: false, message: 'Registration failed. Please try again.' });
   }
 });
+
+
 
 
 // --- RFID Routes to reduce balance ---
