@@ -1,20 +1,33 @@
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent form submission
-
-    // Hardcoded username and password
-    const validUsername = 'admin';
-    const validPassword = 'admin69';
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault(); // Prevent default form submission
 
     // Get input values
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    // Check credentials
-    if (username === validUsername && password === validPassword) {
-        // Redirect to dashboard.html if credentials match
-        window.location.href = 'dashboard.html';
-    } else {
-        // Show an alert if credentials are invalid
-        alert('Invalid username or password. Please try again.');
+    try {
+        const response = await fetch('http://localhost:5000/admin/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Store token in localStorage (for authentication in future requests)
+            localStorage.setItem('token', data.token);
+
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
+        } else {
+            // Show error message
+            alert(data.message || 'Invalid username or password');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Something went wrong. Please try again later.');
     }
 });

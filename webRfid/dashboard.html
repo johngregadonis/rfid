@@ -29,7 +29,7 @@
       
       <span class="admin-text">Terminal Administrator</span>
       
-      <i class="fas fa-user-circle profile-icon"></i>
+      <i class="fas fa-user-circle profile-icon" id="profileIcon"></i>
     </div>
     
 
@@ -63,6 +63,43 @@
   </div>
 
 </div>
+
+<!-- Overlay (for closing sidebar when clicking outside) -->
+<div class="overlays" id="overlays"></div>
+
+<!-- Right Sidebar -->
+<div class="right-sidebar" id="right-sidebar">
+    <span class="close-btn" id="closeBtn">&times;</span>
+    
+    <!-- Profile Icon Inside Sidebar -->
+    <div class="profile-container">
+        <i class="fas fa-user-circle profile-icon-large"></i>
+        <p>Loading...</p>
+    </div>
+
+    <div class="account">
+      <!-- Change Password (Dropdown Trigger) -->
+      <p id="toggleChangePassword"><i class="fas fa-key"></i> Change Password</p>
+
+      <!-- Change Password Form (Initially Hidden) -->
+      <div class="change-password-form" id="changePasswordForm">
+        <input type="password" id="currentPassword" placeholder="Current Password">
+        <input type="password" id="newPassword" placeholder="New Password">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        <button id="changePasswordBtn">Change Password</button>
+    </div>
+
+      <!-- Logout Button (Moves down when form appears) -->
+      <p id="logoutOption"><i class="fas fa-sign-out-alt"></i> Logout</p>
+  </div>
+</div>
+  </div>
+  
+  <div id="notification-box" class="notification-overlay" style="display: none;">
+    <div class="notification-content">
+      <span id="notification-message"></span>
+      <button id="close-notification">Close</button>
+    </div>
   </div>
   <script src="dashboard.js"></script>
 </body>

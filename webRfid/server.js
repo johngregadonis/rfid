@@ -1,3 +1,7 @@
+require('dotenv').config();
+process.env.JWT_SECRET = "sapmanigga";
+console.log('JWT Secret:', process.env.JWT_SECRET);
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
@@ -7,10 +11,16 @@ const cors = require('cors');
 const cookieParser = require("cookie-parser"); 
 const WebSocket = require('ws');
 
+
+
 const app = express();
 const PORT = 5000;
 const secretKey = 'your_secret_key';
 const wss = new WebSocket.Server({ port: 8080 });
+
+const jwtSecret = process.env.JWT_SECRET;
+
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -517,6 +527,119 @@ app.get('/detected-tricycles', async (req, res) => {
   }
 });
 
+// admin Login Route
+app.post('/admin/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+      const result = await pool.query('SELECT * FROM admin WHERE username = $1', [username]);
+
+      if (result.rows.length === 0) {
+          return res.status(401).json({ message: 'Invalid username or password' });
+      }
+
+      const user = result.rows[0];
+
+      // Verify password using crypt() function
+      const passwordCheck = await pool.query(
+          'SELECT crypt($1, password) = password AS is_valid FROM admin WHERE username = $2',
+          [password, username]
+      );
+
+      if (!passwordCheck.rows[0].is_valid) {
+          return res.status(401).json({ message: 'Invalid username or password' });
+      }
+
+      // Generate JWT token
+      const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+      res.json({ message: 'Login successful', token });
+  } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.get('/api/profile', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Bearer <token>"
+
+  if (!token) {
+      return res.status(401).json({ message: 'Unauthorized: No token provided' });
+  }
+
+  try {
+      // Verify the token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.userId;
+
+      // Fetch user's name from the database
+      const result = await pool.query('SELECT name FROM admin WHERE id = $1', [userId]);
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ name: result.rows[0].name });
+  } catch (error) {
+      console.error('Profile fetch error:', error);
+      res.status(403).json({ message: 'Invalid or expired token' });
+  }
+});
+
+app.post('/api/change-password', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Bearer <token>"
+
+  if (!token) {
+      return res.status(401).json({ message: 'Unauthorized: No token provided' });
+  }
+
+  try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.userId;
+
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+
+      // Check if new password and confirm password match
+      if (newPassword !== confirmPassword) {
+          return res.status(400).json({ message: 'New password and confirm password do not match' });
+      }
+
+      // Get the user's stored password from the database
+      const userResult = await pool.query('SELECT password FROM admin WHERE id = $1', [userId]);
+
+      if (userResult.rows.length === 0) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      const storedPassword = userResult.rows[0].password;
+
+      // Verify current password using crypt()
+      const passwordCheck = await pool.query(
+          'SELECT crypt($1, password) = password AS is_valid FROM admin WHERE id = $2',
+          [currentPassword, userId]
+      );
+
+      if (!passwordCheck.rows[0].is_valid) {
+          return res.status(401).json({ message: 'Current password is incorrect' });
+      }
+
+      // Encrypt the new password using crypt()
+      const newEncryptedPasswordResult = await pool.query(
+          'SELECT crypt($1, gen_salt(\'bf\')) AS encrypted_password',
+          [newPassword]
+      );
+
+      const newEncryptedPassword = newEncryptedPasswordResult.rows[0].encrypted_password;
+
+      // Update the password in the database
+      await pool.query('UPDATE admin SET password = $1 WHERE id = $2', [newEncryptedPassword, userId]);
+
+      res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 // --- Start the Server ---

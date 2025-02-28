@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching detected tricycles:', error);
             noHistoryDiv.style.display = 'block';
         });
-
     // Search functionality for detected tricycles
 dateSearchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') { // Check if the Enter key is pressed
@@ -136,8 +135,8 @@ dateSearchInput.addEventListener('keydown', (event) => {
                 'Registered Tricycles': 'dashboard.html',
                 'North Bound': 'southb.html',
                 'Offenders': 'offenders.html',
-                'Register Vehicle': 'add_vehicle.html',
-                'Register Operator': 'add_tOperator.html',
+                'Register Tricycle': 'add_vehicle.html',
+                'Register Terminal Operator': 'add_tOperator.html',
                 'Load Transaction': 'load_history.html',
                 'Penalty Transaction': 'fine_history.html'
             };
