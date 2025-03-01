@@ -118,6 +118,31 @@ document.getElementById('close-notification').addEventListener('click', () => {
 document.getElementById('vehicleForm').addEventListener('submit', function(event) {
   let isValid = true;
 
+  // Validate Email
+  const email = document.getElementById('email');
+  const emailError = document.getElementById('email-error');
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(email.value)) {
+    emailError.style.display = 'block';
+    emailError.textContent = 'Invalid email address.';
+    isValid = false;
+  } else {
+    emailError.style.display = 'none';
+  }
+
+  // Validate Phone Number
+  const phoneNumber = document.getElementById('phone-number');
+  const phoneError = document.getElementById('phone-error');
+  const phonePattern = /^9\d{9}$/; // Must start with 9 and be exactly 10 digits
+
+  if (!phonePattern.test(phoneNumber.value)) {
+    phoneError.style.display = 'block';
+    phoneError.textContent = 'Phone number must start with 9 and be exactly 10 digits.';
+    isValid = false;
+  } else {
+    phoneError.style.display = 'none';
+  }
+
   // Validate Body Number
   const bodyNumber = document.getElementById('bodyNumber');
   const bodyNumberError = bodyNumber.nextElementSibling;
@@ -151,8 +176,11 @@ document.getElementById('vehicleForm').addEventListener('submit', function(event
   // Prevent form submission if any validation fails
   if (!isValid) {
     event.preventDefault();
+    
   }
 });
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const tabIdKey = 'dashboard_tab_id';
