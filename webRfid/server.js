@@ -12,14 +12,10 @@ const cookieParser = require("cookie-parser");
 const WebSocket = require('ws');
 
 
-
 const app = express();
 const PORT = 5000;
 const secretKey = 'your_secret_key';
 const wss = new WebSocket.Server({ port: 8080 });
-
-const jwtSecret = process.env.JWT_SECRET;
-
 
 
 // Middleware
@@ -551,7 +547,8 @@ app.post('/admin/login', async (req, res) => {
       }
 
       // Generate JWT token
-      const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET);
+
 
       res.json({ message: 'Login successful', token });
   } catch (error) {

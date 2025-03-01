@@ -136,7 +136,7 @@ dateSearchInput.addEventListener('keydown', (event) => {
                 'North Bound': 'southb.html',
                 'Offenders': 'offenders.html',
                 'Register Tricycle': 'add_vehicle.html',
-                'Register Terminal Operator': 'add_tOperator.html',
+                'Register Operator': 'add_tOperator.html',
                 'Load Transaction': 'load_history.html',
                 'Penalty Transaction': 'fine_history.html'
             };
@@ -189,7 +189,167 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
+  //profile
+document.addEventListener("DOMContentLoaded", function () {
+    const profileIcon = document.getElementById("profileIcon");
+    const sidebar = document.getElementById("right-sidebar");
+    const closeBtn = document.getElementById("closeBtn");
+    const overlay = document.getElementById("overlays");
+    const toggleChangePassword = document.getElementById("toggleChangePassword");
+    const changePasswordForm = document.getElementById("changePasswordForm");
+    const logoutOption = document.getElementById("logoutOption");
+  
+    let isPasswordFormVisible = false;
+  
+    // Open Sidebar
+    profileIcon.addEventListener("click", function () {
+        sidebar.style.right = "0";
+        overlay.style.display = "block"; // Show overlay
+    });
+  
+    // Close Sidebar
+    function closeSidebar() {
+        sidebar.style.right = "-300px";
+        overlay.style.display = "none"; // Hide overlay
+    }
+  
+    closeBtn.addEventListener("click", closeSidebar);
+    overlay.addEventListener("click", closeSidebar);
+  
+    // Toggle Change Password Form
+    toggleChangePassword.addEventListener("click", function () {
+        isPasswordFormVisible = !isPasswordFormVisible;
+  
+        if (isPasswordFormVisible) {
+            changePasswordForm.style.display = "flex";
+            logoutOption.style.marginTop = "20px"; // Move logout down
+        } else {
+            changePasswordForm.style.display = "none";
+            logoutOption.style.marginTop = "0"; // Reset logout position
+        }
+    });
+  });
+  
+  //fetch profile name
+  async function fetchProfile() {
+    const token = localStorage.getItem('token'); // Get JWT token from localStorage
+  
+    if (!token) {
+        alert('Unauthorized: Please log in again.');
+        window.location.href = 'login.html';
+        return;
+    }
+  
+    try {
+        const response = await fetch('http://localhost:5000/api/profile', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+            // Update the profile name dynamically
+            document.querySelector('.profile-container p').textContent = data.name;
+        } else {
+            alert(data.message || 'Failed to load profile');
+        }
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        alert('Something went wrong. Please try again.');
+    }
+  }
+  
+  //change-pass
+  document.getElementById('changePasswordBtn').addEventListener('click', async function () {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+  
+    const token = localStorage.getItem('token'); // Get JWT token
+  
+    if (!token) {
+        showNotification('Unauthorized: Please log in again.');
+        window.location.href = 'login.html';
+        return;
+    }
+  
+    try {
+        const response = await fetch('http://localhost:5000/api/change-password', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+            showNotification(data.message); // Show success message
+            setTimeout(() => window.location.reload(), 3000); // Reload after 3s
+        } else {
+            showNotification(data.message || 'Failed to change password');
+        }
+    } catch (error) {
+        console.error('Error changing password:', error);
+        showNotification('Something went wrong. Please try again.');
+    }
+  });
+  
+  function showNotification(message) {
+    const notificationBox = document.getElementById('notification-box');
+    const notificationMessage = document.getElementById('notification-message');
+  
+    notificationMessage.textContent = message; // Set the message
+    notificationBox.style.display = 'block'; // Show the notification box
+  
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        
+        notificationBox.style.display = "flex";
+    });
+  
+  }
+  
+  // Close notification manually
+  document.getElementById('close-notification').addEventListener('click', function () {
+    document.getElementById('notification-box').style.display = 'none';
+  });
+  
+  //logout
+  document.getElementById('logoutOption').addEventListener('click', function () {
+    showLogoutConfirmation();
+  });
+  
+  function showLogoutConfirmation() {
+    const notificationsBox = document.getElementById('notifications-box');
+    const notificationsMessage = document.getElementById('notifications-message');
+    
+    notificationsMessage.textContent = 'Are you sure you want to logout?';
+    
+    // Show the notification box
+    notificationsBox.style.display = 'flex';
+    
+    // Add event listener for "Yes" button
+    document.getElementById('confirm-yes').onclick = function () {
+        localStorage.removeItem('token'); // Remove token
+        window.location.href = 'admin_login.html'; // Redirect to login page
+    };
+  
+    // Add event listener for "No" button
+    document.getElementById('confirm-no').onclick = function () {
+        notificationsBox.style.display = 'none'; // Close the notification
+    };
+  }
+  
 
-// Fetch data when page loads
-window.onload = fetchDetectedTricycles;
-
+window.onload = function () {
+    fetchProfile();
+    fetchDetectedTricycles();
+   
+};

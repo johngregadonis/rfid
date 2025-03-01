@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ws.close();
   });
 });
-
+//profile
 document.addEventListener("DOMContentLoaded", function () {
   const profileIcon = document.getElementById("profileIcon");
   const sidebar = document.getElementById("right-sidebar");
@@ -238,7 +238,7 @@ async function fetchProfile() {
 
   if (!token) {
       alert('Unauthorized: Please log in again.');
-      window.location.href = 'login.html';
+      window.location.href = 'admin_login.html';
       return;
   }
 
@@ -325,3 +325,29 @@ function showNotification(message) {
 document.getElementById('close-notification').addEventListener('click', function () {
   document.getElementById('notification-box').style.display = 'none';
 });
+
+//logout
+document.getElementById('logoutOption').addEventListener('click', function () {
+  showLogoutConfirmation();
+});
+
+function showLogoutConfirmation() {
+  const notificationsBox = document.getElementById('notifications-box');
+  const notificationsMessage = document.getElementById('notifications-message');
+  
+  notificationsMessage.textContent = 'Are you sure you want to logout?';
+  
+  // Show the notification box
+  notificationsBox.style.display = 'flex';
+  
+  // Add event listener for "Yes" button
+  document.getElementById('confirm-yes').onclick = function () {
+      localStorage.removeItem('token'); // Remove token
+      window.location.href = 'admin_login.html'; // Redirect to login page
+  };
+
+  // Add event listener for "No" button
+  document.getElementById('confirm-no').onclick = function () {
+      notificationsBox.style.display = 'none'; // Close the notification
+  };
+}

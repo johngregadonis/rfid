@@ -420,3 +420,51 @@ body {
   background-color: #F7971D;
   color: #000000;
 }
+
+/*logout notif*/
+.notifications-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.notifications-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for emphasis */
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+}
+.notifications-content span {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+.notifications-overlay button {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.notifications-overlay button:hover {
+  background-color: #F7971D;
+  color: #000000;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
