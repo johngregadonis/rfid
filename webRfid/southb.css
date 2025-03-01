@@ -110,7 +110,7 @@ body {
   
 }
 .styled-table th, .styled-table td {
-  width: 33%;
+  width: 35%;
 }
 
 .red, .yellow, .green {
@@ -118,6 +118,8 @@ body {
   width: 45px;  /* Small square */
   height: 15px;
   border-radius: 4px; /* Optional: Rounds the corners */
+  margin-left: 100px;
+  margin-top: 15px;
 }
 
 .red {
@@ -236,4 +238,215 @@ body {
 .profile-icon {
   font-size: 24px;
   color: #F7971D;
+  cursor: pointer;
+}
+
+/* Sidebar Styles */
+.right-sidebar {
+  width: 250px;
+  height: 70vh;
+  position: fixed;
+  top: 60px;
+  right: -300px; /* Hidden by default */
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  margin-right: 20px;
+  border-radius: 20px;
+}
+
+/* Close Button */
+.close-btn {
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+/* Profile Container Inside Sidebar */
+.profile-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.profile-icon-large {
+  font-size: 80px;
+  color: #F7971D;
+}
+
+.profile-container p {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+/* Overlay (for clicking outside) */
+.overlays {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  z-index: 1;
+}
+.account {
+  margin-top: 30px;
+  font-size: 15px;
+  
+}
+.account p{
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.account p:hover{
+  color: #F7971D;
+}
+.account i {
+  color: #F7971D;
+  margin-right: 5px;
+  
+}
+/* Change Password Form */
+.change-password-form {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+.change-password-form input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.change-password-form button {
+  padding: 10px;
+  border: none;
+  background-color: #ff9800;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.change-password-form button:hover {
+  background-color: #e68900;
+}
+
+/* Logout Button */
+#logoutOption {
+  transition: margin-top 0.3s ease-in-out;
+}
+/* Slide Down Animation */
+@keyframes slideDown {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+/* Overlay effect */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Notification box styling */
+.notification-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for emphasis */
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+}
+
+.notification-content span {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.notification-content button {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.notification-content button:hover {
+  background-color: #F7971D;
+  color: #000000;
+}
+
+/*logout notif*/
+.notifications-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.notifications-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for emphasis */
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+}
+.notifications-content span {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+.notifications-overlay button {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.notifications-overlay button:hover {
+  background-color: #F7971D;
+  color: #000000;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

@@ -1,34 +1,33 @@
-const form = document.getElementById('loginForm');
-const errorMessage = document.getElementById('errorMessage');
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+  e.preventDefault(); // Prevent default form submission
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-
+  // Get input values
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('http://localhost:2000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
+      const response = await fetch('http://localhost:2000/login', { // Change to user login endpoint
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+      });
 
-    if (response.ok) {
       const data = await response.json();
-      // Store JWT token in localStorage
-      localStorage.setItem('authToken', data.token);
 
-      // Redirect to the dashboard page
-      window.location.href = 'southb.html';
-    } else {
-      const errorData = await response.json();
-      errorMessage.textContent = errorData.message;
-      errorMessage.style.display = 'block';
-    }
+      if (response.ok) {
+          // Store token in localStorage
+          localStorage.setItem('token', data.token);
+
+          // Redirect to add_vehicle.html
+          window.location.href = 'southb.html';
+      } else {
+          // Show error message
+          alert(data.message || 'Invalid username or password');
+      }
   } catch (error) {
-    console.error('Error during login:', error);
-    errorMessage.textContent = 'An error occurred. Please try again.';
-    errorMessage.style.display = 'block';
+      console.error('Error:', error);
+      alert('Something went wrong. Please try again later.');
   }
 });
