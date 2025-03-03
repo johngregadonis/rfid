@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Define the solid color (optional, used if the image has transparency) -->
-    <solid android:color="#FFFFFF" /> <!-- Optional, white background -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"> <!-- Make it a perfect circle -->
 
-    <!-- Define the corner radius -->
-    <corners android:radius="50dp" /> <!-- Adjust radius as needed for the roundness -->
+    <solid android:color="@color/orange"/> <!-- Background color (optional) -->
 
-    <!-- Optionally, add a border (stroke) -->
     <stroke
         android:width="2dp"
-        android:color="#000000" /> <!-- Optional, black border around the image -->
+        android:color="@color/white"/> <!-- Optional border -->
 </shape>

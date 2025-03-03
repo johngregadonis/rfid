@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#000000" />
+        android:textColor="@color/white" />
 
 
 
@@ -21,14 +21,14 @@
         android:layout_height="wrap_content"
         android:text="Sample Message"
         android:textSize="16sp"
-        android:textColor="#000000" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/createdAt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:textColor="#808080" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/timestampTextView"
@@ -36,14 +36,14 @@
         android:layout_height="wrap_content"
         android:text="Sample Timestamp"
         android:textSize="12sp"
-        android:textColor="#808080" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/deductMessageText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#000000" />
+        android:textColor="@color/white" />
 
 
     <View

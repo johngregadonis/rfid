@@ -31,8 +31,8 @@ public class NotificationActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotificationAdapter adapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
-    private static final String API_URL = "http://192.168.38.88:3001/messages";
-    private static final String DEDUCT_API_URL = "http://192.168.38.88:3001/deduct-messages";
+    private static final String API_URL = "http://192.168.1.9:3001/messages";
+    private static final String DEDUCT_API_URL = "http://192.168.1.9:3001/deduct-messages";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,11 +85,12 @@ public class NotificationActivity extends AppCompatActivity {
                         if (messages.length() > 0) {
                             for (int i = 0; i < messages.length(); i++) {
                                 JSONObject messageObj = messages.getJSONObject(i);
-                                String content = messageObj.getString("message");
+                                String content = "🔔 " + messageObj.getString("message"); // Add bell emoji
                                 String timestamp = messageObj.getString("timestamp");
-                                String formattedTime = formatTimestamp(timestamp);
+                                String formattedTime = "⏰ " + formatTimestamp(timestamp); // Add clock emoji
                                 notificationList.add(new NotificationModel(content, formattedTime));
                             }
+
                             sortMessagesByTimestampDescending(); // Sort in reverse chronological order
                             runOnUiThread(() -> {
                                 adapter.notifyDataSetChanged();
@@ -206,3 +207,4 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 }
+//////

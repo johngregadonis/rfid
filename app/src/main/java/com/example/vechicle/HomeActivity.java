@@ -1,9 +1,10 @@
-package com.example.vechicle;
+package com.example.vechicle; // Fix package name typo
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,13 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,9 +29,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HomeActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "UserPrefs"; // SharedPreferences key
-    private TextView nameTextView, balanceTextView; // TextViews for name and balance
-    private ImageView photoImageView; // ImageView for profile photo
-    private SwipeRefreshLayout swipeRefreshLayout; // Layout for swipe-to-refresh
+    private static final String API_URL = "http://192.168.1.9:3001/messages";
+    private static final String DEDUCT_API_URL = "http://192.168.1.9:3001/deduct-messages";
+
+    private TextView nameTextView, balanceTextView, messagesTextView;
+    private ImageView photoImageView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,35 +47,34 @@ public class HomeActivity extends AppCompatActivity {
         balanceTextView = findViewById(R.id.balanceTextView);
         photoImageView = findViewById(R.id.profile_image);
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        messagesTextView = findViewById(R.id.messagesTextView);
 
         // Load user details
         loadUserDetails();
+        fetchMessages();
+        fetchDeductMessages();
 
         // Set up swipe-to-refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             loadUserDetails();
-            swipeRefreshLayout.setRefreshing(false); // Stop the refresh indicator
+            fetchMessages();
+            fetchDeductMessages();
+            swipeRefreshLayout.setRefreshing(false);
         });
 
         // Set up click listeners for icons
         setupIconListeners();
     }
 
-    /**
-     * Load user details (name, balance, and photo) from SharedPreferences and fetch balance from API.
-     */
     private void loadUserDetails() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        // Fetch user details from SharedPreferences
-        String name = sharedPreferences.getString("name", "Guest"); // Default to "Guest" if not found
-        String bodyNumber = sharedPreferences.getString("bodyNumber", null); // Retrieve body number
-        String photoUri = sharedPreferences.getString("imageUri", null); // Default to null if not found
+        String name = sharedPreferences.getString("name", "Guest");
+        String bodyNumber = sharedPreferences.getString("bodyNumber", null);
+        String photoUri = sharedPreferences.getString("imageUri", null);
 
-        // Update name
         nameTextView.setText(name);
 
-        // Update photo
         if (photoUri != null) {
             try {
                 Uri uri = Uri.parse(photoUri);
@@ -74,20 +84,16 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        // Fetch balance if body number is available
         if (bodyNumber != null) {
-            fetchBalance(bodyNumber); // Fetch balance from the API
+            fetchBalance(bodyNumber);
         } else {
             balanceTextView.setText("Error: Body number not found");
         }
     }
 
-    /**
-     * Fetch balance from the API using Retrofit.
-     */
     private void fetchBalance(String bodyNumber) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.38.88:3001/") // Use your server's IP or localhost
+                .baseUrl("http://192.168.1.9:3001/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -98,8 +104,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Operator> call, Response<Operator> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String balance = response.body().getBalance(); // Get balance as String
-                    balanceTextView.setText("₱" + balance + " "); // Display balance as String
+                    String balance = response.body().getBalance();
+                    balanceTextView.setText("₱" + balance);
                 } else {
                     balanceTextView.setText("Failed to fetch balance");
                 }
@@ -112,31 +118,94 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Set up click listeners for the profile and notification icons.
-     */
     private void setupIconListeners() {
         ImageView profileIcon = findViewById(R.id.profile_icon);
         ImageView notificationIcon = findViewById(R.id.notifications_icon);
-        ImageView settingsIcon = findViewById(R.id.settings_icon); // Settings icon
+        ImageView settingsIcon = findViewById(R.id.settings_icon);
 
-        // Navigate to MainActivity when profile icon is clicked
-        profileIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        profileIcon.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
+        notificationIcon.setOnClickListener(v -> startActivity(new Intent(this, NotificationActivity.class)));
+        settingsIcon.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+    }
 
-        // Navigate to NotificationActivity when notification icon is clicked
-        notificationIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
-            startActivity(intent);
-        });
-        // Navigate to SettingsActivity when settings icon is clicked
-        settingsIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, SettingsActivity.class); // Replace with your Settings activity
-            startActivity(intent);
-        });
+    private void fetchMessages() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String bodyNumber = sharedPreferences.getString("bodyNumber", null);
 
+        if (bodyNumber == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(API_URL)
+                .addHeader("body_number", bodyNumber)
+                .build();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(HomeActivity.this, "Failed to fetch messages", Toast.LENGTH_SHORT).show());
+                Log.e("HomeActivity", "Error: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        JSONArray messages = jsonResponse.getJSONArray("messages");
+
+                        StringBuilder messageText = new StringBuilder();
+                        for (int i = 0; i < messages.length(); i++) {
+                            JSONObject messageObj = messages.getJSONObject(i);
+                            String content = messageObj.getString("message");
+                            String timestamp = messageObj.getString("timestamp");
+                            messageText.append("\uD83D\uDD14 ").append(content).append("\n⏰ ").append(timestamp).append("\n\n");
+                        }
+
+                        runOnUiThread(() -> messagesTextView.setText(messageText.toString()));
+
+                    } catch (Exception e) {
+                        Log.e("HomeActivity", "Error parsing JSON: " + e.getMessage());
+                    }
+                } else {
+                    runOnUiThread(() -> Toast.makeText(HomeActivity.this, "Failed to load messages", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
+    }
+
+    private void fetchDeductMessages() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String bodyNumber = sharedPreferences.getString("bodyNumber", null);
+
+        if (bodyNumber == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(DEDUCT_API_URL)
+                .addHeader("body_number", bodyNumber)
+                .build();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(HomeActivity.this, "Failed to fetch deduct messages", Toast.LENGTH_SHORT).show());
+                Log.e("HomeActivity", "Error: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    runOnUiThread(() -> Toast.makeText(HomeActivity.this, "Failed to load deduct messages", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 }
-//old

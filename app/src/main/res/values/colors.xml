@@ -7,4 +7,10 @@
     <color name="gray">#d9d9d9</color>
     <color name="light">#999999</color>
     <color name="dark">#333333</color>
+    <color name="dirty_white">#F5F5F5</color>
+    <color name="orange">#F7971D</color>
+    <color name="kupal">#3B3F46</color>
+    <color name="hindot">#757374</color>
+
+
 </resources>

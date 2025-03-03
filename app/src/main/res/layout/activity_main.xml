@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
+    android:background="@color/black"
     android:padding="30dp">
 
 
@@ -49,10 +49,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="Name"
-        android:textColor="@color/dark"
+        android:textColor="@color/orange"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/changePhotoButton" />
 
@@ -63,28 +64,30 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rectangle_stroke"
         android:gravity="center"
-        android:text=""
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
+    android:text=""
+    android:textColor="@color/black"
+    android:textSize="18sp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
 
     <!-- Contact Label -->
+
+    <!-- Contact Rectangle -->
     <TextView
         android:id="@+id/contactLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:text="City/Municipality"
-        android:textColor="@color/dark"
+        android:textColor="@color/orange"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameRectangle" />
 
-    <!-- Contact Rectangle -->
     <TextView
         android:id="@+id/contactRectangle"
         android:layout_width="0dp"
@@ -100,20 +103,23 @@
         app:layout_constraintTop_toBottomOf="@+id/contactLabel" />
 
     <!-- Address Label -->
+
+    <!-- Address Rectangle -->
+
     <TextView
         android:id="@+id/addressLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:text="Barangay"
-        android:textColor="@color/dark"
+        android:textColor="@color/orange"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contactRectangle" />
 
-    <!-- Address Rectangle -->
     <TextView
         android:id="@+id/addressRectangle"
         android:layout_width="0dp"
@@ -129,26 +135,29 @@
         app:layout_constraintTop_toBottomOf="@+id/addressLabel" />
 
     <!-- Body Number Label -->
+
+    <!-- Body Number Rectangle -->
+
+
     <TextView
         android:id="@+id/bodyNumberLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:text="Body Number"
-        android:textColor="@color/dark"
+        android:textColor="@color/orange"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addressRectangle" />
-
-    <!-- Body Number Rectangle -->
 
     <TextView
         android:id="@+id/bodyNumberRectangle"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/rectangle_stroke"
         android:gravity="center"
         android:paddingBottom="5dp"
@@ -159,8 +168,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bodyNumberLabel" />
-
-
 
     <Button
         android:id="@+id/changePhotoButton"

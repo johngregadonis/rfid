@@ -4,6 +4,8 @@ const { Pool } = require('pg');
 const cors = require('cors'); // Import CORS
 const { Client } = require('pg');
 const WebSocket = require('ws');
+const nodemailer = require('nodemailer');
+
 
 // Initialize Express App
 const app = express();
@@ -21,6 +23,8 @@ const pool = new Pool({
   port: 5432,             // Default PostgreSQL port
 });
 
+const otpStorage = {}
+let verifiedEmail = null;
 // PostgreSQL connection for listening to notifications
 const pgClient = new Client({
   connectionString: 'postgres://postgres:12345@localhost:5432/rfid', // Replace with your details
@@ -261,6 +265,140 @@ app.get('/messages', async (req, res) => {
      res.status(500).json({ message: 'Error fetching messages', error: error.message });
    }
  });
+
+
+ app.post("/change-password", async (req, res) => {
+     try {
+         const { oldPassword, newPassword } = req.body;
+
+         console.log(`📌 Received request to change password for user with old password: ${oldPassword}`);
+
+         // Hanapin ang user gamit ang old password
+         const result = await pool.query(
+             "SELECT id FROM vehicle_operators WHERE password = $1",
+             [oldPassword]
+         );
+
+         if (result.rows.length === 0) {
+             console.log("❌ User not found or incorrect old password");
+             return res.status(404).json({ error: "User not found or incorrect old password" });
+         }
+
+         const userId = result.rows[0].id; // Kunin ang ID ng user na may old password
+
+         // **Update ang password**
+         await pool.query("UPDATE vehicle_operators SET password = $1 WHERE id = $2",
+             [newPassword, userId]);
+
+         console.log(`✅ Password updated successfully for user ID: ${userId}`);
+         res.json({ message: "Password changed successfully" });
+
+     } catch (error) {
+         console.error("❌ Error changing password:", error);
+         res.status(500).json({ error: "Internal server error" });
+     }
+ });
+///old change password
+
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: "doncerasronald34@gmail.com", // Use environment variables in production
+        pass: "texoswakqdigecnw",
+    },
+});
+
+// --- Send OTP Route ---
+app.get("/send-otp", async (req, res) => {
+  const email = req.query.email;
+
+  try {
+    // Step 1: Check if the email exists in the database (using LIMIT 1 for efficiency)
+    const checkEmailQuery = `SELECT email_address FROM vehicle_operators WHERE email_address = $1 LIMIT 1`;
+    const checkEmail = await pool.query(checkEmailQuery, [email]);
+
+    if (checkEmail.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Email does not exist" });
+    }
+
+    // Step 2: Generate a 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    // Step 3: Store OTP in memory (expires after 10 minutes)
+    otpStorage[email] = { otp, expiresAt: Date.now() + 10 * 60 * 1000 };
+
+    // Step 4: Respond immediately before sending email
+    res.json({ success: true, message: "OTP is being sent" });
+
+    // Step 5: Send OTP via Email asynchronously
+    const mailOptions = {
+      from: "doncerasronald34@gmail.com",
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
+    };
+
+    transporter.sendMail(mailOptions)
+      .then(() => console.log(`OTP sent successfully to ${email}`))
+      .catch(error => console.error("Error sending OTP:", error));
+
+  } catch (error) {
+    console.error("Error processing OTP request:", error);
+    res.status(500).json({ success: false, message: "Server error, please try again" });
+  }
+});
+
+
+// ✅ Verify OTP and store email
+app.post("/verify-otp", (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!otpStorage[email]) {
+        return res.status(400).json({ success: false, message: "OTP expired or invalid" });
+    }
+
+    if (otpStorage[email].otp == otp) {
+        verifiedEmail = email; // Store verified email
+        delete otpStorage[email];
+
+        return res.json({ success: true, message: "OTP verified successfully" });
+    } else {
+        return res.status(400).json({ success: false, message: "Incorrect OTP" });
+    }
+});
+
+app.post('/reset-password', async (req, res) => {
+    try {
+        const { new_password } = req.body;
+
+        // Ensure the user has verified their email
+        if (!verifiedEmail) {
+            return res.status(401).json({ success: false, message: "Unauthorized: Email not verified." });
+        }
+
+        if (!new_password) {
+            return res.status(400).json({ success: false, message: "Missing new password." });
+        }
+
+        // Update password in the database
+        const updateQuery = `UPDATE vehicle_operators SET password = $1 WHERE email_address = $2`;
+        const result = await pool.query(updateQuery, [new_password, verifiedEmail]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ success: false, message: "Email not found." });
+        }
+
+        // Clear verified email after reset
+        verifiedEmail = null;
+
+        res.json({ success: true, message: "Password updated successfully." });
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
 //working code
 
 

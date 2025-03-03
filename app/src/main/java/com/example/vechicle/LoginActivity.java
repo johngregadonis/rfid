@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText bodyNumberField, passwordField;
     private Button loginButton;
     private ImageView passwordToggle;
+    private TextView forgotPassword;  // Fixed: Added TextView import and declaration
     private boolean isPasswordVisible = false;
 
     @Override
@@ -38,17 +40,27 @@ public class LoginActivity extends AppCompatActivity {
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
 
         if (isLoggedIn) {
-            // If already logged in, navigate to HomeActivity
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
             return; // Exit onCreate
         }
 
+        // Initialize UI components
         bodyNumberField = findViewById(R.id.bodyNumber);
         passwordField = findViewById(R.id.password);
         loginButton = findViewById(R.id.login_button);
-        passwordToggle = findViewById(R.id.passwordToggle); // Add this in your XML layout
+        passwordToggle = findViewById(R.id.passwordToggle);
+        forgotPassword = findViewById(R.id.forgotPassword); // Fixed: Ensure this ID exists in XML
+
+        // Forgot Password Click Listener
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Password visibility toggle feature
         passwordToggle.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Login Button Click
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.38.88:3001/login"; // Update with your server URL
+        String url = "http://192.168.1.9:3001/login"; // Update with your server URL
 
         // Create JSON payload
         JSONObject loginData = new JSONObject();
@@ -115,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("name", name);
                             editor.putString("bodyNumber", bodyNumber);
-                            editor.putBoolean("isLoggedIn", true); // Save login state
+                            editor.putBoolean("isLoggedIn", true);
                             editor.apply();
 
                             Toast.makeText(LoginActivity.this, "Welcome, " + name + "!", Toast.LENGTH_SHORT).show();

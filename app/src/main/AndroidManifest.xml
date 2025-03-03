@@ -63,17 +63,19 @@
         <activity android:name=".SettingsActivity">
         </activity>
 
+        <activity android:name=".ChangePasswordActivity"/>
+
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".VerifyOtpActivity" />
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".AboutUsActivity" />
+        <activity android:name=".TermsActivity" />
+
+
 
         <!-- Declare the WebSocketService -->
 
 
-        <service android:name=".WebSocketService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.example.vechicle.WebSocketService" />
-            </intent-filter>
-        </service>
 
 
 

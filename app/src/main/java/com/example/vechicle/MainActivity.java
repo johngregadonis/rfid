@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView addPhotoText;
     private Uri selectedImageUri;
 
-    private static final String BASE_URL = "http://192.168.38.88:3001/"; // Replace with your actual backend URL
+    private static final String BASE_URL = "http://192.168.1.9:3001/"; // Replace with your actual backend URL
     private static final String PREFS_NAME = "UserPrefs";
     private static final int REQUEST_GALLERY = 100;
     private static final int PERMISSION_REQUEST_CODE = 1;
