@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+        body {
+            height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      background: 
+      linear-gradient(126deg, rgba(34, 34, 34, 0.7) 9%, rgba(43, 42, 42, 0.7) 100%), 
+        url('images/bor5.jpg'); /* Replace with your background image path */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+        }
+        .otp-container {
+            width: 400px;
+      max-width: 90%;
+      background-color: rgba(255, 255, 255, 0.8); /* White with slight transparency */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+        }
+        .otp-container h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .input-box label{
+            margin-bottom: 55px;
+            color: #333;
+        }
+        .input-box {
+            margin-bottom: 15px;
+        }
+        .input-box input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button {
+            margin-top: 10px;
+        }
+        .button button {
+            width: 100%;
+            padding: 10px;
+            background: #000000;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button button:hover {
+            background: #F7971D;
+            color: #000000;
+        }
+        .message {
+            margin-top: 10px;
+            color: green;
+        }
+        .error {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="otp-container">
+        <h2>OTP Verification</h2>
+        <form id="otpVerificationForm">
+            <div class="input-box">
+               
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="input-box">
+                <label for="otp">Enter OTP</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP" required>
+            </div>
+            <div class="button">
+                <button type="submit">Verify OTP</button>
+            </div>
+            <div id="responseMessage" class="message"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("otpVerificationForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const otp = document.getElementById("otp").value;
+            const responseMessage = document.getElementById("responseMessage");
+
+            try {
+                const response = await fetch("http://localhost:2000/verify-otp", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, otp })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    responseMessage.textContent = result.message;
+                    responseMessage.className = "message";
+                    setTimeout(() => {
+                        window.location.href = "reset_password.html"; // Redirect to reset password page
+                    });
+                } else {
+                    responseMessage.textContent = result.error;
+                    responseMessage.className = "error";
+                }
+            } catch (error) {
+                responseMessage.textContent = "Something went wrong!";
+                responseMessage.className = "error";
+            }
+        });
+        window.onload = function() {
+        const email = sessionStorage.getItem("resetEmail");
+        if (!email) {
+            alert("No email found! Redirecting to forgot password.");
+            window.location.href = "forgot_password.html";
+        } else {
+            document.getElementById("email").value = email;
+        }
+    };
+    </script>
+
+</body>
+</html>
