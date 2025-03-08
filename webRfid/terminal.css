@@ -1,0 +1,457 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FAFAFA;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column; /* Stack the sidebar and content vertically */
+    height: 100%;
+    margin-left: 20%; 
+  }
+  
+  .sidebar {
+    
+    width: 20%;
+    background-color: #000000;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    position: fixed; /* Fix the sidebar's position */
+    top: 0;          /* Align it to the top of the viewport */
+    left: 0;         /* Align it to the left of the viewport */
+    height: 100vh;   /* Full height of the viewport */
+    overflow-y: auto; 
+  }
+  
+  .logo img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+  }
+  
+  .menu {
+    list-style-type: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  
+  .menu-item.active {
+    background-color: #F7971D;
+    color: black;
+    border-radius: 20px;
+    
+  }
+  
+  .menu-item:hover {
+    background-color: white;
+    color: #F7971D;
+    border-radius: 20px;
+    
+  }
+  
+  
+  
+  .table-container {
+    margin-bottom: 20px;
+  }
+  .table-wrapper {
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    background-color: white;
+  
+    padding: 0 20px 20px 20px; /* Removes top padding but keeps others */
+    margin: 0 auto;
+    width: calc(100% - 10px);
+    max-width: 1000px;
+    position: relative;
+  }
+  
+  .styled-table {
+    font-size: 14px;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    table-layout: fixed;
+    
+  }
+  .styled-table thead {
+    position: sticky;
+    top: 80px; /* Adjust this to match the header-container's height */
+    z-index: 5;
+  }
+  .styled-table th, .styled-table td {
+    width: calc(100% / var(--column-count));
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #D9D9D9;
+    word-wrap: break-word;
+  }
+  .styled-table th {
+    background-color: #000000;
+    color: #fff;
+    
+  }
+  .styled-table th, .styled-table td {
+    width: 33%;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #D9D9D9 !important; /* Ensures the line is always visible */
+    height: 40px; /* Adjust height as needed */
+    position: relative; /* Needed for absolute positioning fix */
+  }
+  .styled-table tbody tr:last-child td {
+    border-bottom: 1px solid #D9D9D9 !important; /* Ensures last row has a border */
+  }
+  .styled-table td span {
+    display: inline-block;
+    width: 45px;  /* Fixed width */
+    height: 15px; /* Fixed height */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  .red {
+    background-color: red !important;
+  }
+  
+  .yellow {
+    background-color: yellow !important;
+  }
+  
+  .green {
+    background-color: green !important;
+  }
+  .header-container,
+  .styled-table thead {
+    background-color: white;
+  }
+  
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    height: 80px;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #D9D9D9;
+  }
+  .header-container h1 {
+    font-size: 18px;
+    color: #333333;
+  }
+  
+  
+  .search-bar {
+    z-index: 50; 
+    display: flex;
+    align-items: center;
+    border: 2px solid #bebdbd;
+    border-radius: 25px;
+    padding: 5px 10px;
+    background-color: white;
+    width: 250px;
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    position: relative; /* Ensure the suggestion box aligns relative to this element */
+  }
+  
+  .search-bar:hover {
+    border-color: #F7971D; /* Change border color on hover */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect on hover */
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding-left: 10px;
+    font-size: 14px;
+  }
+  
+  .search-bar i {
+    color: #aaa;
+    font-size: 18px;
+    transition: color 0.3s ease; /* Smooth transition for icon color */
+  }
+  
+  .search-bar:hover i {
+    color: #F7971D; /* Change icon color on hover */
+  }
+  
+  .suggestion-box {
+    position: absolute;
+    top: 100%; /* Position directly below the search bar */
+    left: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%; /* Match the width of the search bar */
+    z-index: 1000;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+    display: none;
+    border-radius: 0 0 10px 10px; /* Rounded bottom corners for the dropdown */
+  }
+  
+  .suggestion {
+    padding: 8px;
+    cursor: pointer;
+    font-size: 14px; /* Match input font size */
+  }
+  
+  .suggestion:hover {
+    background: #f0f0f0;
+  }
+  /* Highlight effect for the matched row */
+  .styled-table tbody tr.highlight {
+    background-color: #F7971D !important;
+    color: white !important;
+  }
+  
+  .styled-table tbody tr td {
+    background-color: inherit; /* Let child cells inherit the row's background */
+  }
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 45px; 
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .profile-icon {
+    font-size: 24px;
+    color: #F7971D;
+    cursor: pointer;
+  }
+  
+  /* Sidebar Styles */
+  .right-sidebar {
+    width: 250px;
+    height: 70vh;
+    position: fixed;
+    top: 60px;
+    right: -300px; /* Hidden by default */
+    background-color: #000000;
+    color: white;
+    padding: 20px;
+    transition: right 0.3s ease-in-out;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    margin-right: 20px;
+    border-radius: 20px;
+  }
+  
+  /* Close Button */
+  .close-btn {
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+  }
+  
+  /* Profile Container Inside Sidebar */
+  .profile-container {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .profile-icon-large {
+    font-size: 80px;
+    color: #F7971D;
+  }
+  
+  .profile-container p {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  
+  /* Overlay (for clicking outside) */
+  .overlays {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    z-index: 1;
+  }
+  .account {
+    margin-top: 30px;
+    font-size: 15px;
+    
+  }
+  .account p{
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .account p:hover{
+    color: #F7971D;
+  }
+  .account i {
+    color: #F7971D;
+    margin-right: 5px;
+    
+  }
+  /* Change Password Form */
+  .change-password-form {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    animation: slideDown 0.3s ease-in-out;
+  }
+  
+  .change-password-form input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+  }
+  
+  .change-password-form button {
+    padding: 10px;
+    border: none;
+    background-color: #ff9800;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  .change-password-form button:hover {
+    background-color: #e68900;
+  }
+  
+  /* Logout Button */
+  #logoutOption {
+    transition: margin-top 0.3s ease-in-out;
+  }
+  /* Slide Down Animation */
+  @keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+  /* Overlay effect */
+  .notification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Notification box styling */
+  .notification-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for emphasis */
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+  }
+  
+  .notification-content span {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .notification-content button {
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .notification-content button:hover {
+    background-color: #F7971D;
+    color: #000000;
+  }
+  
+  /*logout notif*/
+  .notifications-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .notifications-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for emphasis */
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+  }
+  .notifications-content span {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  .notifications-overlay button {
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+  
+  .notifications-overlay button:hover {
+    background-color: #F7971D;
+    color: #000000;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  

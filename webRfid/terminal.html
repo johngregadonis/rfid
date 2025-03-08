@@ -3,58 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Balance</title>
-  <link rel="stylesheet" href="balance.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <title>Terminal</title>
+  <link rel="stylesheet" href="terminal.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
 </head>
-<div class="container">
-  <div class="sidebar">
-    <div class="logo">
-      <img src="images/lgo.png" alt="Logo">
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo">
+        <img src="images/lgo.png" alt="Logo">
+      </div>
+      <ul class="menu">
+        <li class="menu-item active">Terminal Exits</li>
+        <li class="menu-item ">Register Tricycle</li>
+        <li class="menu-item">Reload Balance</li>
+        <li class="menu-item">Offenders</li>
+     
+      </ul>
     </div>
-    <ul class="menu">
-      <li class="menu-item">Terminal Exits</li>
-      <li class="menu-item">Register Tricycle</li>
-      <li class="menu-item active">Reload Balance</li>
-      <li class="menu-item">Offenders</li>
+
+    <div class="admin-header">
       
-    </ul>
-  </div>
-  <div class="admin-header">
+      <span class="admin-text">Terminal Operator</span>
       
-    <span class="admin-text">Terminal Operator</span>
+      <i class="fas fa-user-circle profile-icon" id="profileIcon"></i>
+    </div>
     
-    <i class="fas fa-user-circle profile-icon" id="profileIcon"></i>
-  </div>
   
-
-
-  <div class="table-container">
-    <div class="table-wrapper">
-      
-  <div class="header-container">
-    <h1>Reload Balance</h1>
-    <div class="search-bar">
-      <i class="fas fa-search"></i>
-      <input type="text" placeholder="Search Body Number">
-      
+    <div class="table-container">
+      <div class="table-wrapper">
+        
+    <div class="header-container">
+      <h1>Terminal Exits</h1>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search Body Number">
+        
+      </div>
     </div>
+
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Body Number</th>
+          
+          <th>UID</th>
+          <th>Balance</th>
+          
+
+        </tr>
+      </thead>
+      <tbody id="vehicle-operators-list">
+        <!-- Vehicle operator data will be inserted here -->
+      </tbody>
+    </table>
   </div>
-  <table class="styled-table">
-    <thead>
-      <tr>
-        <th>Body Number</th>
-        <th>UID</th>
-        <th>Balance</th>
-        <th>Add Balance</th>
-      </tr>
-    </thead>
-    <tbody id="vehicle-operators-list">
-      <!-- Vehicle operator data will be inserted here -->
-    </tbody>
-  </table>
 </div>
 
 </div>
@@ -87,26 +92,8 @@
       <p id="logoutOption"><i class="fas fa-sign-out-alt"></i> Logout</p>
   </div>
 </div>
-  </div>
-  
-  <!-- Overlay for blur effect -->
-  <div id="modal-overlay" class="modal-overlay"></div>
 
-  <!-- Modal for adding balance -->
-  <div id="add-balance-modal" class="modal">
-    <div class="modal-content">
-      <h2>Add Balance</h2>
-      <label for="balanceInput">Amount (₱): </label>
-      <input type="number" class="amount" id="balanceInput" min="1" step="0.01" placeholder="Enter amount">
-      <input type="hidden" id="bodyNumberInput">
-      <br><br>
-      <div class="button-container">
-        <button onclick="addBalanceToDB()">Add</button>
-        <button onclick="closeAddBalanceDialog()">Cancel</button>
-      </div>
-    </div>
   </div>
-
   <div id="notification-box" class="notification-overlay" style="display: none;">
     <div class="notification-content">
       <span id="notification-message"></span>
@@ -122,8 +109,6 @@
       <button id="confirm-no">No</button>
   </div>
 </div>
-
-  <script src="balance.js"></script>
+  <script src="terminal.js"></script>
 </body>
-
 </html>

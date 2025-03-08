@@ -10,11 +10,22 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const WebSocket = require('ws');
 const nodemailer = require("nodemailer");
+const path = require('path');
 
 const app = express();
+
 const PORT = 4000;
 const secretKey = 'your_secret_key';
 const wss = new WebSocket.Server({ port: 8081 });
+
+
+// Serve static files (HTML, CSS, JS) from the correct directory
+app.use(express.static(__dirname)); 
+
+// Serve dashboard.html as the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
 
 // Middleware
 app.use(bodyParser.json());
@@ -714,6 +725,110 @@ app.post("/reset-password", async (req, res) => {
         console.error("Error resetting password:", error);
         res.status(500).json({ error: "Internal server error" });
     }
+});
+
+// --- RFID Route Without Balance Deduction ---
+app.post('/rfid-terminal', async (req, res) => {
+  const { uid } = req.body;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'UID is required' });
+  }
+
+  try {
+    // Step 1: Find the matching UID in the vehicle_operators table
+    const findQuery = 'SELECT id, body_number FROM vehicle_operators WHERE uid = $1';
+    const findResult = await pool.query(findQuery, [uid]);
+
+    if (findResult.rows.length === 0) {
+      return res.status(404).json({ error: 'UID not found in the database.' });
+    }
+
+    const vehicleOperatorId = findResult.rows[0].id;
+    const bodyNumber = findResult.rows[0].body_number;
+
+    // Step 2: Insert detection data into detected_vehicles table
+    const now = new Date();
+    const timeDetected = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
+    const dateDetected = now.toISOString().split('T')[0];  // Get YYYY-MM-DD
+
+    const insertDetectionQuery = `
+      INSERT INTO detected_vehicles (vehicle_operator_id, uid, body_number, time_detected, date_detected)
+      VALUES ($1, $2, $3, $4, $5);
+    `;
+    await pool.query(insertDetectionQuery, [vehicleOperatorId, uid, bodyNumber, timeDetected, dateDetected]);
+
+    // Step 3: Update last_update in vehicle_operators table
+    const updateLastUpdateQuery = `
+      UPDATE vehicle_operators
+      SET last_update = NOW()
+      WHERE id = $1;
+    `;
+    await pool.query(updateLastUpdateQuery, [vehicleOperatorId]);
+
+    // Prepare the response
+    res.status(200).json({
+      uid,
+      bodyNumber,
+      timeDetected,
+      dateDetected,
+      lastUpdate: now.toISOString()
+    });
+
+  } catch (err) {
+    console.error('Error processing UID:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+app.get('/get-detected-tricycle', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT body_number, uid, balance 
+       FROM vehicle_operators 
+       WHERE last_update >= NOW() - INTERVAL '24 hour' 
+       ORDER BY last_update DESC 
+       LIMIT 1`
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: "No detected vehicle found" });
+    }
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Failed to fetch detected vehicle' });
+  }
+});
+
+app.get('/get-detection-details', async (req, res) => {
+  try {
+    const { bodyNumber } = req.query;
+    if (!bodyNumber) {
+      return res.status(400).json({ error: 'Body number is required' });
+    }
+
+    // Fetch all detection details for the given body number, adding 1 day to the date
+    const detectionQuery = `
+      SELECT 
+        (date_detected + INTERVAL '1 day') AS date_detected, 
+        time_detected 
+      FROM detected_vehicles 
+      WHERE body_number = $1 
+      ORDER BY date_detected DESC, time_detected DESC;
+    `;
+    const detectionResult = await pool.query(detectionQuery, [bodyNumber]);
+
+    if (detectionResult.rows.length === 0) {
+      return res.json([]); // Return an empty array if no data is found
+    }
+
+    res.json(detectionResult.rows);
+  } catch (error) {
+    console.error('Error fetching detection details:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 

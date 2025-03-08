@@ -1,3 +1,4 @@
+
 document.getElementById('loginForm').addEventListener('submit', async function (e) {
   e.preventDefault(); // Prevent default form submission
 
@@ -21,7 +22,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
           localStorage.setItem('token', data.token);
 
           // Redirect to add_vehicle.html
-          window.location.href = 'add_vehicle.html';
+          window.location.href = 'terminal.html';
       } else {
           // Show error message
           alert(data.message || 'Invalid username or password');
