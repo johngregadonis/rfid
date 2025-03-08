@@ -89,7 +89,8 @@ detectedVehicles.forEach(operator => {
          data-uid="${operator.uid}">
       <td>${operator.body_number}</td>
       <td>${operator.uid}</td>
-      <td class="${balanceClass}"></td>
+      <td><span class="${balanceClass}"></span></td>
+
     </tr>`;
 });
 

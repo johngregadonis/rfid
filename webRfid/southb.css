@@ -110,16 +110,21 @@ body {
   
 }
 .styled-table th, .styled-table td {
-  width: 35%;
+  width: 33%;
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #D9D9D9 !important; /* Ensures the line is always visible */
+  height: 40px; /* Adjust height as needed */
+  position: relative; /* Needed for absolute positioning fix */
 }
-
-.red, .yellow, .green {
+.styled-table tbody tr:last-child td {
+  border-bottom: 1px solid #D9D9D9 !important; /* Ensures last row has a border */
+}
+.styled-table td span {
   display: inline-block;
-  width: 45px;  /* Small square */
-  height: 15px;
-  border-radius: 4px; /* Optional: Rounds the corners */
-  margin-left: 100px;
-  margin-top: 15px;
+  width: 45px;  /* Fixed width */
+  height: 15px; /* Fixed height */
+  border-radius: 4px; /* Rounded corners */
 }
 
 .red {
@@ -133,7 +138,6 @@ body {
 .green {
   background-color: green !important;
 }
-
 .header-container,
 .styled-table thead {
   background-color: white;

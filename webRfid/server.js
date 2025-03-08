@@ -283,8 +283,6 @@ app.post('/rfid', async (req, res) => {
 });
 
 
-
-
 // Endpoint to fetch recent RFID logs
 app.get('/get-rfid-logs', async (req, res) => {
   try {
@@ -319,7 +317,7 @@ app.get('/get-detected-vehicle', async (req, res) => {
     const result = await pool.query(
       `SELECT body_number, uid, balance 
        FROM vehicle_operators 
-       WHERE updated_at >= NOW() - INTERVAL '1 hour' 
+       WHERE updated_at >= NOW() - INTERVAL '24 hour' 
        ORDER BY updated_at DESC 
        LIMIT 1`
     );
@@ -334,6 +332,7 @@ app.get('/get-detected-vehicle', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch detected vehicle' });
   }
 });
+
 
 
 // Endpoint to fetch from balance_change_log
