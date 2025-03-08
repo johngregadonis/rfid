@@ -9,13 +9,21 @@ const cors = require('cors');
 const cookieParser = require("cookie-parser"); 
 const WebSocket = require('ws');
 const nodemailer = require("nodemailer");
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 
 const app = express();
 const PORT = 5000;
 const secretKey = 'your_secret_key';
 const wss = new WebSocket.Server({ port: 8080 });
-const server = require('http').createServer(app);
 
+// Serve static files (HTML, CSS, JS) from the correct directory
+app.use(express.static(__dirname)); 
+
+// Serve dashboard.html as the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'welcompage.html'));
+});
 
 // Middleware
 app.use(bodyParser.json());
@@ -732,33 +740,94 @@ app.post("/reset-password", async (req, res) => {
     }
 });
 
-const clients = new Map(); // Store WebSocket clients with their body numbers
+const confirmationTokens = {}; // Temporary storage for tokens
 
-// Handle WebSocket connections
-wss.on('connection', (ws) => {
-  ws.on('message', (message) => {
+// Send verification email
+app.post('/send-verification', async (req, res) => {
+    const { body_number } = req.body;
+
     try {
-      const data = JSON.parse(message);
-      if (data.type === 'register' && data.body_number) {
-        clients.set(data.body_number, ws);
-        console.log(`Client registered with body number: ${data.body_number}`);
-      }
-    } catch (error) {
-      console.error('Invalid WebSocket message:', error);
-    }
-  });
+        // Get the email linked to the body_number
+        const result = await pool.query(
+            'SELECT email_address FROM vehicle_operators WHERE body_number = $1 LIMIT 1',
+            [body_number]
+        );
 
-  ws.on('close', () => {
-    for (const [key, client] of clients.entries()) {
-      if (client === ws) {
-        clients.delete(key);
-        console.log(`Client with body number ${key} disconnected`);
-        break;
-      }
+        if (result.rows.length === 0) {
+            return res.json({ success: false, error: 'Vehicle operator not found' });
+        }
+
+        const email_address = result.rows[0].email_address;
+        const token = uuidv4();
+        confirmationTokens[token] = email_address; // Store token with associated email
+
+        // Email setup
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'smart.transit69@gmail.com',
+                pass: 'wcuqfnnsvehxykss'
+            }
+        });
+
+        const confirmationLink = `http://localhost:5000/confirm-deletion?token=${token}`;
+
+        const mailOptions = {
+            from: 'smart.transit69@gmail.com',
+            to: email_address,
+            subject: 'Confirm Account Deletion',
+            html: `<p>Click below to confirm the deletion of your account:</p>
+                   <a href="${confirmationLink}" style="padding:10px 20px; background-color:red; color:white; text-decoration:none; font-weight:bold;">Confirm Deletion</a>`
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'Verification email sent!' });
+
+    } catch (error) {
+        console.error('Error sending verification email:', error);
+        res.json({ success: false, error: 'Failed to send email' });
     }
-  });
 });
 
+// Confirm deletion
+app.get('/confirm-deletion', async (req, res) => {
+    const { token } = req.query;
+    const email_address = confirmationTokens[token];
+
+    if (!email_address) {
+        return res.send('Invalid or expired token.');
+    }
+
+    try {
+        await pool.query('BEGIN'); // Start transaction
+
+        // Delete from all dependent tables first
+        await pool.query('DELETE FROM balance_change_log WHERE vehicle_operator_id IN (SELECT id FROM vehicle_operators WHERE email_address = $1)', [email_address]);
+        await pool.query('DELETE FROM deduct_messages WHERE vehicle_operator_id IN (SELECT id FROM vehicle_operators WHERE email_address = $1)', [email_address]);
+        await pool.query('DELETE FROM detected_uid WHERE vehicle_operator_id IN (SELECT id FROM vehicle_operators WHERE email_address = $1)', [email_address]);
+        await pool.query('DELETE FROM fine_payment WHERE vehicle_operator_id IN (SELECT id FROM vehicle_operators WHERE email_address = $1)', [email_address]);
+        await pool.query('DELETE FROM vehicle_operator_messages WHERE vehicle_operator_id IN (SELECT id FROM vehicle_operators WHERE email_address = $1)', [email_address]);
+        await pool.query('DELETE FROM detected_vehicles WHERE vehicle_operator_id IN (SELECT id FROM vehicle_operators WHERE email_address = $1)', [email_address]);
+        // Add more tables if necessary
+
+        // Delete from vehicle_operators last
+        const deleteResult = await pool.query('DELETE FROM vehicle_operators WHERE email_address = $1 RETURNING *', [email_address]);
+
+        if (deleteResult.rowCount > 0) {
+            await pool.query('COMMIT'); // Commit transaction
+            delete confirmationTokens[token]; // Remove token after successful deletion
+            return res.send('All accounts linked to this email have been deleted.');
+        } else {
+            await pool.query('ROLLBACK'); // Rollback transaction if nothing was deleted
+            return res.send('No rows were deleted.');
+        }
+
+    } catch (error) {
+        await pool.query('ROLLBACK'); // Ensure rollback on failure
+        console.error('Error deleting account:', error);
+        return res.send(`Failed to delete account. Error: ${error.message}`);
+    }
+});
 
 
 // --- Start the Server ---

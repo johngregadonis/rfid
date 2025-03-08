@@ -37,7 +37,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
 /// Fetch the data when the page loads
 document.addEventListener('DOMContentLoaded', fetchVehicleOperators);
 
-// Fetch the vehicle operator data from the server
+// Fetch vehicle operators
 async function fetchVehicleOperators() {
   try {
     const response = await fetch('http://localhost:5000/get-vehicle-operators');
@@ -49,15 +49,11 @@ async function fetchVehicleOperators() {
         const balance = parseFloat(operator.balance);
         let balanceClass = balance <= 10 ? 'red' : balance <= 30 ? 'yellow' : 'green';
 
-        // Create table row with data attributes for operator details
         vehicleList += 
-          `<tr class="body-number-row" 
-               data-body-number="${operator.body_number}" 
-               data-balance="${operator.balance}" 
-               data-uid="${operator.uid}">
+          `<tr class="body-number-row" data-body-number="${operator.body_number}">
             <td>${operator.body_number}</td>
             <td>${operator.uid}</td>
-            <td><span class="${balanceClass}"></span></td>
+            <td><span class="${balanceClass} balance-indicator"></span></td>
             <td>
               <button class="deactivate-btn">Delete</button>
             </td>
@@ -65,14 +61,66 @@ async function fetchVehicleOperators() {
       });
 
       document.getElementById('vehicle-operators-list').innerHTML = vehicleList;
+      
+      document.querySelectorAll('.deactivate-btn').forEach(button => {
+        button.addEventListener('click', handleDeleteClick);
+      });
     } else {
       document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">No operators found.</td></tr>';
     }
   } catch (error) {
     console.error('Error fetching data:', error);
-    document.getElementById('vehicle-operators-list').innerHTML = '<tr><td colspan="4">Failed to load vehicle operators.</td></tr>';
   }
 }
+
+// Handle delete button click
+function handleDeleteClick(event) {
+  const row = event.target.closest('.body-number-row');
+  const bodyNumber = row.getAttribute('data-body-number');
+
+  const notificationBox = document.getElementById('notifications-box');
+  const notificationMessage = document.getElementById('notifications-message');
+  const confirmYes = document.getElementById('confirm-yes');
+  const confirmNo = document.getElementById('confirm-no');
+
+  notificationMessage.innerText = "This action can't be undone! Are you sure you want to delete this account?";
+  notificationBox.style.display = 'flex';
+
+  confirmYes.onclick = () => {
+    notificationMessage.innerText = "It must be confirmed by the account owner before deletion";
+    confirmYes.style.display = 'none';
+    confirmNo.innerText = 'Send Verification';
+
+    confirmNo.onclick = async () => {
+      try {
+          const response = await fetch('http://localhost:5000/send-verification', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ body_number: bodyNumber })
+          });
+  
+          const result = await response.json();
+          if (result.success) {
+              alert('A confirmation email has been sent to the account owner.');
+          } else {
+              alert(`Error: ${result.error}`);
+          }
+  
+          notificationBox.style.display = 'none';
+          confirmYes.style.display = 'inline-block';
+          confirmNo.innerText = 'No';
+      } catch (error) {
+          console.error('Error sending verification:', error);
+      }
+  };
+  
+  };
+
+  confirmNo.onclick = () => {
+    notificationBox.style.display = 'none';
+  };
+}
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
