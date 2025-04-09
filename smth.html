@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .sidebar {
+            background-color: #000000;
+            color: #FFD700;
+            width: 18%;
+            height: 100vh;
+            position: fixed;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .logo img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        .menu li {
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .menu li:hover, .menu .active {
+            background-color: #FFD700;
+            color: #000000;
+        }
+        main {
+            margin-left: 18%;
+            padding: 20px;
+            width: 82%;
+        }
+        .stats-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .stats-card p {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .chart-container, .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #FFD700;
+            color: #000000;
+        }
+    </style>
+</head>
+<body class="flex bg-gray-100 h-screen">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo text-center mb-6">
+            <img src="images/lgo.png" alt="Logo">
+        </div>
+        <ul class="menu space-y-4">
+            <li class="active">Registered Vehicles</li>
+            <li>Register Terminal Operator</li>
+            <li>Load History</li>
+            <li>Fine Payment History</li>
+            <li>Detected Vehicle</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <h1 class="text-xl font-bold text-center">DASHBOARD</h1>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-4 gap-6 mt-6">
+            <div class="stats-card">
+                <h2>Total Vehicles Detected</h2>
+                <p>🚍 <span id="totalVehicles">0</span></p>
+            </div>
+            <div class="stats-card">
+                <h2>Total Income</h2>
+                <p>₱ <span id="totalIncome">0</span></p>
+            </div>
+            <div class="stats-card">
+                <h2>Total Penalty Fees</h2>
+                <p>₱ <span id="totalPenalty">0</span></p>
+            </div>
+            <div class="stats-card">
+                <h2>Total Reload</h2>
+                <p>₱ <span id="totalReload">0</span></p>
+            </div>
+        </div>
+
+        <!-- Charts & Table Section -->
+        <div class="grid-container">
+            <div class="chart-container">
+                <h2 class="text-lg font-bold text-center mb-4">Penalty Fines</h2>
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="table-container">
+                <h2 class="text-lg font-bold text-center mb-4">Recent Transactions</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Body Number</th>
+                            <th>Reload</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTable">
+                        <!-- Dynamic rows will be inserted here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total Reload:</strong></td>
+                            <td><strong>₱ <span id="totalReloadFooter">0</span></strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:5000/data'); // API endpoint
+                const data = await response.json();
+
+                document.getElementById('totalVehicles').innerText = data.totalVehicles;
+                document.getElementById('totalIncome').innerText = data.totalIncome;
+                document.getElementById('totalPenalty').innerText = data.totalPenalty;
+                document.getElementById('totalReload').innerText = data.totalReload;
+                document.getElementById('totalReloadFooter').innerText = data.totalReload;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
+                                                                

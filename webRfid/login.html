@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      background: 
+        linear-gradient(126deg, rgba(57, 255, 20, 0.7) 9%, rgba(255, 0, 255, 0.7) 95%), 
+        url('images/bor5.jpg'); /* Replace with your background image path */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .logo {
+      position: relative;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .logo img {
+      width: 150px;
+      height: 150px;
+    }
+
+    .logo h1 {
+      margin-top: 10px;
+      font-size: 24px;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional text shadow */
+    }
+
+    .login-container {
+      width: 400px;
+      max-width: 90%;
+      background-color: rgba(255, 255, 255, 0.8); /* White with slight transparency */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 28px;
+    }
+
+    .input-box {
+      margin-bottom: 15px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .button input {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CD080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .button input:hover {
+      background-color: #F761CA;
+    }
+
+    .login-container p {
+      text-align: center;
+      margin-top: 15px;
+      color: #333;
+    }
+
+    .login-container p a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+
+    .login-container p a:hover {
+      color: #45a049;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+
+  <!-- Login Form -->
+  <div class="login-container">
+    <h2>Terminal Operator</h2>
+    <form id="loginForm" action="http://localhost:5000/login" method="POST">
+      <div class="input-box">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+      </div>
+      <div class="input-box">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <div class="button">
+        <input type="submit" value="Login">
+      </div>
+    </form>
+    
+  </div>
+</body>
+<script src="login.js"></script> 
+</html>

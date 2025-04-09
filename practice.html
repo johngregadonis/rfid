@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Transit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            color: black;
+            overflow-x: hidden;
+        }
+
+        .welcome-section {
+            display: flex;
+            height: 100vh;
+            background: url('/webRfid/images/bg.png') no-repeat center center/cover;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+        }
+
+        .left-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding-left: 50px;
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 65px;
+            width: 200px;
+        }
+
+        .title {
+            margin-top: 150px;
+            font-size: 35px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .tagline {
+            margin-top: 40px;
+            font-size: 25px;
+            color: #FF8C0F;
+        }
+
+        .login-btn {
+            margin-top: 50px;
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            background-color: #FF8C0F;
+        }
+
+        .right-container {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .right-container img {
+            width: 350px;
+            height: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-header {
+            background: url('/webRfid/images/bor5.jpg') no-repeat center center/cover;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .about-header h1 {
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            position: relative;
+        }
+
+        .about-header h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 5px;
+            background: white;
+            margin: 10px auto;
+        }
+
+        .team-section {
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .team-member {
+            background: #ffffff;
+            width: 220px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .image-container {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin: auto;
+        }
+
+        .team-member img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .team-member h2 {
+            margin-top: 10px;
+        }
+
+        .team-member p {
+            margin-top: 10px;
+        }
+
+
+        .footer {
+            background-color: black;
+            color: #FF8C0F;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 50px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .footer .contact,
+        .footer .services {
+            flex: 1;
+            text-align: center;
+            margin-top: -25px;
+        }
+
+        .footer .footer-logo {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer .footer-logo img {
+            width: 200px;
+        }
+
+        .footer .social-icons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .footer .social-icons a img {
+            width: 25px;
+        }
+
+        .footer h3 {
+            text-decoration: underline;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="welcome-section">
+        <div class="left-container">
+            <img src="/webRfid/images/rfidlogo.png" alt="Logo" class="logo">
+            <div class="title">Smart Transit</div>
+            <div class="tagline">"Smart Transit: Effortless, <br>Contactless, and Smarter Travels!"</div>
+            <button class="login-btn" onclick="redirectToLogin()">Login</button>
+        </div>
+        <div class="right-container">
+            <img src="/webRfid/images/Frame 9.png" alt="Phone Image">
+        </div>
+    </div>
+
+    <div class="about-header">
+        <h1>About Us</h1>
+    </div>
+
+    <div class="team-section">
+        <div class="team-member">
+            <div class="image-container">
+                <img src="/webRfid/images/joemark.jpg" alt="Joemark Angelus Velasco">
+            </div>
+            <h2>Joemark Angelus Velasco</h2>
+            <p>Head Programmer</p>
+        </div>
+        <div class="team-member">
+            <div class="image-container">
+                <img src="/webRfid/images/rona.jpg" alt="Ronald Donceras">
+            </div>
+            <h2>Ronald Donceras</h2>
+            <p>Head Programmer</p>
+        </div>
+        <div class="team-member">
+            <div class="image-container">
+                <img src="/webRfid/images/gregor.jpg" alt="John Greg Adonis">
+            </div>
+            <h2>John Greg Adonis</h2>
+            <p>Leader and Head programmer of smart transit.</p>
+        </div>
+        <div class="team-member">
+            <div class="image-container">
+                <img src="/webRfid/images/rex.jpg" alt="Rexdan Taberara">
+            </div>
+            <h2>Rexdan Taberara</h2>
+            <p>Head Programmer</p>
+        </div>
+        <div class="team-member">
+            <div class="image-container">
+                <img src="/webRfid/images/5.png" alt="Keone Elecho">
+            </div>
+            <h2>Keone Elecho</h2>
+            
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="contact">
+            <h3>CONTACT US</h3>
+            <div class="social-icons">
+                <a href="#"><img src="/webRfid/images/facebook.png" alt="Facebook"></a>
+                <a href="#"><img src="/webRfid/images/instagram.png" alt="Instagram"></a>
+                <a href="#"><img src="/webRfid/images/twitter.png" alt="Twitter"></a>
+            </div>
+            <p>smart.transit69@gmail.com</p>
+            <p>09123456789</p>
+        </div>
+    
+        <div class="footer-logo">
+            <img src="/webRfid/images/rfidlogo.png" alt="Logo">
+            <p>2025 © Smart Transit. All rights reserved.</p>
+        </div>
+    
+        <div class="services">
+            <h3>SERVICES OFFERED</h3>
+            <p>UI/UX Design</p>
+            <p>Machine Learning</p>
+            <p>Web Development</p>
+            <p>Robotics</p>
+            <p>Autocad</p>
+        </div>
+    </div>
+    
+    
+    
+
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'admin_login.html';
+        }
+    </script>
+</body>
+</html>

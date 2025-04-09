@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Transit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header with Logo */
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            background: url('/webRfid/images/rfidlogo.png') no-repeat center center/cover;
+            padding: 50px;
+            height: auto;
+            display: block;
+        }
+
+
+        .main-container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: url('/webRfid/images/bg.png') no-repeat center center/cover;
+            padding: 50px;
+        }
+
+        .left-container {
+            width: 40%;
+            color: white;
+            padding-left: 60px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .tagline {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .login-btn {
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            background-color: #FF8C0F;
+            color: white;
+        }
+
+        .right-container {
+            width: 40%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right-container img {
+            width: 250px;
+        }
+
+        .about-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: url('/webRfid/images/Group 104.png') no-repeat center center/cover;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .about-content {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .about-item {
+            width: 200px;
+            text-align: center;
+        }
+
+        .about-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid white;
+        }
+
+        .about-item .name {
+            font-weight: bold;
+            margin-top: 5px;
+            color: rgb(0, 0, 0);
+        }
+
+        .about-item .description {
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .footer {
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Logo -->
+    <header class="header">
+        <img src="/webRfid/images/rfidlogo.png" alt="Smart Transit Logo" class="logo">
+    </header>
+
+    <div class="main-container">
+        <div class="left-container">
+            <div class="title">Smart Transit</div>
+            <div class="tagline">"Unlock the Future of Transit with RFID Technology."</div>
+            <button class="login-btn" onclick="redirectToLogin()">Login</button>
+        </div>
+        <div class="right-container">
+            <img src="/webRfid/images/Frame 9.png" alt="Phone Image">
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2>ABOUT US</h2>
+        <div class="about-content">
+            <div class="about-item">
+                <img src="/webRfid/images/person1.png" alt="Person 1">
+                <p class="name">JOEMARK ANGELUS VELASCO</p>
+                <p class="description">Lead Developer & System Architect</p>
+            </div>
+            <div class="about-item">
+                <img src="/webRfid/images/person2.png" alt="Person 2">
+                <p class="name">JANE DOE</p>
+                <p class="description">UI/UX Designer</p>
+            </div>
+            <div class="about-item">
+                <img src="/webRfid/images/person3.png" alt="Person 3">
+                <p class="name">JOHN SMITH</p>
+                <p class="description">Project Manager</p>
+            </div>
+            <div class="about-item">
+                <img src="/webRfid/images/person4.png" alt="Person 4">
+                <p class="name">EMILY JOHNSON</p>
+                <p class="description">Software Engineer</p>
+            </div>
+            <div class="about-item">
+                <img src="/webRfid/images/person5.png" alt="Person 5">
+                <p class="name">MICHAEL BROWN</p>
+                <p class="description">Data Analyst</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">&copy; 2025 Smart Transit. All rights reserved.</div>
+
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'admin_login.html';
+        }
+    </script>
+
+</body>
+</html>
