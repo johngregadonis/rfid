@@ -1,3 +1,18 @@
+let backendUrl = ''; // Global variable to store the backend URL
+
+// Fetch the backend URL when the page loads
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('/get-backend-url');
+        const data = await response.json();
+        backendUrl = data.backendUrl;
+        console.log("Backend URL Loaded:", backendUrl);
+
+ 
+    } catch (error) {
+        console.error('Error fetching backend URL:', error);
+    }
+});
 
   // Notification box setup
   document.getElementById('registrationForm').addEventListener('submit', async function (event) {
@@ -41,7 +56,7 @@
     data.number = fullPhoneNumber; // Save the full number with the country code
   
     try {
-      const response = await fetch('http://localhost:5000/signup', {
+      const response = await fetch(`${backendUrl}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -124,42 +139,64 @@ document.querySelectorAll('.menu-item').forEach(item => {
 
   document.addEventListener('DOMContentLoaded', () => {
     const tabIdKey = 'dashboard_tab_id';
-    let tabId = sessionStorage.getItem(tabIdKey);
+    const userRole = localStorage.getItem('user_role');
+  const expectedRole = 'admin'; // or 'terminal'
   
-    // ✅ Generate a unique ID for this tab if it doesn't have one
+  if (!userRole || userRole !== expectedRole) {
+    alert('Unauthorized access. Redirecting...');
+    window.location.href = 'error.html';
+  }
+  
+  
+    let tabId = sessionStorage.getItem(tabIdKey);
     if (!tabId) {
-        tabId = Math.random().toString(36).substr(2, 9);
-        sessionStorage.setItem(tabIdKey, tabId);
+      tabId = Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem(tabIdKey, tabId);
     }
   
     let ws = new WebSocket('ws://localhost:8080');
   
     function registerTab() {
-        ws.send(JSON.stringify({ type: 'register', tabId: tabId }));
+      userRole = sessionStorage.getItem('user_role'); // re-fetch in case it changed
+      if (!userRole) {
+        console.error('Role still missing, closing WebSocket.');
+        ws.close();
+        return;
+      }
+  
+      ws.send(JSON.stringify({
+        type: 'register',
+        tabId,
+        role: userRole,
+        expectedRole
+      }));
     }
   
     ws.onopen = () => {
-        console.log('Connected to WebSocket server');
-        registerTab();
+      console.log('Connected to WebSocket server');
+      registerTab();
     };
   
     ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.error) {
-            window.location.href = 'admin_login.html'; // ❌ Redirect immediately
-        }
+      const data = JSON.parse(event.data);
+      if (data.error === 'unauthorized') {
+        alert('Unauthorized access. Redirecting...');
+        window.location.href = 'error.html';
+      } else if (data.error) {
+        alert(data.error);
+        window.location.href = 'error.html';
+      }
     };
   
     ws.onclose = () => {
-        console.log('WebSocket disconnected, attempting to reconnect...');
-        setTimeout(() => {
-            ws = new WebSocket('ws://localhost:8080');
-            ws.onopen = registerTab;
-        }, 1000); // ✅ Reconnect after 1 second
+      console.log('WebSocket disconnected, attempting to reconnect...');
+      setTimeout(() => {
+        ws = new WebSocket('ws://localhost:8080');
+        ws.onopen = registerTab;
+      }, 1000);
     };
   
     window.addEventListener('beforeunload', () => {
-        ws.close();
+      ws.close();
     });
   });
-  
