@@ -1,7 +1,25 @@
+let backendUrl = ''; // Global variable to store the backend URL
+
+// Fetch the backend URL when the page loads
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('/get-backend-url');
+        const data = await response.json();
+        backendUrl = data.backendUrl;
+        console.log("Backend URL Loaded:", backendUrl);
+
+        // Call functions that depend on backendUrl after it's set
+        fetchVehicleOperators();
+        fetchProfile();
+    } catch (error) {
+        console.error('Error fetching backend URL:', error);
+    }
+});
+
 // Fetch the vehicle operator data from the server
 async function fetchVehicleOperators() {
   try {
-      const response = await fetch('http://localhost:4000/get-vehicle-operators');
+      const response = await fetch(`${backendUrl}/get-vehicle-operators`);
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
@@ -50,7 +68,7 @@ async function addBalanceToDB() {
   }
 
   try {
-      const response = await fetch('http://localhost:4000/update-balance', {
+      const response = await fetch(`${backendUrl}/update-balance`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -87,7 +105,7 @@ async function addBalanceToDB() {
 //diminish balance
   async function updateBalance(uid) {
 try {
-  const response = await fetch('http://localhost:4000/rfid', {
+  const response = await fetch(`${backendUrl}/rfid`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uid }),
@@ -283,42 +301,65 @@ document.querySelectorAll('.menu-item').forEach(item => {
   
   document.addEventListener('DOMContentLoaded', () => {
     const tabIdKey = 'dashboard_tab_id';
-    let tabId = sessionStorage.getItem(tabIdKey);
+    const userRole = localStorage.getItem('user_role');
+  const expectedRole = 'terminal'; 
   
-    // ✅ Generate a unique ID for this tab if it doesn't have one
+  if (!userRole || userRole !== expectedRole) {
+    alert('Unauthorized access. Redirecting...');
+    window.location.href = 'error.html';
+  }
+  
+  
+    let tabId = sessionStorage.getItem(tabIdKey);
     if (!tabId) {
-        tabId = Math.random().toString(36).substr(2, 9);
-        sessionStorage.setItem(tabIdKey, tabId);
+      tabId = Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem(tabIdKey, tabId);
     }
   
     let ws = new WebSocket('ws://localhost:8081');
   
     function registerTab() {
-        ws.send(JSON.stringify({ type: 'register', tabId: tabId }));
+      userRole = sessionStorage.getItem('user_role'); // re-fetch in case it changed
+      if (!userRole) {
+        console.error('Role still missing, closing WebSocket.');
+        ws.close();
+        return;
+      }
+  
+      ws.send(JSON.stringify({
+        type: 'register',
+        tabId,
+        role: userRole,
+        expectedRole
+      }));
     }
   
     ws.onopen = () => {
-        console.log('Connected to WebSocket server');
-        registerTab();
+      console.log('Connected to WebSocket server');
+      registerTab();
     };
   
     ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.error) {
-            window.location.href = 'login.html'; // ❌ Redirect immediately
-        }
+      const data = JSON.parse(event.data);
+      if (data.error === 'unauthorized') {
+        alert('Unauthorized access. Redirecting...');
+        window.location.href = 'error.html';
+      } else if (data.error) {
+        alert(data.error);
+        window.location.href = 'error.html';
+      }
     };
   
     ws.onclose = () => {
-        console.log('WebSocket disconnected, attempting to reconnect...');
-        setTimeout(() => {
-            ws = new WebSocket('ws://localhost:8081');
-            ws.onopen = registerTab;
-        }, 1000); // ✅ Reconnect after 1 second
+      console.log('WebSocket disconnected, attempting to reconnect...');
+      setTimeout(() => {
+        ws = new WebSocket('ws://localhost:8081');
+        ws.onopen = registerTab;
+      }, 1000);
     };
   
     window.addEventListener('beforeunload', () => {
-        ws.close();
+      ws.close();
     });
   });
   
@@ -395,13 +436,13 @@ async function fetchProfile() {
   const token = localStorage.getItem('token'); // Get JWT token from localStorage
 
   if (!token) {
-    alert('Unauthorized: Please log in again.');
-    window.location.href = 'login.html'; // Redirect to user login page
+    alert('Unauthorized!');
+    window.location.href = 'error.html'; // Redirect to user login page
     return;
   }
 
   try {
-    const response = await fetch('http://localhost:4000/api/profile', {
+    const response = await fetch(`${backendUrl}/api/profile`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -438,7 +479,7 @@ document.getElementById('changePasswordBtn').addEventListener('click', async fun
   }
 
   try {
-      const response = await fetch('http://localhost:4000/api/change-password', { // Updated endpoint
+      const response = await fetch(`${backendUrl}/api/change-password`, { // Updated endpoint
           method: 'POST',
           headers: {
               'Authorization': `Bearer ${token}`,

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Access Denied</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ffffff;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 600px;
+      padding: 20px;
+      border: 2px solid red;
+      border-radius: 12px;
+      background-color: #fff5f5;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .icon {
+      font-size: 80px;
+      color: red;
+      animation: pulse 1.5s infinite;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #b00000;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">⚠️</div>
+    <div class="message">
+      ERROR! ACCESS TO THIS PAGE IS STRICTLY PROHIBITED
+    </div>
+  </div>
+
+  <script>
+    console.warn("🔒 Unauthorized access attempt detected.");
+  </script>
+</body>
+</html>

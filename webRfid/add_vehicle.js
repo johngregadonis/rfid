@@ -99,7 +99,7 @@ document.querySelector('form').addEventListener('submit', async (event) => {
 
     if (result.success) {
       notificationMessage.textContent = result.message;
-      notificationMessage.style.color = 'green';
+      notificationMessage.style.color = '#F7971D';
     } else {
       notificationMessage.textContent = result.message;
       notificationMessage.style.color = 'red';
@@ -185,43 +185,3 @@ document.getElementById('vehicleForm').addEventListener('submit', function(event
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  const tabIdKey = 'dashboard_tab_id';
-  let tabId = sessionStorage.getItem(tabIdKey);
-
-  // ✅ Generate a unique ID for this tab if it doesn't have one
-  if (!tabId) {
-      tabId = Math.random().toString(36).substr(2, 9);
-      sessionStorage.setItem(tabIdKey, tabId);
-  }
-
-  let ws = new WebSocket('ws://localhost:8081');
-
-  function registerTab() {
-      ws.send(JSON.stringify({ type: 'register', tabId: tabId }));
-  }
-
-  ws.onopen = () => {
-      console.log('Connected to WebSocket server');
-      registerTab();
-  };
-
-  ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.error) {
-          window.location.href = 'login.html'; // ❌ Redirect immediately
-      }
-  };
-
-  ws.onclose = () => {
-      console.log('WebSocket disconnected, attempting to reconnect...');
-      setTimeout(() => {
-          ws = new WebSocket('ws://localhost:8081');
-          ws.onopen = registerTab;
-      }, 1000); // ✅ Reconnect after 1 second
-  };
-
-  window.addEventListener('beforeunload', () => {
-      ws.close();
-  });
-});

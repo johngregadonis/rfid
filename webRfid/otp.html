@@ -102,49 +102,68 @@
     </div>
 
     <script>
-        document.getElementById("otpVerificationForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
 
-            const email = document.getElementById("email").value;
-            const otp = document.getElementById("otp").value;
-            const responseMessage = document.getElementById("responseMessage");
-
+        let backendUrl = ''; // Global variable to store the backend URL
+        
+        // Fetch the backend URL when the page loads
+        document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch("http://localhost:4000/verify-otp", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ email, otp })
-                });
-
-                const result = await response.json();
+                const response = await fetch('/get-backend-url');
+                const data = await response.json();
+                backendUrl = data.backendUrl;
+                console.log("Backend URL Loaded:", backendUrl);
+        
+                // Call functions that depend on backendUrl after it's set
                 
-                if (response.ok) {
-                    responseMessage.textContent = result.message;
-                    responseMessage.className = "message";
-                    setTimeout(() => {
-                        window.location.href = "reset_password.html"; // Redirect to reset password page
-                    });
-                } else {
-                    responseMessage.textContent = result.error;
-                    responseMessage.className = "error";
-                }
+                fetchProfile();
             } catch (error) {
-                responseMessage.textContent = "Something went wrong!";
-                responseMessage.className = "error";
+                console.error('Error fetching backend URL:', error);
             }
         });
-        window.onload = function() {
-        const email = sessionStorage.getItem("resetEmail");
-        if (!email) {
-            alert("No email found! Redirecting to forgot password.");
-            window.location.href = "forgot_password.html";
-        } else {
-            document.getElementById("email").value = email;
-        }
-    };
-    </script>
+        
+                document.getElementById("otpVerificationForm").addEventListener("submit", async function(event) {
+                    event.preventDefault();
+        
+                    const email = document.getElementById("email").value;
+                    const otp = document.getElementById("otp").value;
+                    const responseMessage = document.getElementById("responseMessage");
+        
+                    try {
+                        const response = await fetch(`${backendUrl}/verify-otp`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ email, otp })
+                        });
+        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            responseMessage.textContent = result.message;
+                            responseMessage.className = "message";
+                            setTimeout(() => {
+                                window.location.href = "reset_password.html"; // Redirect to reset password page
+                            });
+                        } else {
+                            responseMessage.textContent = result.error;
+                            responseMessage.className = "error";
+                        }
+                    } catch (error) {
+                        responseMessage.textContent = "Something went wrong!";
+                        responseMessage.className = "error";
+                    }
+                });
+                window.onload = function() {
+                const email = sessionStorage.getItem("resetEmail");
+                if (!email) {
+                    alert("No email found! Redirecting to forgot password.");
+                    window.location.href = "forgot_password.html";
+                } else {
+                    document.getElementById("email").value = email;
+                }
+            };
+            </script>
 
 </body>
 </html>

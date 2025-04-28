@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-console.log('JWT Secret:', process.env.JWT_SECRET);
+
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -24,8 +24,10 @@ app.use(express.static(__dirname));
 
 // Serve dashboard.html as the main page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
+    res.sendFile(path.join(__dirname, 'welcompage.html'));
 });
+
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
 
 // Middleware
 app.use(bodyParser.json());
@@ -50,8 +52,9 @@ pool.connect((err) => {
   }
 });
 
-let masterTabId = null; // Stores the original tab's unique ID
-let masterTabSocket = null; // Stores the WebSocket connection of the original tab
+let masterTabId = null;
+let masterTabSocket = null;
+let masterRole = null;
 
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
@@ -60,22 +63,34 @@ wss.on('connection', (ws) => {
         const data = JSON.parse(message);
 
         if (data.type === 'register') {
-            // ✅ First tab becomes the master (original) tab
-            if (!masterTabId) {
-                masterTabId = data.tabId;
-                masterTabSocket = ws;
-                console.log(`Master tab registered: ${masterTabId}`);
+            const { tabId, role, expectedRole } = data;
+
+            // 🔐 Role mismatch (user trying to access wrong panel)
+            if (role !== expectedRole) {
+                console.log(`Role mismatch: role=${role}, expected=${expectedRole}`);
+                ws.send(JSON.stringify({ error: 'unauthorized' }));
+                ws.close();
                 return;
             }
 
-            // ❌ If a different tab tries to connect, block it
-            if (data.tabId !== masterTabId) {
+            // ✅ First valid tab becomes the master
+            if (!masterTabId) {
+                masterTabId = tabId;
+                masterRole = role;
+                masterTabSocket = ws;
+                console.log(`Master tab registered: ${masterTabId} with role ${masterRole}`);
+                return;
+            }
+
+            // ❌ Prevent access if tabId doesn't match master
+            if (tabId !== masterTabId) {
+                console.log(`Blocked duplicate tab: ${tabId}`);
                 ws.send(JSON.stringify({ error: 'Dashboard is already open in another tab or browser.' }));
                 ws.close();
                 return;
             }
 
-            // ✅ If the original tab reconnects, allow it
+            // ✅ Original tab reconnecting
             masterTabSocket = ws;
             console.log('Master tab reconnected');
         }
@@ -832,7 +847,11 @@ app.get('/get-detection-details', async (req, res) => {
 });
 
 
+app.get('/get-backend-url', (req, res) => {
+  res.json({ backendUrl: process.env.BACKEND_URL || 'http://localhost:4000' });
+});
+
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on ${backendUrl}`);
 });
