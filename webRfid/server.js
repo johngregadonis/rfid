@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-console.log('JWT Secret:', process.env.JWT_SECRET);
+
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,11 +10,22 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const WebSocket = require('ws');
 const nodemailer = require("nodemailer");
+const path = require('path');
 
 const app = express();
 const PORT = 2000;
 const secretKey = 'your_secret_key';
 const wss = new WebSocket.Server({ port: 8082 });
+
+// Serve static files (HTML, CSS, JS) from the correct directory
+app.use(express.static(__dirname)); 
+
+// Serve dashboard.html as the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'welcompage.html'));
+});
+
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:2000';
 
 // Middleware
 app.use(bodyParser.json());
@@ -39,8 +50,9 @@ pool.connect((err) => {
   }
 });
 
-let masterTabId = null; // Stores the original tab's unique ID
-let masterTabSocket = null; // Stores the WebSocket connection of the original tab
+let masterTabId = null;
+let masterTabSocket = null;
+let masterRole = null;
 
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
@@ -49,22 +61,34 @@ wss.on('connection', (ws) => {
         const data = JSON.parse(message);
 
         if (data.type === 'register') {
-            // ✅ First tab becomes the master (original) tab
-            if (!masterTabId) {
-                masterTabId = data.tabId;
-                masterTabSocket = ws;
-                console.log(`Master tab registered: ${masterTabId}`);
+            const { tabId, role, expectedRole } = data;
+
+            // 🔐 Role mismatch (user trying to access wrong panel)
+            if (role !== expectedRole) {
+                console.log(`Role mismatch: role=${role}, expected=${expectedRole}`);
+                ws.send(JSON.stringify({ error: 'unauthorized' }));
+                ws.close();
                 return;
             }
 
-            // ❌ If a different tab tries to connect, block it
-            if (data.tabId !== masterTabId) {
+            // ✅ First valid tab becomes the master
+            if (!masterTabId) {
+                masterTabId = tabId;
+                masterRole = role;
+                masterTabSocket = ws;
+                console.log(`Master tab registered: ${masterTabId} with role ${masterRole}`);
+                return;
+            }
+
+            // ❌ Prevent access if tabId doesn't match master
+            if (tabId !== masterTabId) {
+                console.log(`Blocked duplicate tab: ${tabId}`);
                 ws.send(JSON.stringify({ error: 'Dashboard is already open in another tab or browser.' }));
                 ws.close();
                 return;
             }
 
-            // ✅ If the original tab reconnects, allow it
+            // ✅ Original tab reconnecting
             masterTabSocket = ws;
             console.log('Master tab reconnected');
         }
@@ -77,8 +101,7 @@ wss.on('connection', (ws) => {
     });
 });
 
-console.log('WebSocket server running on ws://localhost:8082');
-
+console.log('WebSocket server running on ws://localhost:8081');
 
 // --- Authentication Routes ---
 
@@ -193,8 +216,14 @@ app.post('/rfid', async (req, res) => {
   }
 
   try {
-    // Step 1: Find the matching UID in the vehicle_operators table
-    const findQuery = 'SELECT id, balance, body_number FROM vehicle_operators WHERE uid = $1';
+    // Step 1: Find the matching UID in the vehicle_operators table and check last_update
+    const findQuery = `
+      SELECT id, balance, body_number, last_update
+      FROM vehicle_operators
+      WHERE uid = $1
+      ORDER BY last_update DESC
+      LIMIT 1;
+    `;
     const findResult = await pool.query(findQuery, [uid]);
 
     if (findResult.rows.length === 0) {
@@ -204,8 +233,25 @@ app.post('/rfid', async (req, res) => {
     const vehicleOperatorId = findResult.rows[0].id;
     const currentBalance = parseFloat(findResult.rows[0].balance);
     const bodyNumber = findResult.rows[0].body_number;
+    const lastUpdate = findResult.rows[0].last_update;
 
-    // Step 2: Deduct 5 pesos regardless of balance
+    // Step 2: Check if the last deduction already used this last_update
+    const checkDeductionQuery = `
+      SELECT last_update_used FROM balance_deductions WHERE vehicle_operator_id = $1
+      ORDER BY last_update_used DESC
+      LIMIT 1;
+    `;
+    const checkDeductionResult = await pool.query(checkDeductionQuery, [vehicleOperatorId]);
+
+    if (checkDeductionResult.rows.length > 0) {
+      const lastUpdateUsed = checkDeductionResult.rows[0].last_update_used;
+      
+      if (lastUpdateUsed && lastUpdateUsed.toISOString() === lastUpdate.toISOString()) {
+        return res.status(400).json({ error: 'Balance deduction already made for this update. Update required before next deduction.' });
+      }
+    }
+
+    // Step 3: Deduct 5 pesos regardless of balance
     const updateQuery = `
       UPDATE vehicle_operators
       SET balance = balance - 5
@@ -216,7 +262,14 @@ app.post('/rfid', async (req, res) => {
 
     const newBalance = updateResult.rows[0].balance;
 
-    // Step 3: Determine the message based on the new balance
+    // Step 4: Record this last_update as used in balance_deductions
+    const recordDeductionQuery = `
+      INSERT INTO balance_deductions (vehicle_operator_id, last_update_used)
+      VALUES ($1, $2);
+    `;
+    await pool.query(recordDeductionQuery, [vehicleOperatorId, lastUpdate]);
+
+    // Step 5: Determine the message based on the new balance
     let message = null;
     if (newBalance < 0) {
       message = 'You violated the ticketing regulation, visit the terminal operator.';
@@ -224,7 +277,7 @@ app.post('/rfid', async (req, res) => {
       message = '₱5.00 was deducted from your balance.';
     }
 
-    // Step 4: Insert the message into the deduct_messages table if there is a message
+    // Step 6: Insert the message into the deduct_messages table if there is a message
     if (message) {
       const insertMessageQuery = `
         INSERT INTO deduct_messages (vehicle_operator_id, deduct_message)
@@ -234,7 +287,7 @@ app.post('/rfid', async (req, res) => {
       console.log(`Message inserted for UID ${uid}: "${message}"`);
     }
 
-    // Step 5: Insert detection data into detected_uid table
+    // Step 7: Insert detection data into detected_uid table
     const now = new Date();
     const timeDetected = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
     const dateDetected = now.toISOString().split('T')[0];  // Get YYYY-MM-DD
@@ -675,7 +728,7 @@ app.post("/reset-password", async (req, res) => {
     if (!email || !newPassword) {
         return res.status(400).json({ error: "Invalid request" });
     }
-
+ 
     try {
         // Check if email exists
         const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -698,7 +751,62 @@ app.post("/reset-password", async (req, res) => {
     }
 });
 
+app.get('/get-detected-tricycle', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT body_number, uid, balance 
+       FROM vehicle_operators 
+       WHERE last_update >= NOW() - INTERVAL '24 hour' 
+       ORDER BY last_update DESC 
+       LIMIT 1`
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: "No detected vehicle found" });
+    }
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Failed to fetch detected vehicle' });
+  }
+});
+
+app.get('/get-detection-details', async (req, res) => {
+  try {
+    const { bodyNumber } = req.query;
+    if (!bodyNumber) {
+      return res.status(400).json({ error: 'Body number is required' });
+    }
+
+    // Fetch all detection details for the given body number, adding 1 day to the date
+    const detectionQuery = `
+      SELECT 
+        (date_detected + INTERVAL '1 day') AS date_detected, 
+        time_detected 
+      FROM detected_vehicles 
+      WHERE body_number = $1 
+      ORDER BY date_detected DESC, time_detected DESC;
+    `;
+    const detectionResult = await pool.query(detectionQuery, [bodyNumber]);
+
+    if (detectionResult.rows.length === 0) {
+      return res.json([]); // Return an empty array if no data is found
+    }
+
+    res.json(detectionResult.rows);
+  } catch (error) {
+    console.error('Error fetching detection details:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+app.get('/get-backend-url', (req, res) => {
+  res.json({ backendUrl: process.env.BACKEND_URL || 'http://localhost:2000' });
+});
+
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on ${backendUrl}`);
 });

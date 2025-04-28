@@ -36,9 +36,9 @@ body {
 
 .op-list {
   display: flex;
-  gap: 200px; /* Space between items */
-  margin-top: 1.5%;
-  margin-bottom: 20px;
+  gap: 300px; /* Space between items */
+  margin-top: 2.5%;
+  margin-bottom: 10px;
   justify-content: center;
 }
 
@@ -58,7 +58,7 @@ body {
 }
 
 .table-wrapper {
-  max-height: 60vh;
+  max-height: 80vh;
   overflow-y: auto;
   border-radius: 10px;
   background-color: white;
@@ -70,6 +70,21 @@ body {
   border-radius: 10px;
 }
 
+.styled-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.styled-table th {
+  background-color: #000000;
+  color: #fff;
+  border: 0.1px solid #D9D9D9;
+  outline: 0.1px solid #D9D9D9; /* Ensures visible borders */
+}
+
+
+
 .styled-table th,
 .styled-table td {
   padding: 10px;
@@ -77,12 +92,8 @@ body {
   border: 1px solid #D9D9D9;
 }
 
-.styled-table th {
-  background-color: #000000;
-  color: #fff;
-}
+
 
 .styled-table td {
   background-color: #fff;
 }
-

@@ -1,12 +1,19 @@
+fetch('/get-backend-url')
+    .then(response => response.json())
+    .then(data => {
+        const backendUrl = data.backendUrl;
+        console.log("Backend URL Loaded:", backendUrl);
+
 document.getElementById('loginForm').addEventListener('submit', async function (e) {
   e.preventDefault(); // Prevent default form submission
 
   // Get input values
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
+  localStorage.setItem('user_role', 'nbound');
 
   try {
-      const response = await fetch('http://localhost:2000/login', { // Change to user login endpoint
+      const response = await fetch(`${backendUrl}/login`, { // Change to user login endpoint
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -30,4 +37,5 @@ document.getElementById('loginForm').addEventListener('submit', async function (
       console.error('Error:', error);
       alert('Something went wrong. Please try again later.');
   }
+});
 });

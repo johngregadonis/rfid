@@ -21,21 +21,35 @@
     
     <p><strong>Body Number:</strong> <span id="body-number"></span></p>
     <p><strong>UID:</strong> <span id="uid"></span></p>
-    <p><strong>Current Balance:</strong> <span id="balance"></span></p>
+   
   </div>
 </div>
-  <table class="styled-table">
-    <thead>
-      <tr>
-        <th>Date Arrival <br>(at checkpoint)</th>
-        <th>Time Arrival <br>(at checkpoint)</th>       
-        <th>Balance</th>
-      </tr>
-    </thead>
-    <tbody id="vehicle-operators-list">
-      <!-- Vehicle operator data will be inserted here -->
-    </tbody>
-  </table>
+
+<div class="table-container">
+  <div class="table-wrapper">
+<!-- Unified Table -->
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th colspan="2">Terminal</th> <!-- Detection Details -->
+      <th colspan="2">Checkpoint</th> <!-- Balance Logs -->
+      <th rowspan="2">Balance</th>      
+    </tr>
+    <tr>
+      <th>Date Departure</th>
+      <th>Time Departure</th>
+      <th>Date Arrival</th>
+      <th>Time Arrival</th>
+    </tr>
+  </thead>
+  
+  <tbody id="vehicle-operators-list">
+    <!-- Data from both functions will be inserted here -->
+  </tbody>
+</table>
+</div>
+</div>
+</div>
     </div>
     <script src="operator.js"></script>
   
