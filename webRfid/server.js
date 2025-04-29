@@ -262,14 +262,25 @@ app.post('/rfid', async (req, res) => {
 
     const newBalance = updateResult.rows[0].balance;
 
-    // Step 4: Record this last_update as used in balance_deductions
+    // Step 4: Manually insert into balance_change_log (after balance deduction)
+    const now = new Date();
+    const dateArrival = now.toISOString().split('T')[0]; // Get YYYY-MM-DD
+    const timeArrival = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
+
+    const insertBalanceLogQuery = `
+      INSERT INTO balance_change_log (vehicle_operator_id, date_arrival, time_arrival, balance)
+      VALUES ($1, $2, $3, $4);
+    `;
+    await pool.query(insertBalanceLogQuery, [vehicleOperatorId, dateArrival, timeArrival, newBalance]);
+
+    // Step 5: Record this last_update as used in balance_deductions
     const recordDeductionQuery = `
       INSERT INTO balance_deductions (vehicle_operator_id, last_update_used)
       VALUES ($1, $2);
     `;
     await pool.query(recordDeductionQuery, [vehicleOperatorId, lastUpdate]);
 
-    // Step 5: Determine the message based on the new balance
+    // Step 6: Determine the message based on the new balance
     let message = null;
     if (newBalance < 0) {
       message = 'You violated the ticketing regulation, visit the terminal operator.';
@@ -277,7 +288,7 @@ app.post('/rfid', async (req, res) => {
       message = '₱5.00 was deducted from your balance.';
     }
 
-    // Step 6: Insert the message into the deduct_messages table if there is a message
+    // Step 7: Insert the message into the deduct_messages table if there is a message
     if (message) {
       const insertMessageQuery = `
         INSERT INTO deduct_messages (vehicle_operator_id, deduct_message)
@@ -287,8 +298,7 @@ app.post('/rfid', async (req, res) => {
       console.log(`Message inserted for UID ${uid}: "${message}"`);
     }
 
-    // Step 7: Insert detection data into detected_uid table
-    const now = new Date();
+    // Step 8: Insert detection data into detected_uid table
     const timeDetected = now.toTimeString().split(' ')[0]; // Get HH:MM:SS
     const dateDetected = now.toISOString().split('T')[0];  // Get YYYY-MM-DD
 
@@ -334,6 +344,7 @@ app.post('/rfid', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
 
 
 // Endpoint to fetch recent RFID logs
