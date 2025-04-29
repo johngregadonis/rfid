@@ -801,7 +801,7 @@ app.get('/get-detected-tricycle', async (req, res) => {
     const result = await pool.query(
       `SELECT body_number, uid, balance 
        FROM vehicle_operators 
-       WHERE last_update >= NOW() - INTERVAL '24 hour' 
+       WHERE last_update >= NOW() - INTERVAL '1 hour' 
        ORDER BY last_update DESC 
        LIMIT 1`
     );
