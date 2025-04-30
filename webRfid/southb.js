@@ -59,7 +59,8 @@ let detectedVehicles = JSON.parse(localStorage.getItem('detectedVehicles')) || [
 
 async function startDetectionCheck() {
 updateDisplay(); // Show stored vehicles on load
-setInterval(fetchDetectedVehicle, 10000); // Poll every 3 seconds
+await fetchDetectedVehicle(); // First call immediately
+setInterval(fetchDetectedVehicle, 1000); // Poll every 3 seconds
 }
 
 async function fetchDetectedVehicle() {
