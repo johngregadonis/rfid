@@ -49,7 +49,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
     }
 
     private void verifyOtp(String email, String otp) {
-        String url = "http://192.168.1.9:3001/verify-otp";
+        String url = "http://192.168.1.8:3001/verify-otp";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 

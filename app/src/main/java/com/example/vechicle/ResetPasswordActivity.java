@@ -59,7 +59,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.1.9:3001/reset-password";
+        String url = "http://192.168.1.8:3001/reset-password";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

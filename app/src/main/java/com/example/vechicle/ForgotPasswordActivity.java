@@ -57,7 +57,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void sendOtpRequest(String email) {
-        String url = "http://192.168.1.9:3001/send-otp?email=" + email;
+        String url = "http://192.168.1.8:3001/send-otp?email=" + email;
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

@@ -1,4 +1,4 @@
-package com.example.vechicle; // Fix package name typo
+package com.example.vechicle;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,9 +29,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static final String PREFS_NAME = "UserPrefs"; // SharedPreferences key
-    private static final String API_URL = "http://192.168.1.9:3001/messages";
-    private static final String DEDUCT_API_URL = "http://192.168.1.9:3001/deduct-messages";
+    private static final String PREFS_NAME = "UserPrefs";
+    private static final String API_URL = "http://192.168.1.8:3001/messages";
+    private static final String DEDUCT_API_URL = "http://192.168.1.8:3001/deduct-messages";
 
     private TextView nameTextView, balanceTextView, messagesTextView;
     private ImageView photoImageView;
@@ -49,12 +50,10 @@ public class HomeActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         messagesTextView = findViewById(R.id.messagesTextView);
 
-        // Load user details
         loadUserDetails();
         fetchMessages();
         fetchDeductMessages();
 
-        // Set up swipe-to-refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             loadUserDetails();
             fetchMessages();
@@ -62,8 +61,58 @@ public class HomeActivity extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        // Set up click listeners for icons
         setupIconListeners();
+    }
+
+    // ✅ ADDED: Token check on any screen interaction
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        checkTokenValidity();
+    }
+
+    // ✅ ADDED: Token validation method
+    private void checkTokenValidity() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String token = prefs.getString("token", null);
+
+        if (token != null) {
+            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+            Call<ResponseBody> call = apiService.checkTokenValidity("Bearer " + token);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code() == 401) {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.clear();
+                        editor.apply();
+
+// Define the session expired message
+                        String sessionExpiredMessage = "Session expired. Please login again.";
+
+                        // Show session expired message in messagesTextView
+                        runOnUiThread(() -> {
+                            messagesTextView.setText(sessionExpiredMessage);
+                        });
+
+                        // Optionally, also show a toast
+                        Toast.makeText(HomeActivity.this, sessionExpiredMessage, Toast.LENGTH_LONG).show();
+
+
+                        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(HomeActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void loadUserDetails() {
@@ -93,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void fetchBalance(String bodyNumber) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.9:3001/")
+                .baseUrl("http://192.168.1.8:3001/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

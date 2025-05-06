@@ -5,11 +5,18 @@ const cors = require('cors'); // Import CORS
 const { Client } = require('pg');
 const WebSocket = require('ws');
 const nodemailer = require('nodemailer');
+const axios = require("axios");
+const jwt = require('jsonwebtoken');
+
+
 
 
 // Initialize Express App
 const app = express();
 const port = 3001;
+const PAYMONGO_SECRET_KEY = "sk_test_C7Cst5F2UDAxJjWiCtgtLzsr"; // Replace with sk_live_xxx in production
+const OWNER_GCASH_NUMBER = ""; // Replace with App Owner’s GCash number
+
 
 // Enable CORS
 app.use(cors());
@@ -22,6 +29,10 @@ const pool = new Pool({
   password: '12345',      // Database password
   port: 5432,             // Default PostgreSQL port
 });
+
+
+const SECRET_KEY = '102702'; // Replace with a secure key
+
 
 const otpStorage = {}
 let verifiedEmail = null;
@@ -93,7 +104,7 @@ app.get('/operatorDetails', async (req, res) => {
 });
 
 
-// Login Endpoint
+// LOGIN Endpoint with Token and Sessions
 app.post('/login', async (req, res) => {
   const { bodyNumber, password } = req.body;
 
@@ -104,7 +115,7 @@ app.post('/login', async (req, res) => {
 
     // Query user by body number
     const result = await client.query(
-      'SELECT name, body_number, password FROM vehicle_operators WHERE body_number = $1',
+      'SELECT id, name, body_number, password FROM vehicle_operators WHERE body_number = $1',
       [bodyNumber]
     );
 
@@ -123,12 +134,22 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
+    // ✅ Generate JWT token
+    const token = jwt.sign({ user_id: user.id }, SECRET_KEY, { expiresIn: '7d' });
+
+    // ✅ Save session
+    await pool.query(
+      'INSERT INTO sessions (user_id, token) VALUES ($1, $2)',
+      [user.id, token]
+    );
+
     console.log("Login successful for:", user); // Debug log
 
-    // Send user details on success (without full details)
+    // ✅ Send token along with user details
     res.status(200).json({
       name: user.name,
       bodyNumber: user.body_number,
+      token: token
     });
 
     client.release();
@@ -304,8 +325,8 @@ app.get('/messages', async (req, res) => {
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "doncerasronald34@gmail.com", // Use environment variables in production
-        pass: "texoswakqdigecnw",
+        user: "smart.transit69@gmail.com", // Use environment variables in production
+        pass: "wcuqfnnsvehxykss",
     },
 });
 
@@ -400,6 +421,188 @@ app.post('/reset-password', async (req, res) => {
 });
 
 //working code
+
+
+// 📌 ✅ Process Payment & Redirect to GCash
+app.post("/process-payment", async (req, res) => {
+    const { amount, bodyNumber } = req.body;
+    const amountCentavos = parseInt(amount) * 100;
+
+    if (amountCentavos < 2000) {
+        return res.status(400).json({ error: "Amount must be at least PHP 20.00 (2000 centavos)." });
+    }
+
+    try {
+        const sourceResponse = await axios.post(
+            "https://api.paymongo.com/v1/sources",
+            {
+                data: {
+                    attributes: {
+                        amount: amountCentavos,
+                        currency: "PHP",
+                        type: "gcash",
+                        metadata: { bodyNumber }, // ✅ Store bodyNumber in metadata
+                        redirect: {
+                            success: "https://yourdomain.com/payment-success",
+                            failed: "https://yourdomain.com/payment-failed",
+                        },
+                    },
+                },
+            },
+            {
+                headers: {
+                    Authorization: `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString("base64")}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        const gcashUrl = sourceResponse.data.data.attributes.redirect.checkout_url;
+        res.json({ gcash_url: gcashUrl });
+
+    } catch (error) {
+        console.error("❌ Error processing payment:", error.response?.data || error.message);
+        res.status(500).json({ error: "Payment processing failed" });
+    }
+});
+
+// 📌 ✅ Webhook: Update Balance After Payment Success
+app.post("/paymongo-webhook", async (req, res) => {
+    console.log("🔔 Webhook Triggered: ", JSON.stringify(req.body, null, 2));
+
+    const event = req.body;
+
+    if (!event.data || !event.data.attributes) {
+        console.error("❌ Invalid webhook payload:", event);
+        return res.status(400).json({ error: "Invalid webhook data" });
+    }
+
+    // ✅ Check if the payment was successful
+    if (event.data.attributes.status === "paid") {
+        const amount = event.data.attributes.amount / 100; // Convert centavos to PHP
+        const bodyNumber = event.data.attributes.metadata?.bodyNumber; // Extract body number
+
+        if (!bodyNumber) {
+            console.error("❌ Missing bodyNumber in webhook metadata.");
+            return res.status(400).json({ error: "Missing bodyNumber" });
+        }
+
+        try {
+            // 🔍 Check if bodyNumber exists in the database
+            const checkQuery = "SELECT balance FROM vehicle_operators WHERE body_number = $1";
+            const result = await pool.query(checkQuery, [bodyNumber]);
+
+            if (result.rows.length === 0) {
+                console.error(`❌ body_number '${bodyNumber}' not found.`);
+                return res.status(404).json({ error: "body_number not found" });
+            }
+
+            console.log(`ℹ️ Current balance for ${bodyNumber}: ${result.rows[0].balance}`);
+
+            // ✅ Update balance
+            const updateQuery = "UPDATE vehicle_operators SET balance = balance + $1 WHERE body_number = $2 RETURNING balance";
+            const updateResult = await pool.query(updateQuery, [amount, bodyNumber]);
+
+            console.log(`✅ Updated balance for ${bodyNumber}: ${updateResult.rows[0].balance}`);
+            return res.json({ message: "Balance updated successfully!", new_balance: updateResult.rows[0].balance });
+
+        } catch (error) {
+            console.error("❌ Database update error:", error);
+            return res.status(500).json({ error: "Failed to update balance." });
+        }
+    }
+
+    res.status(200).json({ message: "Webhook received but not 'paid' status" });
+});
+
+// 📌 ✅ Manual Test API to Update Balance (For Debugging)
+app.post("/test-update-balance", async (req, res) => {
+    const { amount, bodyNumber } = req.body;
+
+    try {
+        const updateQuery = "UPDATE vehicle_operators SET balance = balance + $1 WHERE body_number = $2 RETURNING balance";
+        const updateResult = await pool.query(updateQuery, [amount, bodyNumber]);
+
+        if (updateResult.rowCount === 0) {
+            return res.status(404).json({ error: "Body number not found" });
+        }
+
+        return res.json({ message: "Balance updated!", new_balance: updateResult.rows[0].balance });
+    } catch (error) {
+        console.error("❌ Update error:", error);
+        return res.status(500).json({ error: "Failed to update balance." });
+    }
+});
+
+const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ error: 'No token provided' });
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const result = await pool.query(
+      'SELECT * FROM sessions WHERE user_id = $1 AND token = $2',
+      [decoded.user_id, token]
+    );
+    if (result.rowCount === 0) return res.status(401).json({ error: 'Token invalidated' });
+
+    req.user = decoded;
+    req.token = token;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+};
+
+
+app.post('/logout-all', authenticate, async (req, res) => {
+  const userId = req.user.user_id;
+  try {
+    await pool.query('DELETE FROM sessions WHERE user_id = $1', [userId]);
+    res.json({ message: 'Logged out from all devices.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to logout' });
+  }
+});
+
+/**
+ * PROTECTED ROUTE EXAMPLE
+ */
+app.get('/profile', authenticate, (req, res) => {
+  res.json({ message: 'Access granted to profile' });
+});
+
+/**
+ * CHECK TOKEN VALIDITY
+ */
+app.get('/check-token-validity', async (req, res) => {
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+
+    // Check if token still exists in the sessions table
+    const result = await pool.query(
+      'SELECT * FROM sessions WHERE user_id = $1 AND token = $2',
+      [decoded.user_id, token]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(401).json({ message: 'Token has been invalidated' });
+    }
+
+    res.status(200).json({ message: 'Token is valid' });
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
+});
 
 
 // Start Server

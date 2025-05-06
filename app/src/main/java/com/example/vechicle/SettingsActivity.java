@@ -3,70 +3,156 @@ package com.example.vechicle;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout; // Import this
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final String PREFS_NAME = "UserPrefs"; // SharedPreferences key
-    private ConstraintLayout logoutButton, changePasswordButton, about_us_layout, terms_privacy_layout; // Corrected casing
+    private static final String PREFS_NAME = "UserPrefs";
+    private ConstraintLayout logoutButton, changePasswordButton, about_us_layout, terms_privacy_layout, help_layout,  btnLogoutAllDevices;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        // Initialize views
+        // Initialize UI components
         logoutButton = findViewById(R.id.logout_button);
-        changePasswordButton = findViewById(R.id.change_password_button); // Fix declaration
+        changePasswordButton = findViewById(R.id.change_password_button);
         about_us_layout = findViewById(R.id.about_us_layout);
         terms_privacy_layout = findViewById(R.id.terms_privacy_layout);
+        help_layout = findViewById(R.id.help_layout);
+        btnLogoutAllDevices = findViewById(R.id.btnLogoutAllDevices);
 
-        // Set up Logout button click listener
+        // Local logout
         logoutButton.setOnClickListener(v -> {
-            logout(); // Perform logout operation
-
-            // Redirect to LoginActivity
+            logout();
             Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish(); // Close SettingsActivity so user can't go back using the back button
+            finish();
         });
 
-        // Set up Change Password button click listener
-        changePasswordButton.setOnClickListener(v -> {
-            // Navigate to ChangePasswordActivity
-            Intent intent = new Intent(SettingsActivity.this, ChangePasswordActivity.class);
-            startActivity(intent);
-        });
+        // Logout all devices
+        btnLogoutAllDevices.setOnClickListener(v -> logoutAllDevices());
 
-        // Set up Change Password button click listener
-        about_us_layout.setOnClickListener(v -> {
-            // Navigate to ChangePasswordActivity
-            Intent intent = new Intent(SettingsActivity.this, AboutUsActivity.class);
-            startActivity(intent);
-        });
+        // Change password
+        changePasswordButton.setOnClickListener(v ->
+                startActivity(new Intent(SettingsActivity.this, ChangePasswordActivity.class)));
 
-        // Set up Change Password button click listener
-        terms_privacy_layout.setOnClickListener(v -> {
-            // Navigate to ChangePasswordActivity
-            Intent intent = new Intent(SettingsActivity.this, TermsActivity.class);
-            startActivity(intent);
-        });
+        // About Us
+        about_us_layout.setOnClickListener(v ->
+                startActivity(new Intent(SettingsActivity.this, AboutUsActivity.class)));
 
+        // Terms and Privacy
+        terms_privacy_layout.setOnClickListener(v ->
+                startActivity(new Intent(SettingsActivity.this, TermsActivity.class)));
+
+        // Help
+        help_layout.setOnClickListener(v ->
+                startActivity(new Intent(SettingsActivity.this, HelpActivity.class)));
+
+        // Optional: Check token validity every time settings open
+        checkTokenValidity();
     }
 
-    /**
-     * Clear the SharedPreferences and any session data for logout.
-     */
+    // Local logout
     private void logout() {
-        // Get SharedPreferences and clear all data
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // Clear all stored preferences
-        editor.apply(); // Apply the changes
-
-        // Optionally, show a toast message to confirm logout
+        editor.clear();
+        editor.apply();
         Toast.makeText(SettingsActivity.this, "You have been logged out.", Toast.LENGTH_SHORT).show();
+    }
+
+    // Logout all devices
+    private void logoutAllDevices() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String token = prefs.getString("token", null);
+
+        if (token == null) {
+            Toast.makeText(this, "No session token found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+        Call<ResponseBody> call = apiService.logoutAllDevices("Bearer " + token);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(SettingsActivity.this, "Logged out from all devices", Toast.LENGTH_SHORT).show();
+
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.clear();
+                    editor.apply();
+
+                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else if (response.code() == 401) {
+                    // Token invalid
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.clear();
+                    editor.apply();
+
+                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(SettingsActivity.this, "Logout failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(SettingsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // Check token validity
+    private void checkTokenValidity() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String token = prefs.getString("token", null);
+
+        if (token != null) {
+            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+            Call<ResponseBody> call = apiService.checkTokenValidity("Bearer " + token);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code() == 401) {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.clear();
+                        editor.apply();
+
+                        // Show a Toast message informing the user about the session expiration
+                        Toast.makeText(SettingsActivity.this, "Session expired. Login again.", Toast.LENGTH_LONG).show();
+
+
+                        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(SettingsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

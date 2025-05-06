@@ -263,4 +263,58 @@
             app:tint="@android:color/holo_orange_light" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
+
+    <!-- Log Out All Devices Section -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btnLogoutAllDevices"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="364dp"
+        android:background="@android:color/black"
+        android:onClick="logoutAllDevices"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_title">
+
+        <ImageView
+            android:id="@+id/icon_logout_all"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/baseline_logout_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@android:color/holo_orange_light" />
+
+        <TextView
+            android:id="@+id/logout_text_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:text="Log out all devices"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/chevron_logout_all"
+            app:layout_constraintStart_toEndOf="@id/icon_logout_all"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/chevron_logout_all"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/baseline_chevron_right_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@android:color/holo_orange_light" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

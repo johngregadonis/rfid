@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class ChangePasswordActivity extends AppCompatActivity {
     private EditText oldPassword, newPassword, confirmNewPassword;
     private Button btnChangePassword;
-    private int userId = 1; // Replace with actual logged-in user ID
+    private int userId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void changePassword(String oldPass, String newPass) {
         new Thread(() -> {
             try {
-                URL url = new URL("http://192.168.1.9:3001/change-password");
+                URL url = new URL("http://192.168.1.8:3001/change-password");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -12,6 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,10 +34,25 @@ public class MainActivity extends AppCompatActivity {
     private TextView addPhotoText;
     private Uri selectedImageUri;
 
-    private static final String BASE_URL = "http://192.168.1.9:3001/"; // Replace with your actual backend URL
+    private static final String BASE_URL = "http://192.168.1.8:3001/";
     private static final String PREFS_NAME = "UserPrefs";
-    private static final int REQUEST_GALLERY = 100;
+    private static final String IMAGE_URI_KEY = "imageUri";
     private static final int PERMISSION_REQUEST_CODE = 1;
+
+    private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    if (selectedImageUri != null) {
+                        getContentResolver().takePersistableUriPermission(selectedImageUri,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        photoImageView.setImageURI(selectedImageUri);
+                        saveImageUri(selectedImageUri.toString());
+                        addPhotoText.setVisibility(TextView.INVISIBLE);
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +68,10 @@ public class MainActivity extends AppCompatActivity {
         addPhotoText = findViewById(R.id.addPhotoText);
         changePhotoButton = findViewById(R.id.changePhotoButton);
 
-        // Check and request storage permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        }
+        // Request necessary permissions
+        requestStoragePermission();
 
-        // Load user details from SharedPreferences
+        // Load user details
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String bodyNumber = sharedPreferences.getString("bodyNumber", null);
 
@@ -73,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        // Fetch operator details from PostgreSQL through the API
+        // Fetch operator details
         apiService.getOperatorDetails(bodyNumber).enqueue(new Callback<Operator>() {
             @Override
             public void onResponse(Call<Operator> call, Response<Operator> response) {
@@ -94,54 +111,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Add photo text click listener
+        // Make add photo text clickable
         addPhotoText.setOnClickListener(v -> openGallery());
 
         // Change photo button click listener
-        changePhotoButton.setOnClickListener(v -> {
-            if (selectedImageUri != null) {
-                openGallery();
-            } else {
-                Toast.makeText(this, "Please add a photo first.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        changePhotoButton.setOnClickListener(v -> openGallery());
 
-        // Load previously saved photo if exists
+        // Load saved photo
         loadSavedPhoto();
     }
 
     private void openGallery() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, REQUEST_GALLERY);
+        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        galleryIntent.setType("image/*");
+        galleryIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        galleryLauncher.launch(galleryIntent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_GALLERY && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            photoImageView.setImageURI(selectedImageUri);
-
-            // Save photo URI to SharedPreferences
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("imageUri", selectedImageUri.toString());
-            editor.apply();
-            addPhotoText.setVisibility(TextView.INVISIBLE); // Hide "Add Photo" text if photo is set
-        }
+    private void saveImageUri(String uri) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(IMAGE_URI_KEY, uri);
+        editor.apply();
     }
 
     private void loadSavedPhoto() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String savedUri = sharedPreferences.getString("imageUri", null);
+        String savedUri = sharedPreferences.getString(IMAGE_URI_KEY, null);
         if (savedUri != null) {
             try {
                 selectedImageUri = Uri.parse(savedUri);
-                if (selectedImageUri != null) {
-                    photoImageView.setImageURI(selectedImageUri);
-                    addPhotoText.setVisibility(TextView.INVISIBLE); // Hide "Add Photo" text if photo is set
-                }
+                photoImageView.setImageURI(selectedImageUri);
+                addPhotoText.setVisibility(TextView.INVISIBLE);
             } catch (Exception e) {
                 Log.e("ImageError", "Error loading saved image: " + e.getMessage());
                 Toast.makeText(this, "Error loading saved image.", Toast.LENGTH_SHORT).show();
@@ -149,9 +151,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Handle permission result for storage access
+    private void requestStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, PERMISSION_REQUEST_CODE);
+            }
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) { // Android 9 and below
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -162,4 +175,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-//old code

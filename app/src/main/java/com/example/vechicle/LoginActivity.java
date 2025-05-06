@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.1.9:3001/login"; // Update with your server URL
+        String url = "http://192.168.1.8:3001/login"; // Update with your server URL
 
         // Create JSON payload
         JSONObject loginData = new JSONObject();
@@ -123,12 +123,17 @@ public class LoginActivity extends AppCompatActivity {
                             String name = response.getString("name");
                             String bodyNumber = response.getString("bodyNumber");
 
-                            // Save login state in SharedPreferences
+                            // ✅ Check if the response contains a token and save it
+                            String token = response.has("token") ? response.getString("token") : null;
+
                             SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("name", name);
                             editor.putString("bodyNumber", bodyNumber);
                             editor.putBoolean("isLoggedIn", true);
+                            if (token != null) {
+                                editor.putString("token", token);  // Save token only if it exists
+                            }
                             editor.apply();
 
                             Toast.makeText(LoginActivity.this, "Welcome, " + name + "!", Toast.LENGTH_SHORT).show();
@@ -136,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Navigate to HomeActivity
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
-                            finish(); // Close LoginActivity
+                            finish();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
