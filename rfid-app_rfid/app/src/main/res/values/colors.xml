@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#4CD080</color>
+    <color name="blue">#194995</color>
+    <color name="gray">#d9d9d9</color>
+    <color name="light">#999999</color>
+    <color name="dark">#333333</color>
+    <color name="dirty_white">#F5F5F5</color>
+    <color name="orange">#F7971D</color>
+    <color name="kupal">#3B3F46</color>
+    <color name="hindot">#757374</color>
+
+
+</resources>
